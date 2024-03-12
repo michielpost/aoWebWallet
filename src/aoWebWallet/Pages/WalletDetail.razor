@@ -1,0 +1,55 @@
+﻿@page "/wallet/{address}"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject StorageService StorageService
+@inject ISnackbar Snackbar
+
+<PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h3">@Address</MudText>
+
+
+
+    <DataLoaderProgress DataLoader="BindingContext.BalanceDataList.DataLoader" Title="Balances" />
+
+    <MudStack>
+        @if (BindingContext.BalanceDataList.Data != null)
+        {
+            @foreach (var balance in BindingContext.BalanceDataList.Data)
+            {
+                var token = BindingContext.TokenList.Data?.Where(x => x.TokenId == balance.TokenId).FirstOrDefault();
+
+                <MudPaper Class="pa-4">
+                    <MudStack Row="true">
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.h3">@balance.Balance</MudText>
+                        </MudStack>
+                        <MudSpacer />
+                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(token?.TokenData?.Logo)" Size="Size.Large" />
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.body1">@token?.TokenData?.Name</MudText>
+                            <MudText Typo="Typo.body2">@token?.TokenData?.Ticker</MudText>
+                            <MudText Typo="Typo.subtitle1">@token?.TokenId</MudText>
+                        </MudStack>
+                        
+                        <MudSpacer />
+                    </MudStack>
+                </MudPaper>
+            }
+        }
+
+    </MudStack>
+
+</MudContainer>
+
+
+@code
+{
+    [Parameter]
+    public string? Address { get; set; }
+
+  
+}

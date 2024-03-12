@@ -11,17 +11,24 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h3">Wallets</MudText>
 
-    <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="Tokens" />
+    <p>
+    <b>For testing: address examples you can add:</b><br />
+    aGeRSnWykicBEGESPbTXPQ0_q2IiMLBBMyemu2pBYoA<br />
+    eV-KRpB8wKowayHUUf7OpyKaUdr1WpTrRqkgiQdDVDk
+    </p>
+
+    <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="Wallets" />
 
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
         {
             @foreach (var wallet in BindingContext.WalletList.Data)
             {
+                string detailUrl = $"wallet/{wallet.Address}";
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
                         <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.h3">@wallet.Address</MudText>
+                            <MudLink Href="@detailUrl" Typo="Typo.h5">@wallet.Address</MudLink>
                             <MudText Typo="Typo.body2">@wallet.Name</MudText>
                         </MudStack>
                         <MudSpacer />

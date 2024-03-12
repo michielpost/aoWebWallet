@@ -61,6 +61,7 @@
         if(result != null)
         {
             await StorageService.DeleteToken(token.TokenId);
+            BindingContext.BalanceDataList.Data = null;
             await BindingContext.LoadTokenList();
 
             Snackbar.Add($"Token {token.TokenData?.Name} deleted ({token.TokenId})", Severity.Info);

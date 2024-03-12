@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
+using static MudBlazor.Colors;
 
 namespace aoWebWallet.ViewModels
 {
@@ -20,7 +21,10 @@ namespace aoWebWallet.ViewModels
         private string? computeUnitUrl;
 
         [ObservableProperty]
-        private string? selectedAsset;
+        private string? selectedAddress;
+
+        [ObservableProperty]
+        private Wallet? selectedWallet;
 
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<BalanceData>> BalanceDataList { get; set; } = new();
@@ -69,6 +73,25 @@ namespace aoWebWallet.ViewModels
             TokenList.Data = null;
             WalletList = new();
             BalanceDataList.Data = null;
+        }
+
+        partial void OnSelectedAddressChanged(string? value)
+        {
+            SelectWallet(value);
+        }
+
+        private async Task SelectWallet(string? address)
+        {
+            if (!string.IsNullOrEmpty(address))
+            {
+                var all = await storageService.GetWallets();
+                var current = all.Where(x => x.Address == address).FirstOrDefault();
+                if (current != null)
+                {
+                    SelectedWallet = current;
+                    await this.LoadBalanceDataList(address);
+                }
+            }
         }
 
         partial void OnComputeUnitUrlChanged(string? value)
