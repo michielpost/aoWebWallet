@@ -1,0 +1,62 @@
+﻿@inject MainViewModel MainViewModel
+@inject TokenClient TokenClient
+@inject StorageService StorageService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        Add a token to view your balance. Provide a process-id that implements the token standard.
+        <MudTextField @bind-Value="TokenId" Label="Token Id" Variant="Variant.Text"></MudTextField>
+        <MudText Color="Color.Secondary">@Progress</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    public string? TokenId { get; set; }
+    public string? Progress { get; set; }
+
+    public async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(TokenId))
+        {
+            Progress = "Input the process-id of an ao-process implementing the token standard.";
+            return;
+        }
+        if(TokenId.Length != 43)
+        {
+            Progress = "Length must be 43 characters.";
+            return;
+        }
+
+        Progress = "Checking metadata...";
+        try
+        {
+            var data = await TokenClient.GetTokenMetaData(TokenId);
+            if (data != null)
+            {
+                await StorageService.AddToken(TokenId, data);
+                await MainViewModel.LoadTokenList();
+
+                Snackbar.Add($"Token added ({data.Name})", Severity.Info);
+
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                Progress = "Could not find token metadata.";
+            }
+        }
+        catch
+        {
+            Progress = "Could not find token metadata.";
+        }
+    }
+
+    //void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}

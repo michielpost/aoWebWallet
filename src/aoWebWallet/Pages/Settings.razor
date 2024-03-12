@@ -1,0 +1,58 @@
+﻿@page "/settings"
+@inherits MvvmComponentBase<MainViewModel>
+@inject MainViewModel MainViewModel
+@inject ISnackbar Snackbar
+
+<PageTitle>Settings - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudText Typo="Typo.h3">Settings</MudText>
+
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="6">
+            <MudPaper Class="pa-4">
+                <MudButton OnClick="ClearUserData">Clear all user data</MudButton>
+            </MudPaper>
+
+            <MudPaper Class="pa-4">
+                <MudSelect @bind-Value="newUrl" T="string" Label="Select API URL" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
+                </MudSelect>
+            </MudPaper>
+
+            <MudPaper Class="pa-4">
+                <MudTextField T="string" @bind-Value="customUrl" Label="Custom URL" InputType="InputType.Url" />
+            </MudPaper>
+
+            <MudButton OnClick="Submit">Save</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private string? newUrl { get; set; }
+    private string? customUrl { get; set; }
+
+    protected override void OnInitialized()
+    {
+        newUrl = MainViewModel.ComputeUnitUrl;
+        base.OnInitialized();
+    }
+
+    void Submit()
+    {
+        if (!string.IsNullOrEmpty(newUrl))
+            MainViewModel.ComputeUnitUrl = newUrl;
+        if (!string.IsNullOrEmpty(customUrl))
+            MainViewModel.ComputeUnitUrl = customUrl;
+
+        Snackbar.Add("Settings saved, reloading data...", Severity.Info);
+    }
+
+    async Task ClearUserData()
+    {
+        await BindingContext.ClearUserData();
+
+        Snackbar.Add("User data cleared.", Severity.Info);
+    }
+
+}

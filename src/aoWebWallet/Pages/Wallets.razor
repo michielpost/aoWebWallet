@@ -1,0 +1,69 @@
+﻿@page "/"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject StorageService StorageService
+@inject ISnackbar Snackbar
+
+<PageTitle>@Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h3">Wallets</MudText>
+
+    <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="Tokens" />
+
+    <MudStack>
+        @if (BindingContext.WalletList.Data != null)
+        {
+            @foreach (var wallet in BindingContext.WalletList.Data)
+            {
+                <MudPaper Class="pa-4">
+                    <MudStack Row="true">
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.h3">@wallet.Address</MudText>
+                            <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                        </MudStack>
+                        <MudSpacer />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
+                        @* @if (!wallet.IsConnected)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(token); }"></MudIconButton>
+                        } *@
+                    </MudStack>
+                </MudPaper>
+            }
+        }
+
+    </MudStack>
+
+    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" OnClick="OpenDialog"></MudIconButton>
+</MudContainer>
+
+
+@code
+{
+
+    private void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<AddWalletDialog>("Add Wallet", options);
+    }
+
+    private async void DeleteWallet(Wallet wallet)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to delete this wallet? {wallet.Address}?",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        if (result != null)
+        {
+            await StorageService.DeleteWallet(wallet);
+            await BindingContext.LoadWalletList();
+
+            Snackbar.Add($"Wallet deleted ({wallet.Address})", Severity.Info);
+        }
+        StateHasChanged();
+    }
+}

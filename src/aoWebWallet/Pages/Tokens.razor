@@ -1,0 +1,70 @@
+﻿@page "/token-explorer"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject StorageService StorageService
+@inject ISnackbar Snackbar
+
+<PageTitle>@Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h3">Token Explorer</MudText>
+
+    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="Tokens" />
+
+    <MudStack>
+        @if (BindingContext.TokenList.Data != null)
+        {
+            @foreach (var token in BindingContext.TokenList.Data)
+            {
+                <MudPaper Class="pa-4">
+                    <MudStack Row="true">
+                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
+                            <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
+                            <MudText Typo="Typo.subtitle1">@token.TokenId</MudText>
+                        </MudStack>
+                        <MudSpacer />
+                        @if(!token.IsSystemToken)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteToken(token); }"></MudIconButton>
+                        }
+                    </MudStack>
+                </MudPaper>
+            }
+        }
+
+    </MudStack>
+
+    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenDialog"></MudIconButton>
+
+</MudContainer>
+
+@code
+{
+
+    private void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<AddTokenDialog>("Add Token", options);
+    }
+
+    private async void DeleteToken(Token token)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to delete {token.TokenData?.Name}?",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        if(result != null)
+        {
+            await StorageService.DeleteToken(token.TokenId);
+            await BindingContext.LoadTokenList();
+
+            Snackbar.Add($"Token {token.TokenData?.Name} deleted ({token.TokenId})", Severity.Info);
+        }
+        StateHasChanged();
+    }
+}

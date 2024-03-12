@@ -1,0 +1,58 @@
+﻿@using aoWebWallet.Models
+@inject MainViewModel MainViewModel
+@inject TokenClient TokenClient
+@inject StorageService StorageService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        Add a wallet
+        <MudTextField @bind-Value="Address" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
+        <MudText Color="Color.Secondary">@Progress</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    public string? Name { get; set; }
+    public string? Address { get; set; }
+    public string? Progress { get; set; }
+
+    public async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(Address))
+        {
+            Progress = "Input ta wallet address.";
+            return;
+        }
+        if (Address.Length != 43)
+        {
+            Progress = "Length must be 43 characters.";
+            return;
+        }
+
+        var wallet = new Wallet
+            {
+                Address = Address,
+                Name = Name,
+                Source = WalletTypes.Manual,
+                IsReadOnly = true,
+                AddedDate = DateTimeOffset.UtcNow
+            };
+
+        await StorageService.SaveWallet(wallet);
+        await MainViewModel.LoadWalletList();
+
+        Snackbar.Add($"Wallet added ({Address})", Severity.Info);
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    //void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}

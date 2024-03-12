@@ -1,0 +1,48 @@
+﻿@page "/about"
+@inherits MvvmComponentBase<MainViewModel>
+
+<PageTitle>About - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudText Typo="Typo.h2">aoWebWallet</MudText>
+
+    <MudGrid>
+        <MudItem >
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Align="Align.Left">Open Source web wallet for ao on Arweave</MudText>
+
+                <MudText Align="Align.Left">Created for the Hack the Weave hackathon</MudText>
+
+                   <MudText Align="MudBlazor.Align.Left">
+                        <a href="https://github.com/michielpost/aoWebWallet" target="_blank">GitHub</a> |
+           Version: @Program.GetVersionWithoutHash()
+                    @if (!string.IsNullOrEmpty(versionHash))
+                    {
+                        <text>-</text>
+
+                        <a href="https://github.com/michielpost/aoWebWallet/tree/@versionHash" target="_blank">@versionHash</a>
+                    }</MudText>
+
+  @*              <MudButton Variant="Variant.Filled" OnClick="Test">Test</MudButton>
+                <MudText Align="Align.Left">@result</MudText>*@
+
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+    @code {
+    string? versionHash = Program.GetVersionHash();
+    private string result = DateTimeOffset.UtcNow.ToString();
+
+    private async Task Test()
+    {
+        result = $"Start: {DateTimeOffset.UtcNow}";
+
+       // await BindingContext.LoadHealth();
+
+        result = $"Ok: {DateTimeOffset.UtcNow}";
+        Console.WriteLine(result);
+    }
+
+}

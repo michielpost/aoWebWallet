@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34607.79
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoWebWallet", "aoWebWallet\aoWebWallet.csproj", "{DED1DD2B-BC48-47C3-8DAC-8E17EE796E2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{06E5BC39-764A-48B9-B4F9-F48387A2C965}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArweaveAO", "ArweaveAO\ArweaveAO.csproj", "{097DE302-25DA-4052-9983-6D856F9A00C6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webvNext.DataLoader", "webvNext.DataLoader\webvNext.DataLoader.csproj", "{17CA4374-64D0-4618-852F-8A76D0A57166}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArweaveBlazor", "ArweaveBlazor\ArweaveBlazor.csproj", "{0420127C-D20C-44C8-B5E6-307313ACF10C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DED1DD2B-BC48-47C3-8DAC-8E17EE796E2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DED1DD2B-BC48-47C3-8DAC-8E17EE796E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DED1DD2B-BC48-47C3-8DAC-8E17EE796E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DED1DD2B-BC48-47C3-8DAC-8E17EE796E2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{097DE302-25DA-4052-9983-6D856F9A00C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{097DE302-25DA-4052-9983-6D856F9A00C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{097DE302-25DA-4052-9983-6D856F9A00C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{097DE302-25DA-4052-9983-6D856F9A00C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17CA4374-64D0-4618-852F-8A76D0A57166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17CA4374-64D0-4618-852F-8A76D0A57166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17CA4374-64D0-4618-852F-8A76D0A57166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17CA4374-64D0-4618-852F-8A76D0A57166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0420127C-D20C-44C8-B5E6-307313ACF10C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0420127C-D20C-44C8-B5E6-307313ACF10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0420127C-D20C-44C8-B5E6-307313ACF10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0420127C-D20C-44C8-B5E6-307313ACF10C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{097DE302-25DA-4052-9983-6D856F9A00C6} = {06E5BC39-764A-48B9-B4F9-F48387A2C965}
+		{17CA4374-64D0-4618-852F-8A76D0A57166} = {06E5BC39-764A-48B9-B4F9-F48387A2C965}
+		{0420127C-D20C-44C8-B5E6-307313ACF10C} = {06E5BC39-764A-48B9-B4F9-F48387A2C965}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {432E3F8E-53FF-4D9C-869D-48449BD3B8B4}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,14 @@
+﻿@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+
+<MudText>@BindingContext.ComputeUnitUrl</MudText>
+<MudIconButton Icon="@Icons.Filled.Settings" Color="MudBlazor.Color.Inherit" @onclick="OpenDialog" />
+
+
+@code {
+    private void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium, FullWidth = true };
+        DialogService.Show<ChangeAPIDialog>("Change Compute Unit Url", options);
+    }
+}

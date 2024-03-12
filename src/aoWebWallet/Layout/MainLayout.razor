@@ -1,0 +1,44 @@
+﻿@inherits LayoutComponentBase
+@{
+    string? versionHash = Program.GetVersionHash();
+}
+
+<MudThemeProvider IsDarkMode="true" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="MudBlazor.Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">aoWebWallet</MudText>
+        @*<MudSpacer />*@
+      @*  <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />*@
+       @* <ApiConnectionDisplay />*@
+        @*<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="MudBlazor.Color.Inherit" Link="https://github.com/michielpost/aoWebWallet" Target="_blank" />*@
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+    <MudContainer>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-6"/>
+        <MudText Typo="Typo.subtitle2" Align="MudBlazor.Align.Center">
+            Copyright @DateTimeOffset.UtcNow.Year | Version: @Program.GetVersionWithoutHash()
+                    @if (!string.IsNullOrEmpty(versionHash))
+                    {
+                        <text>-</text><a href="https://github.com/michielpost/aoWebWallet/tree/@versionHash" target="_blank">@versionHash</a>
+                    }</MudText>
+    </MudContainer>
+</MudLayout>
+    @code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+   
+}
