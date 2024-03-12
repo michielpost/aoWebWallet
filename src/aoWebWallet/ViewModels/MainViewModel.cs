@@ -52,6 +52,9 @@ namespace aoWebWallet.ViewModels
 
         public Task LoadBalanceDataList(string address) => BalanceDataList.DataLoader.LoadAsync(async () =>
         {
+            //First clear
+            BalanceDataList.Data = null;
+
             var result = await dataService.LoadWalletBalances(address);
             return result;
         }, x => BalanceDataList.Data = x);
@@ -60,6 +63,31 @@ namespace aoWebWallet.ViewModels
         {
             var list = await storageService.GetWallets();
             WalletList.Data = list;
+        }
+
+        public async Task AddToken(string tokenId, TokenData data)
+        {
+            BalanceDataList.Data = null;
+            await storageService.AddToken(tokenId, data);
+            await LoadTokenList();
+        }
+        public async Task DeleteToken(string tokenId)
+        {
+            BalanceDataList.Data = null;
+            await storageService.DeleteToken(tokenId);
+            await this.LoadTokenList();
+        }
+
+        public async Task SaveWallet(Wallet wallet)
+        {
+            await storageService.SaveWallet(wallet);
+            await LoadWalletList();
+        }
+
+        public async Task DeleteWallet(Wallet wallet)
+        {
+            await storageService.DeleteWallet(wallet);
+            await LoadWalletList();
         }
 
         public async Task ClearUserData()

@@ -1,4 +1,5 @@
 ﻿using aoWebWallet.ViewModels;
+using MudBlazor;
 
 namespace aoWebWallet.Pages
 {
@@ -22,9 +23,14 @@ namespace aoWebWallet.Pages
 
         protected override async Task LoadDataAsync()
         {
-            await BindingContext.LoadWalletList();
+            BindingContext.LoadTokenList();
 
-            //BindingContext.LoadStats();
+            if (!string.IsNullOrEmpty(Address))
+            {
+                BindingContext.LoadBalanceDataList(Address);
+            }
+
+            await base.LoadDataAsync();
         }
 
     }

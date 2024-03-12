@@ -14,6 +14,7 @@ namespace aoWebWallet.Pages
         protected override async Task LoadDataAsync()
         {
             await BindingContext.LoadWalletList();
+            await BindingContext.LoadTokenList();
 
             //BindingContext.LoadStats();
         }

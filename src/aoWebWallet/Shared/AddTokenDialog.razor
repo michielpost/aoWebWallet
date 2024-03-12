@@ -1,6 +1,5 @@
-﻿@inject MainViewModel MainViewModel
+﻿@inherits MvvmComponentBase<MainViewModel>
 @inject TokenClient TokenClient
-@inject StorageService StorageService
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -39,8 +38,7 @@
             var data = await TokenClient.GetTokenMetaData(TokenId);
             if (data != null)
             {
-                await StorageService.AddToken(TokenId, data);
-                await MainViewModel.LoadTokenList();
+                await BindingContext.AddToken(TokenId, data);
 
                 Snackbar.Add($"Token added ({data.Name})", Severity.Info);
 

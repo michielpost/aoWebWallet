@@ -1,7 +1,6 @@
 ﻿@using aoWebWallet.Models
-@inject MainViewModel MainViewModel
+@inherits MvvmComponentBase<MainViewModel>
 @inject TokenClient TokenClient
-@inject StorageService StorageService
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -45,8 +44,7 @@
                 AddedDate = DateTimeOffset.UtcNow
             };
 
-        await StorageService.SaveWallet(wallet);
-        await MainViewModel.LoadWalletList();
+        await BindingContext.SaveWallet(wallet);
 
         Snackbar.Add($"Wallet added ({Address})", Severity.Info);
 

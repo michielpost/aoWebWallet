@@ -2,7 +2,6 @@
 @using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
-@inject StorageService StorageService
 @inject ISnackbar Snackbar
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
@@ -66,8 +65,7 @@
 
         if (result != null)
         {
-            await StorageService.DeleteWallet(wallet);
-            await BindingContext.LoadWalletList();
+            await BindingContext.DeleteWallet(wallet);
 
             Snackbar.Add($"Wallet deleted ({wallet.Address})", Severity.Info);
         }
