@@ -21,7 +21,7 @@ namespace aoWebWallet.Services
            // throw new NotImplementedException();
         }
 
-        public async Task<List<Token>> LoadTokenData()
+        public async IAsyncEnumerable<Token> LoadTokenDataAsync()
         {
             var tokens = await storageService.GetTokenIds();
             foreach (var token in tokens)
@@ -36,27 +36,14 @@ namespace aoWebWallet.Services
                     }
                     catch { }
                 }
+
+                if (token.TokenData != null)
+                    yield return token;
             }
 
             await storageService.SaveTokenList(tokens);
 
-            return tokens;
         }
 
-        public async Task<List<BalanceData>> LoadWalletBalances(string address)
-        {
-            var tokens = await storageService.GetTokenIds();
-
-            var result = new List<BalanceData>();
-
-            foreach (var token in tokens)
-            {
-                var balanceData = await tokenClient.GetBalance(token.TokenId, address);
-                if (balanceData != null)
-                    result.Add(balanceData);
-            }
-
-            return result;
-        }
     }
 }

@@ -15,5 +15,9 @@ namespace webvNext.DataLoader
         [ObservableProperty]
         private T? data;
 
+        public void ForcePropertyChanged()
+        {
+            OnPropertyChanged(nameof(Data));
+        }
     }
 }

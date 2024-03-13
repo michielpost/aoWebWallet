@@ -19,7 +19,7 @@
         {
             @foreach (var balance in BindingContext.BalanceDataList.Data)
             {
-                var token = BindingContext.TokenList.Data?.Where(x => x.TokenId == balance.TokenId).FirstOrDefault();
+                var token = BindingContext.TokenList.Data?.Where(x => x.TokenId == balance.Data?.TokenId).FirstOrDefault();
 
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
@@ -32,7 +32,11 @@
                         </MudStack>
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.h3">@balance.Balance</MudText>
+                            <DataLoaderProgress DataLoader="balance.DataLoader" Title="Balances" />
+                            @if(balance.Data != null)
+                            {
+                                <MudText Typo="Typo.h3">@balance.Data.Balance</MudText>
+                            }
                         </MudStack>
                         <MudSpacer />
                         <MudSpacer />

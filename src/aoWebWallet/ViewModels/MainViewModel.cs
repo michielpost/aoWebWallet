@@ -1,5 +1,6 @@
 ﻿using aoWebWallet.Models;
 using aoWebWallet.Services;
+using ArweaveAO;
 using ArweaveAO.Models.Token;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -13,6 +14,7 @@ namespace aoWebWallet.ViewModels
     public partial class MainViewModel : ObservableRecipient
     {
         private readonly DataService dataService;
+        private readonly TokenClient tokenClient;
         private readonly StorageService storageService;
         private readonly MemoryDataCache memoryDataCache;
 
@@ -27,7 +29,7 @@ namespace aoWebWallet.ViewModels
         private Wallet? selectedWallet;
 
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
-        public DataLoaderViewModel<List<BalanceData>> BalanceDataList { get; set; } = new();
+        public DataLoaderViewModel<List<DataLoaderViewModel<BalanceData>>> BalanceDataList { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
 
         //TODO:
@@ -37,27 +39,56 @@ namespace aoWebWallet.ViewModels
         /// <summary>
         /// Gets the <see cref="IAsyncRelayCommand{T}"/> responsible for loading the source markdown docs.
         /// </summary>
-        public MainViewModel(DataService dataService, StorageService storageService, MemoryDataCache memoryDataCache) : base()
+        public MainViewModel(DataService dataService, 
+            TokenClient tokenClient,
+            StorageService storageService, 
+            MemoryDataCache memoryDataCache) : base()
         {
             this.dataService = dataService;
+            this.tokenClient = tokenClient;
             this.storageService = storageService;
             this.memoryDataCache = memoryDataCache;
         }
 
         public Task LoadTokenList() => TokenList.DataLoader.LoadAsync(async () =>
         {
-                var result = await dataService.LoadTokenData();
-                return result;
-        }, x => TokenList.Data = x);
+            TokenList.Data = new();
+            await foreach (var item in dataService.LoadTokenDataAsync())
+            {
+                TokenList.Data.Add(item);
+                TokenList.ForcePropertyChanged();
+            }
+
+            return TokenList.Data;
+        });
+
 
         public Task LoadBalanceDataList(string address) => BalanceDataList.DataLoader.LoadAsync(async () =>
         {
             //First clear
             BalanceDataList.Data = null;
+            var tokens = await storageService.GetTokenIds();
 
-            var result = await dataService.LoadWalletBalances(address);
+            var result = new List<DataLoaderViewModel<BalanceData>>();
+
+            foreach (var token in tokens)
+            {
+                var balanceData = new DataLoaderViewModel<BalanceData>();
+                balanceData.DataLoader.LoadAsync(async () =>
+                {
+                    var balanceData = await tokenClient.GetBalance(token.TokenId, address);
+                    return balanceData;
+                }, (x) => { balanceData.Data = x; BalanceDataList.ForcePropertyChanged(); });
+                result.Add(balanceData);
+            }
+
+            BalanceDataList.Data = result;
+
             return result;
-        }, x => BalanceDataList.Data = x);
+
+        });
+
+        
 
         public async Task LoadWalletList()
         {
