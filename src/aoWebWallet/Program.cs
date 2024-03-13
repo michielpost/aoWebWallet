@@ -8,6 +8,7 @@ using Blazored.LocalStorage;
 using aoWebWallet.Services;
 using aoWebWallet.ViewModels;
 using ArweaveAO;
+using ArweaveBlazor;
 
 namespace aoWebWallet
 {
@@ -73,6 +74,8 @@ namespace aoWebWallet
             services.AddSingleton<MemoryDataCache>();
 
             services.AddScoped<TokenClient>();
+
+            services.AddArweaveBlazor();
 
 
             //Register ViewModels

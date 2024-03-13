@@ -3,15 +3,38 @@
 @inject TokenClient TokenClient
 @inject ISnackbar Snackbar
 
-Add a wallet
-<MudTextField @bind-Value="Address" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
-<MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
-<MudText Color="Color.Secondary">@Progress</MudText>
+<MudPaper Class="pa-4">
+    <MudStack Spacing="2">
+        <MudButton OnClick="OnExpandCollapseClick">@(_expanded ? "Add read-only wallet" : "Add read-only wallet")</MudButton>
+        <MudDivider />
+        <MudCollapse Expanded="_expanded">
+            <MudTextField @bind-Value="Address" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+            <MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
+            <MudText Color="Color.Secondary">@Progress</MudText>
+            @if (!HideAddButton)
+            {
+                <MudButton Color="Color.Primary" OnClick="Submit">Add</MudButton>
+            }
+        </MudCollapse>
+    </MudStack>
+</MudPaper>
+
+
 
 @code {
+    [Parameter]
+    public bool HideAddButton { get; set; }
+
     public string? Name { get; set; }
     public string? Address { get; set; }
     public string? Progress { get; set; }
+
+    bool _expanded = false;
+
+    private void OnExpandCollapseClick()
+    {
+        _expanded = !_expanded;
+    }
 
     public async Task<bool> Submit()
     {

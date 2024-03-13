@@ -44,8 +44,13 @@
             }
             else
             {
-                <AddWalletComponent @ref="addWalletRef"></AddWalletComponent>
-                <MudButton Color="Color.Primary" OnClick="Submit">Add</MudButton>
+                <MudGrid Row="true">
+                    <MudItem xs="6">
+                        <AddArConnectComponent></AddArConnectComponent>
+                        <AddWalletComponent @ref="addWalletRef"></AddWalletComponent>
+                    </MudItem>
+                </MudGrid>
+
             }
         }
 
@@ -66,15 +71,6 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddWalletDialog>("Add Wallet", options);
-    }
-
-    public async Task Submit()
-    {
-        // Call a function in AddWalletComponent
-        if (addWalletRef != null)
-        {
-            var result = await addWalletRef.Submit();
-        }
     }
 
     private async void DeleteWallet(Wallet wallet)

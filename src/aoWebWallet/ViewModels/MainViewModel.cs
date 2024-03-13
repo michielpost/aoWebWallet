@@ -2,6 +2,7 @@
 using aoWebWallet.Services;
 using ArweaveAO;
 using ArweaveAO.Models.Token;
+using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -16,7 +17,11 @@ namespace aoWebWallet.ViewModels
         private readonly DataService dataService;
         private readonly TokenClient tokenClient;
         private readonly StorageService storageService;
+        private readonly ArweaveService arweaveService;
         private readonly MemoryDataCache memoryDataCache;
+
+        [ObservableProperty]
+        public bool? hasArConnectExtension;
 
         [ObservableProperty]
         [NotifyPropertyChangedRecipients]
@@ -41,12 +46,14 @@ namespace aoWebWallet.ViewModels
         /// </summary>
         public MainViewModel(DataService dataService, 
             TokenClient tokenClient,
-            StorageService storageService, 
+            StorageService storageService,
+            ArweaveService arweaveService,
             MemoryDataCache memoryDataCache) : base()
         {
             this.dataService = dataService;
             this.tokenClient = tokenClient;
             this.storageService = storageService;
+            this.arweaveService = arweaveService;
             this.memoryDataCache = memoryDataCache;
         }
 
@@ -171,6 +178,11 @@ namespace aoWebWallet.ViewModels
                 dataService.Init(value);
             }
 
+        }
+
+        public async Task CheckHasArConnectExtension()
+        {
+            HasArConnectExtension = await arweaveService.HasArConnectAsync();
         }
 
     }
