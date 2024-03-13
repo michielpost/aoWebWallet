@@ -19,23 +19,21 @@
         {
             @foreach (var balance in BindingContext.BalanceDataList.Data)
             {
-                var token = BindingContext.TokenList.Data?.Where(x => x.TokenId == balance.Data?.TokenId).FirstOrDefault();
-
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
-                        
-                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(token?.TokenData?.Logo)" Size="Size.Large" />
+
+                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Data?.Token?.TokenData?.Logo)" Size="Size.Large" />
                         <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.body1">@token?.TokenData?.Name</MudText>
-                            <MudText Typo="Typo.body2">@token?.TokenData?.Ticker</MudText>
-                            <MudText Typo="Typo.subtitle1">@token?.TokenId</MudText>
+                            <MudText Typo="Typo.body1">@balance.Data?.Token?.TokenData?.Name</MudText>
+                            <MudText Typo="Typo.body2">@balance.Data?.Token?.TokenData?.Ticker</MudText>
+                            <MudText Typo="Typo.subtitle1">@balance.Data?.Token?.TokenId</MudText>
                         </MudStack>
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0">
                             <DataLoaderProgress DataLoader="balance.DataLoader" Title="Balances" />
-                            @if(balance.Data != null)
+                            @if (balance.Data?.BalanceData != null)
                             {
-                                <MudText Typo="Typo.h3">@balance.Data.Balance</MudText>
+                                <MudText Typo="Typo.h3">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>
                             }
                         </MudStack>
                         <MudSpacer />

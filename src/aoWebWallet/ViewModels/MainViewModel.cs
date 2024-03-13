@@ -29,7 +29,7 @@ namespace aoWebWallet.ViewModels
         private Wallet? selectedWallet;
 
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
-        public DataLoaderViewModel<List<DataLoaderViewModel<BalanceData>>> BalanceDataList { get; set; } = new();
+        public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
 
         //TODO:
@@ -69,15 +69,17 @@ namespace aoWebWallet.ViewModels
             BalanceDataList.Data = null;
             var tokens = await storageService.GetTokenIds();
 
-            var result = new List<DataLoaderViewModel<BalanceData>>();
+            var result = new List<DataLoaderViewModel<BalanceDataViewModel>>();
 
             foreach (var token in tokens)
             {
-                var balanceData = new DataLoaderViewModel<BalanceData>();
+                var balanceData = new DataLoaderViewModel<BalanceDataViewModel>();
+                balanceData.Data = new BalanceDataViewModel {  Token = token };
+
                 balanceData.DataLoader.LoadAsync(async () =>
                 {
                     var balanceData = await tokenClient.GetBalance(token.TokenId, address);
-                    return balanceData;
+                    return new BalanceDataViewModel() {  BalanceData = balanceData, Token = token };
                 }, (x) => { balanceData.Data = x; BalanceDataList.ForcePropertyChanged(); });
                 result.Add(balanceData);
             }

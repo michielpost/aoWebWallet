@@ -12,6 +12,6 @@ namespace ArweaveAO.Models.Token
         public string? Name { get; set; }
         public string? Ticker { get; set; }
         public string? Logo { get; set; }
-        public string? Denomination { get; set; }
+        public int? Denomination { get; set; }
     }
 }

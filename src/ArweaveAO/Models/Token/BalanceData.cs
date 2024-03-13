@@ -10,7 +10,7 @@ namespace ArweaveAO.Models.Token
     {
         public string? TokenId { get; set; }
         public string? Account { get; set; }
-        public string? Balance { get; set; }
+        public long? Balance { get; set; }
         public string? Ticker { get; set; }
     }
 }

@@ -32,10 +32,14 @@ namespace ArweaveAO
 
                 var tokenData = new TokenData();
                 tokenData.TokenId = processId;
-                tokenData.Name = result.Messages.First().Tags.Where(x => x.Name == "Name").Select(x => x.Value).FirstOrDefault(); ;
-                tokenData.Ticker = result.Messages.First().Tags.Where(x => x.Name == "Ticker").Select(x => x.Value).FirstOrDefault(); ;
-                tokenData.Logo = result.Messages.First().Tags.Where(x => x.Name == "Logo").Select(x => x.Value).FirstOrDefault(); ;
-                tokenData.Denomination = result.Messages.First().Tags.Where(x => x.Name == "Denomination").Select(x => x.Value).FirstOrDefault(); ;
+                tokenData.Name = result.Messages.First().Tags.Where(x => x.Name == "Name").Select(x => x.Value).FirstOrDefault();
+                tokenData.Ticker = result.Messages.First().Tags.Where(x => x.Name == "Ticker").Select(x => x.Value).FirstOrDefault();
+                tokenData.Logo = result.Messages.First().Tags.Where(x => x.Name == "Logo").Select(x => x.Value).FirstOrDefault();
+                
+                
+                string? denomination = result.Messages.First().Tags.Where(x => x.Name == "Denomination").Select(x => x.Value).FirstOrDefault();
+                if(!string.IsNullOrWhiteSpace(denomination) && int.TryParse(denomination, out int denominationInt))
+                    tokenData.Denomination = denominationInt;
 
                 return tokenData;
             }
@@ -71,9 +75,12 @@ namespace ArweaveAO
 
                 var balanceData = new BalanceData();
                 balanceData.TokenId = tokenId;
-                balanceData.Ticker = result.Messages.First().Tags.Where(x => x.Name == "Ticker").Select(x => x.Value).FirstOrDefault(); ;
-                balanceData.Account = result.Messages.First().Tags.Where(x => x.Name == "Account").Select(x => x.Value).FirstOrDefault(); ;
-                balanceData.Balance = result.Messages.First().Tags.Where(x => x.Name == "Balance").Select(x => x.Value).FirstOrDefault(); ;
+                balanceData.Ticker = result.Messages.First().Tags.Where(x => x.Name == "Ticker").Select(x => x.Value).FirstOrDefault();
+                balanceData.Account = result.Messages.First().Tags.Where(x => x.Name == "Account").Select(x => x.Value).FirstOrDefault();
+                
+                string? balance = result.Messages.First().Tags.Where(x => x.Name == "Balance").Select(x => x.Value).FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(balance) && long.TryParse(balance, out long balanceLong))
+                    balanceData.Balance = balanceLong;
 
                 return balanceData;
             }
