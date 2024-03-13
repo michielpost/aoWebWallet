@@ -23,24 +23,31 @@
 
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.h3">@balance.Balance</MudText>
-                        </MudStack>
-                        <MudSpacer />
+                        
                         <MudAvatar Image="@UrlHelper.GetArweaveUrl(token?.TokenData?.Logo)" Size="Size.Large" />
                         <MudStack Justify="Justify.Center" Spacing="0">
                             <MudText Typo="Typo.body1">@token?.TokenData?.Name</MudText>
                             <MudText Typo="Typo.body2">@token?.TokenData?.Ticker</MudText>
                             <MudText Typo="Typo.subtitle1">@token?.TokenId</MudText>
                         </MudStack>
-                        
                         <MudSpacer />
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.h3">@balance.Balance</MudText>
+                        </MudStack>
+                        <MudSpacer />
+                        <MudSpacer />
+                        <MudStack Justify="Justify.Center" Spacing="0" Row="true">
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send"></MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIconButton>
+                        </MudStack>
                     </MudStack>
                 </MudPaper>
             }
         }
 
     </MudStack>
+
+    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
 
 </MudContainer>
 
@@ -50,5 +57,10 @@
     [Parameter]
     public string? Address { get; set; }
 
+    private void OpenAddTokenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<AddTokenDialog>("Add Token", options);
+    }
   
 }

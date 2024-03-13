@@ -70,6 +70,11 @@ namespace aoWebWallet.ViewModels
             BalanceDataList.Data = null;
             await storageService.AddToken(tokenId, data);
             await LoadTokenList();
+
+            if(!string.IsNullOrEmpty(SelectedAddress))
+            {
+                await LoadBalanceDataList(SelectedAddress);
+            }
         }
         public async Task DeleteToken(string tokenId)
         {

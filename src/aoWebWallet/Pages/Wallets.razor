@@ -21,39 +21,60 @@
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
         {
-            @foreach (var wallet in BindingContext.WalletList.Data)
+            if(BindingContext.WalletList.Data.Any())
             {
-                string detailUrl = $"wallet/{wallet.Address}";
-                <MudPaper Class="pa-4">
-                    <MudStack Row="true">
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudLink Href="@detailUrl" Typo="Typo.h5">@wallet.Address</MudLink>
-                            <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                foreach (var wallet in BindingContext.WalletList.Data)
+                {
+                    string detailUrl = $"wallet/{wallet.Address}";
+                    <MudPaper Class="pa-4">
+                        <MudStack Row="true">
+                            <MudStack Justify="Justify.Center" Spacing="0">
+                                <MudLink Href="@detailUrl" Typo="Typo.h5">@wallet.Address</MudLink>
+                                <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                            </MudStack>
+                            <MudSpacer />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
+                            @* @if (!wallet.IsConnected)
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(token); }"></MudIconButton>
+                            } *@
                         </MudStack>
-                        <MudSpacer />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
-                        @* @if (!wallet.IsConnected)
-                        {
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(token); }"></MudIconButton>
-                        } *@
-                    </MudStack>
-                </MudPaper>
+                    </MudPaper>
+                }
+            }
+            else
+            {
+                <AddWalletComponent @ref="addWalletRef"></AddWalletComponent>
+                <MudButton Color="Color.Primary" OnClick="Submit">Add</MudButton>
             }
         }
 
     </MudStack>
 
-    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" OnClick="OpenDialog"></MudIconButton>
+    @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" OnClick="OpenDialog"></MudIconButton>
+        }
 </MudContainer>
 
 
 @code
 {
+    private AddWalletComponent? addWalletRef;
 
     private void OpenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddWalletDialog>("Add Wallet", options);
+    }
+
+    public async Task Submit()
+    {
+        // Call a function in AddWalletComponent
+        if (addWalletRef != null)
+        {
+            var result = await addWalletRef.Submit();
+        }
     }
 
     private async void DeleteWallet(Wallet wallet)

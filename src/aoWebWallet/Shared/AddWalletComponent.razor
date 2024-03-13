@@ -1,0 +1,45 @@
+﻿@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject TokenClient TokenClient
+@inject ISnackbar Snackbar
+
+Add a wallet
+<MudTextField @bind-Value="Address" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+<MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
+<MudText Color="Color.Secondary">@Progress</MudText>
+
+@code {
+    public string? Name { get; set; }
+    public string? Address { get; set; }
+    public string? Progress { get; set; }
+
+    public async Task<bool> Submit()
+    {
+        if(string.IsNullOrWhiteSpace(Address))
+        {
+            Progress = "Input ta wallet address.";
+            StateHasChanged();
+            return false;
+        }
+        if (Address.Length != 43)
+        {
+            Progress = "Length must be 43 characters.";
+            StateHasChanged();
+            return false;
+        }
+
+        var wallet = new Wallet
+            {
+                Address = Address,
+                Name = Name,
+                Source = WalletTypes.Manual,
+                IsReadOnly = true,
+                AddedDate = DateTimeOffset.UtcNow
+            };
+
+        await BindingContext.SaveWallet(wallet);
+
+        Snackbar.Add($"Wallet added ({Address})", Severity.Info);
+        return true;
+    }
+}

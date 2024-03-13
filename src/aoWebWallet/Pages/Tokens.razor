@@ -37,14 +37,14 @@
 
     </MudStack>
 
-    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenDialog"></MudIconButton>
+    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
 
 </MudContainer>
 
 @code
 {
 
-    private void OpenDialog()
+    private void OpenAddTokenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddTokenDialog>("Add Token", options);

@@ -1,14 +1,12 @@
 ﻿@using aoWebWallet.Models
+@using aoWebWallet.Shared
 @inherits MvvmComponentBase<MainViewModel>
 @inject TokenClient TokenClient
 @inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
-        Add a wallet
-        <MudTextField @bind-Value="Address" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
-        <MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
-        <MudText Color="Color.Secondary">@Progress</MudText>
+        <AddWalletComponent @ref="addWalletRef"></AddWalletComponent>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -18,37 +16,23 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    public string? Name { get; set; }
-    public string? Address { get; set; }
-    public string? Progress { get; set; }
+    private AddWalletComponent? addWalletRef;
 
     public async Task Submit()
     {
-        if (string.IsNullOrWhiteSpace(Address))
+        // Call a function in AddWalletComponent
+        if (addWalletRef != null)
         {
-            Progress = "Input ta wallet address.";
-            return;
-        }
-        if (Address.Length != 43)
-        {
-            Progress = "Length must be 43 characters.";
-            return;
-        }
-
-        var wallet = new Wallet
+            var result = await addWalletRef.Submit();
+            if(result)
             {
-                Address = Address,
-                Name = Name,
-                Source = WalletTypes.Manual,
-                IsReadOnly = true,
-                AddedDate = DateTimeOffset.UtcNow
-            };
-
-        await BindingContext.SaveWallet(wallet);
-
-        Snackbar.Add($"Wallet added ({Address})", Severity.Info);
-
-        MudDialog.Close(DialogResult.Ok(true));
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+        }
+        else
+        {
+            MudDialog.Close(DialogResult.Ok(true));
+        }
     }
 
     //void Submit() => MudDialog.Close(DialogResult.Ok(true));
