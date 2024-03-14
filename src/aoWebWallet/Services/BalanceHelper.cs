@@ -21,5 +21,16 @@ namespace aoWebWallet.Services
 
             return formattedDecimal;
         }
+
+        public static long DecimalToTokenAmount(decimal amount, int denomination)
+        {
+            decimal multiplier = (decimal)Math.Pow(10, denomination);
+
+            decimal result = amount * multiplier;
+            var longResult = Convert.ToInt64(result);
+           
+
+            return longResult;
+        }
     }
 }

@@ -36,6 +36,12 @@ namespace aoWebWallet.ViewModels
         [ObservableProperty]
         private Wallet? selectedWallet;
 
+        [ObservableProperty]
+        private int? selectedWalletIndex;
+
+        [ObservableProperty]
+        private Token? selectedToken;
+
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
@@ -165,8 +171,20 @@ namespace aoWebWallet.ViewModels
                 if (current != null)
                 {
                     SelectedWallet = current;
+                    var indexOf = all.IndexOf(current);
+                    SelectedWalletIndex = (indexOf % 5) + 1;
                     await this.LoadBalanceDataList(address);
                 }
+                else
+                {
+                    SelectedWallet = null;
+                    SelectedWalletIndex = null;
+                }
+            }
+            else
+            {
+                SelectedWallet = null;
+                SelectedWalletIndex = null;
             }
         }
 
@@ -224,7 +242,7 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-        public async Task<bool> SendTokenWithArConnect(string tokenId, string address, decimal amount)
+        public async Task<bool> SendTokenWithArConnect(string tokenId, string address, long amount)
         {
             await CheckHasArConnectExtension();
             if (string.IsNullOrEmpty(ActiveArConnectAddress))
@@ -232,7 +250,9 @@ namespace aoWebWallet.ViewModels
 
             await arweaveService.SendAsync(tokenId, null, new List<ArweaveBlazor.Models.Tag>
             {
-
+                new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Transfer"},
+                new ArweaveBlazor.Models.Tag() { Name = "Recipient", Value = address},
+                new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = amount.ToString()},
             });
 
             return true;

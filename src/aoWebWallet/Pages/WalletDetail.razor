@@ -10,12 +10,12 @@
 <MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
     <MudPaper Class="pa-4 mb-4">
         <MudStack Row="true">
-        <MudAvatar Image="images/account--4.svg" Size="Size.Large" Class="rounded-0" />
+        <MudAvatar Image="@($"images/account--{BindingContext.SelectedWalletIndex}.svg")" Size="Size.Large" Class="rounded-0" />
             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
                 <MudLink style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
                     @Address
                 </MudLink>
-                <MudText Typo="Typo.body2">Wallet Name</MudText>
+                <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
             </MudStack>
             <MudSpacer />
         </MudStack>
@@ -52,10 +52,10 @@
                         <MudSpacer />
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data?.BalanceData?.TokenId);}"></MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data?.Token);}"></MudIconButton>
                             @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
                             {
-                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send" OnClick="()=>{Send(balance.Data?.BalanceData?.TokenId);}"></MudIconButton>
+                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send" OnClick="()=>{Send(balance.Data?.Token);}"></MudIconButton>
                             }
                         </MudStack>
                     </MudStack>
@@ -72,20 +72,24 @@
     [Parameter]
     public string? Address { get; set; }
 
+    public string WalletUrl { get; set; }
+
     private void OpenAddTokenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddTokenDialog>("Add Token", options);
     }
 
-    private void Receive(string? tokenId)
+    private void Receive(Token? token)
     {
+        BindingContext.SelectedToken = token;
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<ReceiveTokenDialog>("Receive Token", options);
     }
 
-    private void Send(string? tokenId)
+    private void Send(Token? token)
     {
+        BindingContext.SelectedToken = token;
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<SendTokenDialog>("Transfer Token", options);
     }
