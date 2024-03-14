@@ -8,7 +8,8 @@
 
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h3">Wallets</MudText>
+
+    <MudText Typo="Typo.h5">Wallets</MudText>
 
     <!--
     <p>
@@ -36,6 +37,7 @@
                     string detailUrl = $"wallet/{wallet.Address}";
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
+                        <MudAvatar Image="images/account--5.svg" Size="Size.Large" Class="rounded-0" />
                             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
                                 <MudLink style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                     @wallet.Address
@@ -55,8 +57,8 @@
             }
             else
             {
-                <MudGrid Row="true">
-                    <MudItem xs="6">
+                <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
+                    <MudItem lg="6" xs="12">
                         <AddArConnectComponent></AddArConnectComponent>
                         <AddWalletComponent @ref="addWalletRef"></AddWalletComponent>
                     </MudItem>

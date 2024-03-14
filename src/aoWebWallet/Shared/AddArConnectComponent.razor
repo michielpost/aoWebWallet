@@ -4,7 +4,7 @@
 @inject ISnackbar Snackbar
 @inject ArweaveService ArweaveService
 
-<MudPaper Class="pa-4">
+<MudPaper Class="pa-8 mb-4">
     <MudStack Spacing="2">
         <MudButton OnClick="OnExpandCollapseClick">@(_expanded ? "Connect wallet" : "Connect wallet")</MudButton>
         <MudDivider />
@@ -22,14 +22,20 @@
             {
                 if(string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
                 {
-                    <MudButton OnClick="Connect">Connect with ArConnect</MudButton>
+                <div style="width:100%;">
+                     <MudButton style="margin:10px; display:flex; margin-left:auto;"  OnClick="Connect">Connect with ArConnect</MudButton>
+                </div>
+
                 }
                 else
                 {
                     var wallet = BindingContext.WalletList.Data?.Where(x => x.Address == BindingContext.ActiveArConnectAddress).FirstOrDefault();
                     if (wallet == null)
                     {
-                        <MudButton OnClick="Connect">Connect with ArConnect</MudButton>
+                    <div style="width:100%;">
+                         <MudButton style="margin:10px; display:flex; margin-left:auto;"  OnClick="Connect">Connect with ArConnect</MudButton>
+                    </div>
+
                     }
                     else
                     {
