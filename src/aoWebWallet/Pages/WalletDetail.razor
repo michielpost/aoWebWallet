@@ -12,9 +12,9 @@
         <MudStack Row="true">
         <MudAvatar Image="@($"images/account--{BindingContext.SelectedWalletIndex}.svg")" Size="Size.Large" Class="rounded-0" />
             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
-                <MudLink style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                <MudText style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
                     @Address
-                </MudLink>
+                </MudText>
                 <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
             </MudStack>
             <MudSpacer />
