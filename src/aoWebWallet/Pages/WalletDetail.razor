@@ -39,8 +39,11 @@
                         <MudSpacer />
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send"></MudIconButton>
-                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data?.BalanceData?.TokenId);}"></MudIconButton>
+                            @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send" OnClick="()=>{Send(balance.Data?.BalanceData?.TokenId);}"></MudIconButton>
+                            }
                         </MudStack>
                     </MudStack>
                 </MudPaper>
@@ -63,6 +66,18 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddTokenDialog>("Add Token", options);
+    }
+
+    private void Receive(string? tokenId)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<ReceiveTokenDialog>("Receive Token", options);
+    }
+
+    private void Send(string? tokenId)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<SendTokenDialog>("Transfer Token", options);
     }
   
 }

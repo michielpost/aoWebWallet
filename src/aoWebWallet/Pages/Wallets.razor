@@ -33,11 +33,12 @@
                                 <MudText Typo="Typo.body2">@wallet.Name</MudText>
                             </MudStack>
                             <MudSpacer />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
-                            @* @if (!wallet.IsConnected)
+                            @if (wallet.IsConnected)
                             {
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(token); }"></MudIconButton>
-                            } *@
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                            }
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
+                            
                         </MudStack>
                     </MudPaper>
                 }

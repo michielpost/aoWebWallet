@@ -188,7 +188,7 @@ namespace aoWebWallet.ViewModels
             HasArConnectExtension = await arweaveService.HasArConnectAsync();
             if(HasArConnectExtension.HasValue && HasArConnectExtension.Value)
             {
-                ActiveArConnectAddress = await arweaveService.GetActiveAddress();
+                await GetActiveArConnectAddress();
             }
         }
 
@@ -197,8 +197,31 @@ namespace aoWebWallet.ViewModels
             if (HasArConnectExtension.HasValue && HasArConnectExtension.Value)
             {
                 ActiveArConnectAddress = await arweaveService.GetActiveAddress();
+                Console.WriteLine(ActiveArConnectAddress);
+
+                if (this.WalletList.Data != null)
+                {
+                    var wallets = this.WalletList.Data.Where(x => !x.IsConnected
+                        && x.Source == WalletTypes.ArConnect
+                        && x.Address == ActiveArConnectAddress);
+                    foreach (var wallet in wallets)
+                    {
+                        wallet.IsConnected = true;
+                    }
+                    this.WalletList.ForcePropertyChanged();
+                    await storageService.SaveWalletList(this.WalletList.Data);
+                }
+            }
+            else if (this.WalletList.Data != null)
+            {
+                var wallets = this.WalletList.Data.Where(x => x.IsConnected && x.Source == WalletTypes.ArConnect);
+                foreach (var wallet in wallets)
+                {
+                    wallet.IsConnected = false;
+                }
+                this.WalletList.ForcePropertyChanged();
+                await storageService.SaveWalletList(this.WalletList.Data);
             }
         }
-
     }
 }
