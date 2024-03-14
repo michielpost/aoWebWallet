@@ -3,7 +3,7 @@
 @inject TokenClient TokenClient
 @inject ISnackbar Snackbar
 
-<MudPaper Class="pa-4">
+<MudPaper Class="pa-8">
     <MudStack Spacing="2">
         <MudButton OnClick="OnExpandCollapseClick">@(_expanded ? "Add read-only wallet" : "Add read-only wallet")</MudButton>
         <MudDivider />
@@ -13,7 +13,9 @@
             <MudText Color="Color.Secondary">@Progress</MudText>
             @if (!HideAddButton)
             {
-                <MudButton Color="Color.Primary" OnClick="Submit">Add</MudButton>
+                <div style="width:100%;">
+                    <MudButton style="margin-top:10px; display:flex; margin-left:auto;" Color="Color.Primary" OnClick="Submit">Add</MudButton>
+                </div>
             }
         </MudCollapse>
     </MudStack>

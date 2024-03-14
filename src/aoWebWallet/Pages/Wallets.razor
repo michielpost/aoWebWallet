@@ -8,7 +8,8 @@
 
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h3">Wallets</MudText>
+
+   <MudText Typo="Typo.h3">Wallets</MudText>
 
     <!--
     <p>
@@ -54,7 +55,7 @@
             }
             else
             {
-                <MudGrid Row="true">
+                <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
                     <MudItem xs="6">
                         <AddArConnectComponent></AddArConnectComponent>
                         <AddWalletComponent @ref="addWalletRef"></AddWalletComponent>
