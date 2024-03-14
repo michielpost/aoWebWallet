@@ -7,10 +7,23 @@
 <PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h3">@Address</MudText>
+<MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
+    <MudPaper Class="pa-4 mb-4">
+        <MudStack Row="true">
+        <MudAvatar Image="images/account--4.svg" Size="Size.Large" Class="rounded-0" />
+            <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
+                <MudLink style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                    @Address
+                </MudLink>
+                <MudText Typo="Typo.body2">Wallet Name</MudText>
+            </MudStack>
+            <MudSpacer />
+        </MudStack>
+    </MudPaper>
 
-
+     <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-4">
+            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
+    </MudContainer>
 
     <DataLoaderProgress DataLoader="BindingContext.BalanceDataList.DataLoader" Title="Balances" />
 
@@ -48,9 +61,6 @@
         }
 
     </MudStack>
-
-    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
-
 </MudContainer>
 
 
@@ -64,5 +74,5 @@
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddTokenDialog>("Add Token", options);
     }
-  
+
 }
