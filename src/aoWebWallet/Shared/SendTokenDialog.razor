@@ -7,6 +7,10 @@
 <MudDialog>
     <DialogContent>
        Send Tokens
+    TODO: Token info
+        <MudTextField @bind-Value="Address" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Amount" Label="Amount" Variant="Variant.Text" Format="F1"></MudTextField>
+        <MudText Color="Color.Secondary">@Progress</MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -16,8 +20,16 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
+    public string? Progress { get; set; }
+    public string? Address { get; set; }
+    public decimal Amount { get; set; }
+
     public async Task Submit()
     {
+        if(string.IsNullOrEmpty(Address))
+            return;
+
+        var result = BindingContext.SendTokenWithArConnect("", Address, Amount);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

@@ -223,5 +223,19 @@ namespace aoWebWallet.ViewModels
                 await storageService.SaveWalletList(this.WalletList.Data);
             }
         }
+
+        public async Task<bool> SendTokenWithArConnect(string tokenId, string address, decimal amount)
+        {
+            await CheckHasArConnectExtension();
+            if (string.IsNullOrEmpty(ActiveArConnectAddress))
+                return false;
+
+            await arweaveService.SendAsync(tokenId, null, new List<ArweaveBlazor.Models.Tag>
+            {
+
+            });
+
+            return true;
+        }
     }
 }
