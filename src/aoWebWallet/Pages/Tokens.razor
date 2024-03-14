@@ -8,9 +8,13 @@
 
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h3">Token Explorer</MudText>
+    <MudText Typo="Typo.h5">Token Explorer</MudText>
 
     <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="Tokens" />
+
+    <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-4">
+           <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
+    </MudContainer>
 
     <MudStack>
         @if (BindingContext.TokenList.Data != null)
@@ -37,7 +41,8 @@
 
     </MudStack>
 
-    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
+
+
 
 </MudContainer>
 

@@ -33,7 +33,7 @@
         <!-- Footer content -->
         <MudDivider DividerType="DividerType.FullWidth" Class="my-6"/>
         <MudText Align="Align.Center"  Typo="Typo.caption" Class="d-flex justify-center mb-4">
-            Copyright @DateTimeOffset.UtcNow.Year<br> Version: @Program.GetVersionWithoutHash()
+            Version: @Program.GetVersionWithoutHash()
             @if (!string.IsNullOrEmpty(versionHash))
             {
                 <text>-</text><a href="https://github.com/michielpost/aoWebWallet/tree/@versionHash" target="_blank">@versionHash</a>
