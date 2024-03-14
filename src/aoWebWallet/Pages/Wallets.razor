@@ -10,13 +10,21 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h3">Wallets</MudText>
 
+    <!--
     <p>
     <b>For testing: address examples you can add:</b><br />
     aGeRSnWykicBEGESPbTXPQ0_q2IiMLBBMyemu2pBYoA<br />
     eV-KRpB8wKowayHUUf7OpyKaUdr1WpTrRqkgiQdDVDk
-    </p>
+    </p> -->
 
     <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="Wallets" />
+
+    <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-4">
+            @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" OnClick="OpenDialog"></MudIconButton>
+                }
+    </MudContainer>
 
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
@@ -28,8 +36,10 @@
                     string detailUrl = $"wallet/{wallet.Address}";
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
-                            <MudStack Justify="Justify.Center" Spacing="0">
-                                <MudLink Href="@detailUrl" Typo="Typo.h5">@wallet.Address</MudLink>
+                            <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
+                                <MudLink style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
+                                    @wallet.Address
+                                </MudLink>
                                 <MudText Typo="Typo.body2">@wallet.Name</MudText>
                             </MudStack>
                             <MudSpacer />
@@ -56,11 +66,6 @@
         }
 
     </MudStack>
-
-    @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
-        {
-            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" OnClick="OpenDialog"></MudIconButton>
-        }
 </MudContainer>
 
 
