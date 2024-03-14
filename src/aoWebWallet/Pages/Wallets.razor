@@ -9,7 +9,15 @@
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
 
-    <MudText Typo="Typo.h5">Wallets</MudText>
+    @if (BindingContext.WalletList.Data == null || BindingContext.WalletList.Data.Count > 1)
+    {
+        <MudText Typo="Typo.h5">Wallets</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.h5">Wallet</MudText>
+    }
+
 
     <!--
     <p>
@@ -32,12 +40,14 @@
         {
             if(BindingContext.WalletList.Data.Any())
             {
+                int logoCount = 1;
                 foreach (var wallet in BindingContext.WalletList.Data)
                 {
+                    string logoUrl = $"images/account--{logoCount}.svg";
                     string detailUrl = $"wallet/{wallet.Address}";
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
-                        <MudAvatar Image="images/account--5.svg" Size="Size.Large" Class="rounded-0" />
+                            <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-0" />
                             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
                                 <MudLink style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                     @wallet.Address
@@ -53,6 +63,10 @@
                             
                         </MudStack>
                     </MudPaper>
+
+                    logoCount++;
+                    if (logoCount > 5)
+                        logoCount = 1;
                 }
             }
             else
