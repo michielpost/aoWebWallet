@@ -46,29 +46,26 @@ export async function HasArConnect() {
 
 export async function GetWalletBalance(address) {
     var result = await arweave.wallets.getBalance(address)
-    console.log(result);
-    
     return result;
 }
 
 export async function Connect(permissions, appInfo) {
     var result = await window.arweaveWallet.connect(permissions, appInfo)
-    console.log(result);
-
     return result;
 }
 
 export async function Disconnect() {
-    var result = await window.arweaveWallet.disconnect()
-    console.log(result);
-    return result;
+    await window.arweaveWallet.disconnect()
 }
 
 export async function GetActiveAddress(permissions, appInfo) {
-    var result = await window.arweaveWallet.getActiveAddress()
-    console.log(result);
 
-    return result;
+    try {
+        var result = await window.arweaveWallet.getActiveAddress()
+        return result;
+    }
+    catch { }
+    return null;
 }
 
 export async function Send(processId, data, tags) {

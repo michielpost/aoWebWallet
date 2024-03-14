@@ -24,6 +24,9 @@ namespace aoWebWallet.ViewModels
         public bool? hasArConnectExtension;
 
         [ObservableProperty]
+        public string? activeArConnectAddress;
+
+        [ObservableProperty]
         [NotifyPropertyChangedRecipients]
         private string? computeUnitUrl;
 
@@ -183,6 +186,18 @@ namespace aoWebWallet.ViewModels
         public async Task CheckHasArConnectExtension()
         {
             HasArConnectExtension = await arweaveService.HasArConnectAsync();
+            if(HasArConnectExtension.HasValue && HasArConnectExtension.Value)
+            {
+                ActiveArConnectAddress = await arweaveService.GetActiveAddress();
+            }
+        }
+
+        public async Task GetActiveArConnectAddress()
+        {
+            if (HasArConnectExtension.HasValue && HasArConnectExtension.Value)
+            {
+                ActiveArConnectAddress = await arweaveService.GetActiveAddress();
+            }
         }
 
     }

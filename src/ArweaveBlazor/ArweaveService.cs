@@ -124,11 +124,10 @@ namespace ArweaveBlazor
             return result;
         }
 
-        public async ValueTask<string> GetActiveAddress()
+        public async ValueTask<string?> GetActiveAddress()
         {
             var module = await moduleTask.Value;
-            var result = await module.InvokeAsync<string>("GetActiveAddress");
-            Console.WriteLine("Active address: " + result);
+            var result = await module.InvokeAsync<string?>("GetActiveAddress");
             return result;
         }
 
