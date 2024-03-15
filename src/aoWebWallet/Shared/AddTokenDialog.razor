@@ -5,7 +5,9 @@
 <MudDialog>
     <DialogContent>
         Add a token to view your balance. Provide a process-id that implements the token standard.
-        <MudTextField @bind-Value="TokenId" Label="Token Id" Variant="Variant.Text"></MudTextField>
+        <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+            <MudTextField @bind-Value="TokenId" Label="Token Id" Variant="Variant.Text"></MudTextField>
+        </MudFocusTrap>
         <MudText Color="Color.Secondary">@Progress</MudText>
     </DialogContent>
     <DialogActions>
