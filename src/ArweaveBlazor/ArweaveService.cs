@@ -46,7 +46,6 @@ namespace ArweaveBlazor
             var module = await moduleTask.Value;
 
             var result = await module.InvokeAsync<bool>("HasArConnect");
-            Console.WriteLine($"Installed: {result}");
             return result;
         }
 
@@ -66,8 +65,6 @@ namespace ArweaveBlazor
             }
             catch (JSException jsex)
             { }
-
-            Console.WriteLine($"Connect");
         }
 
         public async ValueTask DisconnectAsync()

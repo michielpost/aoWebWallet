@@ -211,8 +211,6 @@ namespace aoWebWallet.ViewModels
 
         public async Task CheckHasArConnectExtension()
         {
-            Console.WriteLine("CheckHasArConnectExtension");
-
             HasArConnectExtension = await arweaveService.HasArConnectAsync();
             await GetActiveArConnectAddress();
         }
@@ -233,7 +231,6 @@ namespace aoWebWallet.ViewModels
             if (HasArConnectExtension.HasValue && HasArConnectExtension.Value)
             {
                 ActiveArConnectAddress = await arweaveService.GetActiveAddress();
-                Console.WriteLine(ActiveArConnectAddress);
 
                 if (this.WalletList.Data != null)
                 {

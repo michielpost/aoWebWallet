@@ -83,7 +83,6 @@ export async function Send(processId, data, tags) {
             data: data,
         });
 
-        console.log(result);
         return result;
     } catch (error) {
         console.error(error);
@@ -107,7 +106,7 @@ export async function SendDryRun(processId, data, tags) {
             data: data,
         });
 
-        console.log(Messages);
+        //console.log(Messages);
         if (Messages.length > 0) {
             return Messages[0].Data;
         }
@@ -128,7 +127,7 @@ export async function GetResult(processId, msgId) {
         process: processId,
     });
 
-    console.log(Messages);
+    //console.log(Messages);
 
     if (Messages.length > 0) {
         return Messages[0].Data;
@@ -137,7 +136,6 @@ export async function GetResult(processId, msgId) {
 }
 
 export async function GetResults(processId, limit) {
-    console.log("test getting results");
     // fetching the first page of results
     let resultsOut = await results({
         process: processId,
@@ -145,6 +143,6 @@ export async function GetResults(processId, limit) {
         limit: limit,
     });
 
-    console.log(resultsOut);
+   console.log(resultsOut);
 }
 

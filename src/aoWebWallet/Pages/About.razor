@@ -23,9 +23,6 @@
                         <a href="https://github.com/michielpost/aoWebWallet/tree/@versionHash" target="_blank">@versionHash</a>
                     }</MudText>
 
-  @*              <MudButton Variant="Variant.Filled" OnClick="Test">Test</MudButton>
-                <MudText Align="Align.Left">@result</MudText>*@
-
             </MudPaper>
         </MudItem>
     </MudGrid>
@@ -34,15 +31,5 @@
     @code {
     string? versionHash = Program.GetVersionHash();
     private string result = DateTimeOffset.UtcNow.ToString();
-
-    private async Task Test()
-    {
-        result = $"Start: {DateTimeOffset.UtcNow}";
-
-       // await BindingContext.LoadHealth();
-
-        result = $"Ok: {DateTimeOffset.UtcNow}";
-        Console.WriteLine(result);
-    }
 
 }
