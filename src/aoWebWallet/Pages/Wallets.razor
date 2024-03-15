@@ -47,20 +47,25 @@
                     string detailUrl = $"wallet/{wallet.Address}";
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
-                            <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-0" />
+                            <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" />
+
                             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
+
                                 <MudLink style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                     @wallet.Address
                                 </MudLink>
-                                <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                                <div style="display:flex; flex-direction:row;">
+                                    <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                                    @if (wallet.IsConnected)
+                                    {
+                                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                                    }
+                                </div>
                             </MudStack>
                             <MudSpacer />
-                            @if (wallet.IsConnected)
-                            {
-                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
-                            }
+
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
-                            
+
                         </MudStack>
                     </MudPaper>
 
