@@ -42,6 +42,7 @@ namespace aoWebWallet.ViewModels
         [ObservableProperty]
         private BalanceDataViewModel? selectedBalanceDataVM;
 
+        public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
@@ -242,20 +243,21 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-        public async Task<bool> SendTokenWithArConnect(string tokenId, string address, long amount)
-        {
-            await CheckHasArConnectExtension();
-            if (string.IsNullOrEmpty(ActiveArConnectAddress))
-                return false;
+        public Task<Transaction?> SendTokenWithArConnect(string tokenId, string address, long amount)
+            => LastTransactionId.DataLoader.LoadAsync(async () =>
+            {
+                await CheckHasArConnectExtension();
+                if (string.IsNullOrEmpty(ActiveArConnectAddress))
+                    return null;
 
-            await arweaveService.SendAsync(tokenId, null, new List<ArweaveBlazor.Models.Tag>
+                var idResult = await arweaveService.SendAsync(tokenId, null, new List<ArweaveBlazor.Models.Tag>
             {
                 new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Transfer"},
                 new ArweaveBlazor.Models.Tag() { Name = "Recipient", Value = address},
                 new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = amount.ToString()},
             });
 
-            return true;
-        }
+                return new Transaction { Id = idResult };
+            });
     }
 }

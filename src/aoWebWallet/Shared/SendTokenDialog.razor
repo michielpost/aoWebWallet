@@ -7,11 +7,10 @@
 <MudDialog>
     <DialogContent>
         <MudStack Row=true>
-            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" />
+            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" Alt="@BindingContext.SelectedBalanceDataVM?.Token?.TokenId" />
             <MudStack Justify="Justify.Center" Spacing="0">
                 <MudText Typo="Typo.body1">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Name</MudText>
                 <MudText Typo="Typo.body2">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
-                <MudText Typo="Typo.subtitle1">@BindingContext.SelectedBalanceDataVM?.Token?.TokenId</MudText>
             </MudStack>
         </MudStack>
         <MudText Typo="Typo.body1">Available balance: @BalanceHelper.FormatBalance(BindingContext.SelectedBalanceDataVM?.BalanceData?.Balance, BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0)</MudText>
@@ -27,12 +26,27 @@
 
         @if (isConfirm)
         {
-            <MudText Typo="Typo.h3">Are you sure?</MudText>
+            if (string.IsNullOrEmpty(TransactionId))
+            {
+                <MudStack>
+                    <MudText Typo="Typo.h3">Are you sure?</MudText>
+                    <MudText>You are about to transfer:</MudText>
+                </MudStack>
+            }
             <MudStack>
-                <MudText>You are about to transfer:</MudText>
                 <MudText>Amount: @Amount @BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
                 <MudText>To: @Address</MudText>
             </MudStack>
+
+            <SendTransactionProgress DataLoader="BindingContext.LastTransactionId.DataLoader" Title="Sending transaction..." />
+
+            if (!string.IsNullOrEmpty(TransactionId))
+            {
+                <MudStack>
+                    <MudText Typo="Typo.h3">Transfer success!</MudText>
+                    <MudText>TransactionId: @TransactionId</MudText>
+                </MudStack>
+            }
         }
     </DialogContent>
     <DialogActions>
@@ -43,7 +57,17 @@
         }
         else
         {
-            <MudButton Color="Color.Primary" OnClick="Confirm">Confirm</MudButton>
+            if (string.IsNullOrEmpty(TransactionId))
+            {
+                if (!BindingContext.LastTransactionId.DataLoader.IsLoading)
+                {
+                    <MudButton Color="Color.Primary" @ref="confButtonRef" OnClick="Confirm">Confirm</MudButton>
+                }
+            }
+            else
+            {
+                <MudButton Color="Color.Primary" OnClick="Close">Close</MudButton>
+            }
         }
     </DialogActions>
 </MudDialog>
@@ -53,8 +77,12 @@
     public string? Progress { get; set; }
     public string? Address { get; set; }
     public decimal Amount { get; set; }
+    public string? TransactionId { get; set; }
 
     public bool isConfirm = false;
+    public bool showLoader = false;
+
+    public MudButton? confButtonRef;
 
     public int Denomination => BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0;
     public string DenominationFormat => "F" + (BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 1).ToString();
@@ -79,6 +107,14 @@
         || !BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
             return;
 
+        long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
+        if (amountLong > BindingContext.SelectedBalanceDataVM?.BalanceData?.Balance)
+        {
+            Progress = "Not enough balance available.";
+            StateHasChanged();
+            return;
+        }
+
         isConfirm = true;
     }
 
@@ -92,11 +128,26 @@
         || !BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
             return;
 
+        if (confButtonRef != null)
+            confButtonRef.Disabled = true;
+
+        this.StateHasChanged();
+
         long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
-        var result = BindingContext.SendTokenWithArConnect(BindingContext.SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
-        MudDialog.Close(DialogResult.Ok(true));
+        var result = await BindingContext.SendTokenWithArConnect(BindingContext.SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
+        TransactionId = result?.Id;
+
+        if (!string.IsNullOrEmpty(BindingContext.SelectedAddress))
+        {
+            await BindingContext.LoadBalanceDataList(BindingContext.SelectedAddress);
+        }
     }
 
-    //void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    public void Close()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+
+    }
+
     void Cancel() => MudDialog.Cancel();
 }
