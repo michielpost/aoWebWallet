@@ -6,9 +6,9 @@
 
 <MudPaper Class="pa-8 mb-4">
     <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick">@(_expanded ? "Connect wallet" : "Connect wallet")</MudButton>
+        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Connect wallet" : "Connect wallet")</MudButton>
         <MudDivider />
-        <MudCollapse Expanded="_expanded">
+        <MudCollapse Expanded="IsExpanded">
 
             @if (!BindingContext.HasArConnectExtension.HasValue)
             {
@@ -22,9 +22,12 @@
             {
                 if(string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
                 {
-                <div style="width:100%;">
-                     <MudButton style="margin:10px; display:flex; margin-left:auto;"  OnClick="Connect">Connect with ArConnect</MudButton>
-                </div>
+                    <MudButton style="border-radius:22px;width:100%; margin-top:5px; display: flex;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);" OnClick="Connect" Elevation="3">
+                        <div style="width:100%; margin-left:5px; display: flex;  align-items:center; padding:8px;">
+                            <MudImage style="width:31px; height:31px;" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" Class="rounded-lg" />
+                            <MudText Typo="Typo.subtitle2" style="margin-left:10px;">Connect with ArConnect</MudText>
+                        </div>
+                    </MudButton>
 
                 }
                 else
@@ -66,16 +69,22 @@
     [Parameter]
     public bool HideAddButton { get; set; }
 
+    [Parameter]
+    public bool IsExpanded { get; set; }
+
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
 
     public string? Name { get; set; }
 
-    bool _expanded = false;
-
     private void OnExpandCollapseClick()
     {
-        _expanded = !_expanded;
+        IsExpanded = !IsExpanded;
+    }
+
+    protected override async Task LoadDataAsync()
+    {
+        await BindingContext.CheckHasArConnectExtension();
     }
 
     public async Task Connect()

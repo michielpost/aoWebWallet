@@ -78,8 +78,8 @@
             {
                 <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
                     <MudItem lg="6" xs="12">
-                        <AddArConnectComponent></AddArConnectComponent>
-                        <AddWalletComponent @ref="addWalletRef"></AddWalletComponent>
+                        <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
+                        <AddWalletComponent IsExpanded="true"></AddWalletComponent>
                     </MudItem>
                 </MudGrid>
 
@@ -92,8 +92,6 @@
 
 @code
 {
-    private AddWalletComponent? addWalletRef;
-
     private void OpenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };

@@ -5,9 +5,9 @@
 
 <MudPaper Class="pa-8">
     <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick">@(_expanded ? "Add read-only wallet" : "Add read-only wallet")</MudButton>
+        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Add read-only wallet" : "Add read-only wallet")</MudButton>
         <MudDivider />
-        <MudCollapse Expanded="_expanded">
+        <MudCollapse Expanded="IsExpanded">
             <MudTextField @bind-Value="Address" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
             <MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
             <MudText Color="Color.Secondary">@Progress</MudText>
@@ -31,11 +31,12 @@
     public string? Address { get; set; }
     public string? Progress { get; set; }
 
-    bool _expanded = false;
+    [Parameter]
+    public bool IsExpanded { get; set; }
 
     private void OnExpandCollapseClick()
     {
-        _expanded = !_expanded;
+        IsExpanded = !IsExpanded;
     }
 
     public async Task<bool> Submit()
