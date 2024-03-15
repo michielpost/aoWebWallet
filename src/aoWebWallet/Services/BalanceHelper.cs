@@ -9,6 +9,9 @@ namespace aoWebWallet.Services
         {
             if (!balance.HasValue)
                 return string.Empty;
+
+            if (balance == 0)
+                return string.Format($"{0:N1}", 0);
             
             // Convert the long to a decimal
             decimal decimalBalance = Convert.ToDecimal(balance);

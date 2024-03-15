@@ -6,23 +6,45 @@
 
 <MudDialog>
     <DialogContent>
-       Send Tokens
-   
-       <MudStack Row=true>
-            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedToken?.TokenData?.Logo)" Size="Size.Large" />
+        <MudStack Row=true>
+            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" />
             <MudStack Justify="Justify.Center" Spacing="0">
-                <MudText Typo="Typo.body1">@BindingContext.SelectedToken?.TokenData?.Name</MudText>
-                <MudText Typo="Typo.body2">@BindingContext.SelectedToken?.TokenData?.Ticker</MudText>
-                <MudText Typo="Typo.subtitle1">@BindingContext.SelectedToken?.TokenId</MudText>
+                <MudText Typo="Typo.body1">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Name</MudText>
+                <MudText Typo="Typo.body2">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
+                <MudText Typo="Typo.subtitle1">@BindingContext.SelectedBalanceDataVM?.Token?.TokenId</MudText>
             </MudStack>
-       </MudStack>
-        <MudTextField @bind-Value="Address" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
-        <MudTextField @bind-Value="Amount" Label="Amount" Variant="Variant.Text" Format="F1"></MudTextField>
-        <MudText Color="Color.Secondary">@Progress</MudText>
+        </MudStack>
+        <MudText Typo="Typo.body1">Available balance: @BalanceHelper.FormatBalance(BindingContext.SelectedBalanceDataVM?.BalanceData?.Balance, BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0)</MudText>
+
+        @if (!isConfirm)
+        {
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField @bind-Value="Address" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+                <MudTextField @bind-Value="Amount" Label="Amount" Variant="Variant.Text" Format="@DenominationFormat"></MudTextField>
+            </MudFocusTrap>
+            <MudText Color="Color.Secondary">@Progress</MudText>
+        }
+
+        @if (isConfirm)
+        {
+            <MudText Typo="Typo.h3">Are you sure?</MudText>
+            <MudStack>
+                <MudText>You are about to transfer:</MudText>
+                <MudText>Amount: @Amount @BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
+                <MudText>To: @Address</MudText>
+            </MudStack>
+        }
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        @if (!isConfirm)
+        {
+            <MudButton Color="Color.Primary" OnClick="Submit">Next</MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Primary" OnClick="Confirm">Confirm</MudButton>
+        }
     </DialogActions>
 </MudDialog>
 @code {
@@ -32,18 +54,46 @@
     public string? Address { get; set; }
     public decimal Amount { get; set; }
 
+    public bool isConfirm = false;
+
+    public int Denomination => BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0;
+    public string DenominationFormat => "F" + (BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 1).ToString();
+
     public async Task Submit()
     {
-        if(string.IsNullOrEmpty(Address))
+        if (string.IsNullOrWhiteSpace(Address))
+        {
+            Progress = "Input a wallet address.";
+            StateHasChanged();
+            return;
+        }
+        if (Address.Length != 43)
+        {
+            Progress = "Address length must be 43 characters.";
+            StateHasChanged();
+            return;
+        }
+
+        if (string.IsNullOrEmpty(BindingContext.SelectedBalanceDataVM?.BalanceData?.TokenId)
+        || BindingContext.SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
+        || !BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
             return;
 
-        if (string.IsNullOrEmpty(BindingContext.SelectedToken?.TokenId)
-        || BindingContext.SelectedToken.TokenData?.Denomination == null
-        || !BindingContext.SelectedToken.TokenData.Denomination.HasValue)
+        isConfirm = true;
+    }
+
+    public async Task Confirm()
+    {
+        if (string.IsNullOrEmpty(Address))
             return;
 
-        long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedToken.TokenData.Denomination.Value);
-        var result = BindingContext.SendTokenWithArConnect(BindingContext.SelectedToken.TokenId, Address, amountLong);
+        if (string.IsNullOrEmpty(BindingContext.SelectedBalanceDataVM?.BalanceData?.TokenId)
+        || BindingContext.SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
+        || !BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
+            return;
+
+        long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
+        var result = BindingContext.SendTokenWithArConnect(BindingContext.SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

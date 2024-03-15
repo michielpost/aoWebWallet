@@ -55,10 +55,10 @@
                         <MudSpacer />
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data?.Token);}"></MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
                             @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
                             {
-                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send" OnClick="()=>{Send(balance.Data?.Token);}"></MudIconButton>
+                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>
                             }
                         </MudStack>
                     </MudStack>
@@ -81,16 +81,16 @@
         DialogService.Show<AddTokenDialog>("Add Token", options);
     }
 
-    private void Receive(Token? token)
+    private void Receive(BalanceDataViewModel? balanceDataVM)
     {
-        BindingContext.SelectedToken = token;
+        BindingContext.SelectedBalanceDataVM = balanceDataVM;
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<ReceiveTokenDialog>("Receive Token", options);
     }
 
-    private void Send(Token? token)
+    private void Send(BalanceDataViewModel? balanceDataVM)
     {
-        BindingContext.SelectedToken = token;
+        BindingContext.SelectedBalanceDataVM = balanceDataVM;
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<SendTokenDialog>("Transfer Token", options);
     }

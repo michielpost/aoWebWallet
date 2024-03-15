@@ -40,7 +40,7 @@ namespace aoWebWallet.ViewModels
         private int? selectedWalletIndex;
 
         [ObservableProperty]
-        private Token? selectedToken;
+        private BalanceDataViewModel? selectedBalanceDataVM;
 
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
