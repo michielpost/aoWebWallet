@@ -25,10 +25,10 @@ namespace aoWebWallet.Pages
         {
             BindingContext.LoadTokenList();
 
-            if (!string.IsNullOrEmpty(Address))
-            {
-                BindingContext.LoadBalanceDataList(Address);
-            }
+            //if (!string.IsNullOrEmpty(Address))
+            //{
+            //    BindingContext.LoadBalanceDataList(Address);
+            //}
 
             await base.LoadDataAsync();
         }

@@ -32,6 +32,9 @@
         {
             @foreach (var balance in BindingContext.BalanceDataList.Data)
             {
+                if (balance.Data?.Token?.TokenData == null)
+                    continue;
+
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
 
