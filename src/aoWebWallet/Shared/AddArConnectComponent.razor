@@ -108,6 +108,8 @@
 
             await BindingContext.SaveWallet(wallet);
 
+            await BindingContext.CheckHasArConnectExtension();
+
             Snackbar.Add($"Wallet added ({address})", Severity.Info);
 
             MudDialog?.Close(true);

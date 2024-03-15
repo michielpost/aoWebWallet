@@ -7,7 +7,7 @@
 <MudDialog>
     <DialogContent>
         <MudStack Row=true>
-            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" Alt="@BindingContext.SelectedBalanceDataVM?.Token?.TokenId" />
+            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.SelectedBalanceDataVM?.Token?.TokenId" />
             <MudStack Justify="Justify.Center" Spacing="0">
                 <MudText Typo="Typo.body1">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Name</MudText>
                 <MudText Typo="Typo.body2">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>

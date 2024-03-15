@@ -38,7 +38,7 @@
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
 
-                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Data?.Token?.TokenData?.Logo)" Size="Size.Large" Alt="@balance.Data?.Token?.TokenId" />
+                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Data?.Token?.TokenData?.Logo)" Size="Size.Large" title="@balance.Data?.Token?.TokenId" />
                         <MudStack Justify="Justify.Center" Spacing="0">
                             <MudText Typo="Typo.body1">@balance.Data?.Token?.TokenData?.Name</MudText>
                             <MudText Typo="Typo.body2">@balance.Data?.Token?.TokenData?.Ticker</MudText>

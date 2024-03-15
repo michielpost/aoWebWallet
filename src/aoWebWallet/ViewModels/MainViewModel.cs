@@ -202,17 +202,34 @@ namespace aoWebWallet.ViewModels
 
         }
 
+        public async Task DisconnectArWallet()
+        {
+            await arweaveService.DisconnectAsync();
+
+            await CheckHasArConnectExtension();
+        }
+
         public async Task CheckHasArConnectExtension()
         {
+            Console.WriteLine("CheckHasArConnectExtension");
+
             HasArConnectExtension = await arweaveService.HasArConnectAsync();
-            if(HasArConnectExtension.HasValue && HasArConnectExtension.Value)
-            {
-                await GetActiveArConnectAddress();
-            }
+            await GetActiveArConnectAddress();
         }
 
         public async Task GetActiveArConnectAddress()
         {
+            if (this.WalletList.Data != null)
+            {
+                var wallets = this.WalletList.Data.Where(x => x.IsConnected && x.Source == WalletTypes.ArConnect);
+                foreach (var wallet in wallets)
+                {
+                    wallet.IsConnected = false;
+                }
+                this.WalletList.ForcePropertyChanged();
+                await storageService.SaveWalletList(this.WalletList.Data);
+            }
+
             if (HasArConnectExtension.HasValue && HasArConnectExtension.Value)
             {
                 ActiveArConnectAddress = await arweaveService.GetActiveAddress();
@@ -230,16 +247,6 @@ namespace aoWebWallet.ViewModels
                     this.WalletList.ForcePropertyChanged();
                     await storageService.SaveWalletList(this.WalletList.Data);
                 }
-            }
-            else if (this.WalletList.Data != null)
-            {
-                var wallets = this.WalletList.Data.Where(x => x.IsConnected && x.Source == WalletTypes.ArConnect);
-                foreach (var wallet in wallets)
-                {
-                    wallet.IsConnected = false;
-                }
-                this.WalletList.ForcePropertyChanged();
-                await storageService.SaveWalletList(this.WalletList.Data);
             }
         }
 

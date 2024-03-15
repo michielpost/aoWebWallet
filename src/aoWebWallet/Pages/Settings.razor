@@ -14,7 +14,15 @@
                 <MudButton OnClick="ClearUserData">Clear all user data</MudButton>
             </MudPaper>
 
-            <MudPaper Class="pa-4">
+            @if(!string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
+            {
+                <MudPaper Class="pa-4">
+                    <MudButton OnClick="DisconnectArWallet">Disconnect ArConnect Extension</MudButton>
+                </MudPaper>
+            }
+         
+
+           @*  <MudPaper Class="pa-4">
                 <MudSelect @bind-Value="newUrl" T="string" Label="Select API URL" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
                 </MudSelect>
             </MudPaper>
@@ -24,6 +32,7 @@
             </MudPaper>
 
             <MudButton OnClick="Submit">Save</MudButton>
+            *@
         </MudItem>
     </MudGrid>
 </MudContainer>
@@ -53,6 +62,13 @@
         await BindingContext.ClearUserData();
 
         Snackbar.Add("User data cleared.", Severity.Info);
+    }
+
+    async Task DisconnectArWallet()
+    {
+        await BindingContext.DisconnectArWallet();
+
+        Snackbar.Add("Disconnected with ArConnect.", Severity.Info);
     }
 
 }
