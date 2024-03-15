@@ -45,7 +45,7 @@
                         </MudStack>
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0">
-                            <DataLoaderProgress DataLoader="balance.DataLoader" Title="Balances" />
+                            <DataLoaderProgress DataLoader="balance.DataLoader" Title="balance" />
                             @if (balance.Data?.BalanceData != null)
                             {
                                 <MudText Typo="Typo.h3">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>

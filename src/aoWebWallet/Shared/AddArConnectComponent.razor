@@ -32,7 +32,7 @@
                 }
                 else
                 {
-                    var wallet = BindingContext.WalletList.Data?.Where(x => x.Address == BindingContext.ActiveArConnectAddress).FirstOrDefault();
+                    var wallet = BindingContext.WalletList.Data?.Where(x => x.Source == WalletTypes.ArConnect && x.Address == BindingContext.ActiveArConnectAddress).FirstOrDefault();
                     if (wallet == null)
                     {
 
@@ -99,6 +99,7 @@
 
         await BindingContext.GetActiveArConnectAddress();
 
+
         if (string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
         {
             Snackbar.Add($"Access to ArConnect denied", Severity.Error);
@@ -123,13 +124,10 @@
 
             MudDialog?.Close(true);
         }
-
     }
 
     public async Task Disconnect()
     {
         await ArweaveService.DisconnectAsync();
-
     }
-
 }

@@ -6,7 +6,27 @@
 
 <MudDialog>
     <DialogContent>
-       Receive Tokens
+        <MudStack Row=true>
+            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.SelectedBalanceDataVM?.Token?.TokenId" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.body1">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Name</MudText>
+                <MudText Typo="Typo.body2">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
+            </MudStack>
+        </MudStack>
+        <br />
+        <MudStack>
+            <MudText Typo="Typo.h4">How to receive tokens?</MudText>
+            <MudText>Send tokens to this address:</MudText>
+            <MudText Typo="Typo.subtitle1">@BindingContext.SelectedBalanceDataVM?.BalanceData?.Account</MudText>
+        </MudStack>
+        <br />
+        <MudStack>
+            <MudText Typo="Typo.h5">From aos:</MudText>
+            <MudText>Command:</MudText>
+            <MudText Typo="Typo.subtitle1">
+                Send({ Target = "@BindingContext.SelectedBalanceDataVM?.Token?.TokenId", Action = "Transfer", Recipient = "@BindingContext.SelectedBalanceDataVM?.BalanceData?.Account", Quantity = "TOKEN_AMOUNT"})
+            </MudText>
+        </MudStack>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
