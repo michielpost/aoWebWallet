@@ -13,10 +13,9 @@ namespace aoWebWallet.Pages
 
         protected override async Task LoadDataAsync()
         {
+            await BindingContext.CheckHasArConnectExtension();
             await BindingContext.LoadWalletList();
             await BindingContext.LoadTokenList();
-            await BindingContext.CheckHasArConnectExtension();
-
 
             //BindingContext.LoadStats();
         }

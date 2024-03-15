@@ -23,12 +23,12 @@ namespace aoWebWallet.Pages
 
         protected override async Task LoadDataAsync()
         {
-            BindingContext.LoadTokenList();
+            await BindingContext.LoadTokenList();
 
-            //if (!string.IsNullOrEmpty(Address))
-            //{
-            //    BindingContext.LoadBalanceDataList(Address);
-            //}
+            if (!string.IsNullOrEmpty(Address))
+            {
+                BindingContext.LoadBalanceDataList(Address);
+            }
 
             await base.LoadDataAsync();
         }
