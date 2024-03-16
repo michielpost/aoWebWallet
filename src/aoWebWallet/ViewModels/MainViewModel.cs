@@ -5,11 +5,8 @@ using ArweaveAO.Models.Token;
 using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using System.Net;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
-using static MudBlazor.Colors;
 
 namespace aoWebWallet.ViewModels
 {
@@ -90,9 +87,13 @@ namespace aoWebWallet.ViewModels
 
             TokenTransferList.Data = all.OrderByDescending(x => x.Timestamp).ToList();
 
+            var allTokenIds = all.Select(x => x.TokenId).Distinct().ToList();
+            TryAddTokenIds(allTokenIds);
+
             return TokenTransferList.Data;
         });
 
+       
         public Task LoadTokenTransferListForToken(string? tokenId) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
             TokenTransferList.Data = new();
@@ -102,6 +103,9 @@ namespace aoWebWallet.ViewModels
                 var all = await graphqlClient.GetTransactionsForToken(tokenId);
 
                 TokenTransferList.Data = all.ToList();
+
+                var allTokenIds = all.Select(x => x.TokenId).Distinct().ToList();
+                TryAddTokenIds(allTokenIds);
 
                 return TokenTransferList.Data;
             }
@@ -131,6 +135,10 @@ namespace aoWebWallet.ViewModels
                 var result = await graphqlClient.GetTransactionsById(SelectedTransactionId);
 
                 SelectedTransaction.Data = result;
+
+                if(result != null)
+                    TryAddTokenIds(new List<string?>() { result.TokenId });
+
                 return result;
             }
             else
@@ -185,6 +193,11 @@ namespace aoWebWallet.ViewModels
             {
                 await LoadBalanceDataList(SelectedAddress);
             }
+
+            if (!string.IsNullOrEmpty(SelectedTransactionId))
+            {
+                await this.LoadSelectedTokenTransfer();
+            }
         }
         public async Task DeleteToken(string tokenId)
         {
@@ -217,6 +230,26 @@ namespace aoWebWallet.ViewModels
             WalletList = new();
             BalanceDataList.Data = null;
         }
+
+        private async Task TryAddTokenIds(List<string?> allTokenIds)
+        {
+           foreach(var tokenId in allTokenIds)
+            {
+                if (string.IsNullOrEmpty(tokenId))
+                    continue;
+
+                var exist = TokenList.Data?.Where(x => x.TokenId == tokenId).Any() ?? false;
+                if (exist)
+                    continue;
+
+                var data = await tokenClient.GetTokenMetaData(tokenId);
+                if (data != null)
+                {
+                    await AddToken(tokenId, data);
+                }
+            }
+        }
+
 
         partial void OnSelectedAddressChanged(string? value)
         {
