@@ -131,3 +131,5 @@ a, .btn-link {
 .mud-nav-item a:hover{
     color: var(--mud-palette-primary);
 }
+.mdc-dialog .mdc-dialog__surface { max-width: none !important; }
+
