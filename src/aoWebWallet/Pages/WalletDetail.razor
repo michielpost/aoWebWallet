@@ -28,7 +28,7 @@
     <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
     <DataLoaderProgress DataLoader="BindingContext.BalanceDataList.DataLoader" Title="Balances" />
 
-    <MudStack>
+    <MudStack Class="mb-12">
         @if (BindingContext.BalanceDataList.Data != null)
         {
             @foreach (var balance in BindingContext.BalanceDataList.Data)
@@ -39,17 +39,19 @@
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
 
-                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Data?.Token?.TokenData?.Logo)" Size="Size.Large" title="@balance.Data?.Token?.TokenId" />
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.body1">@balance.Data?.Token?.TokenData?.Name</MudText>
-                            <MudText Typo="Typo.body2">@balance.Data?.Token?.TokenData?.Ticker</MudText>
-                        </MudStack>
-                        <MudSpacer />
+                        <div style="width:222px; display:flex; flex-direction: row; align-items:center; max-height: 50px;">
+                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Data?.Token?.TokenData?.Logo)" Size="Size.Medium" title="@balance.Data?.Token?.TokenId" />
+                            <MudStack  Class="ml-4" Justify="Justify.Center" Spacing="0">
+                                <MudText style="font-weight: 500;" Typo="Typo.body1">@balance.Data?.Token?.TokenData?.Name</MudText>
+                                <MudText Typo="Typo.body2">@balance.Data?.Token?.TokenData?.Ticker</MudText>
+                            </MudStack>
+                        </div>
+
                         <MudStack Justify="Justify.Center" Spacing="0">
                             <DataLoaderProgress DataLoader="balance.DataLoader" Title="balance" />
                             @if (balance.Data?.BalanceData != null)
                             {
-                                <MudText Typo="Typo.h3">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>
+                                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>
                             }
                         </MudStack>
                         <MudSpacer />

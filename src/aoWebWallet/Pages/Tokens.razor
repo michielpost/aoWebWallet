@@ -12,8 +12,8 @@
 
     <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
 
-    <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-4">
-           <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
+    <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-4">
+        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
     </MudContainer>
 
     <MudStack>
@@ -22,16 +22,18 @@
             @foreach (var token in BindingContext.TokenList.Data)
             {
                 var tokenUrl = $"token/{token.TokenId}";
-                <MudPaper Class="pa-4">
+                <MudPaper Class="pa-4 pt-5 pb-4 mb-0">
                     <MudStack Row="true">
-                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
-                            <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                            <MudLink Class="KodeMono" Typo="Typo.subtitle1" Href="@tokenUrl">
-                                @token.TokenId
-                            </MudLink>
-                        </MudStack>
+                        <div style="display:flex; flex-direction: row; align-items:center; max-height: 50px;">
+                            <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
+                            <MudStack Justify="Justify.Center" Spacing="0">
+                                <MudText style="font-weight: 500;" Typo="Typo.body1">@token.TokenData?.Name</MudText>
+                                <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
+                                <MudLink Class="KodeMono" Typo="Typo.subtitle1" Href="@tokenUrl">
+                                    @token.TokenId
+                                </MudLink>
+                            </MudStack>
+                        </div>
                         <MudSpacer />
                         @if(!token.IsSystemToken)
                         {
@@ -41,13 +43,7 @@
                 </MudPaper>
             }
         }
-
     </MudStack>
-
-
-  
-
-
 </MudContainer>
 
 @code
