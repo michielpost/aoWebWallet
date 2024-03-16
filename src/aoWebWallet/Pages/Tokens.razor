@@ -27,7 +27,7 @@
                         <MudStack Justify="Justify.Center" Spacing="0">
                             <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
                             <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                            <MudText Typo="Typo.subtitle1">@token.TokenId</MudText>
+                            <MudText Class="KodeMono" Typo="Typo.subtitle1">@token.TokenId</MudText>
                         </MudStack>
                         <MudSpacer />
                         @if(!token.IsSystemToken)
