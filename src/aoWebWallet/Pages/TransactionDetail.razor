@@ -1,6 +1,7 @@
 ﻿@page "/transaction/{txid}"
 @using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
+@inject NavigationManager NavigationManager;
 
 <PageTitle>@TxId - @Program.PageTitlePostFix</PageTitle>
 
@@ -51,7 +52,7 @@
 
                     @if (tokenData != null)
                     {
-                        <MudText Typo="Typo.h3">@BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
+                        <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
                     }
 
                 </MudStack>

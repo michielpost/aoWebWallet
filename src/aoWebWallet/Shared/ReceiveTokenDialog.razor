@@ -17,13 +17,16 @@
         <MudStack>
             <MudText Typo="Typo.h4">How to receive tokens?</MudText>
             <MudText>Send tokens to this address:</MudText>
-            <MudText Typo="Typo.subtitle1">@BindingContext.SelectedBalanceDataVM?.BalanceData?.Account</MudText>
+            <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.subtitle1">
+                @BindingContext.SelectedBalanceDataVM?.BalanceData?.Account
+            </MudText>
+            <MudText Typo="Typo.subtitle1"></MudText>
         </MudStack>
         <br />
         <MudStack>
             <MudText Typo="Typo.h5">From aos:</MudText>
             <MudText>Command:</MudText>
-            <MudText Typo="Typo.subtitle1">
+            <MudText Class="KodeMono" Typo="Typo.subtitle1">
                 Send({ Target = "@BindingContext.SelectedBalanceDataVM?.Token?.TokenId", Action = "Transfer", Recipient = "@BindingContext.SelectedBalanceDataVM?.BalanceData?.Account", Quantity = "TOKEN_AMOUNT"})
             </MudText>
         </MudStack>

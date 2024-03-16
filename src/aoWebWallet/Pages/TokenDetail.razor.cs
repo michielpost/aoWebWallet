@@ -16,6 +16,10 @@ namespace aoWebWallet.Pages
         protected override void OnParametersSet()
         {
             BindingContext.SelectedTokenId = null;
+            if (TokenId != null && TokenId.Length != 43)
+            {
+                NavigationManager.NavigateTo("");
+            }
             BindingContext.SelectedTokenId = TokenId;
 
             base.OnParametersSet();

@@ -29,13 +29,16 @@
             if (string.IsNullOrEmpty(TransactionId))
             {
                 <MudStack>
-                    <MudText Typo="Typo.h3">Are you sure?</MudText>
+                    <MudText Typo="Typo.h5">Are you sure?</MudText>
                     <MudText>You are about to transfer:</MudText>
                 </MudStack>
             }
             <MudStack>
                 <MudText>Amount: @Amount @BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
-                <MudText>To: @Address</MudText>
+                <MudText>Receiver:</MudText>
+                <MudText Class="KodeMono" Typo="Typo.h6">
+                        @Address
+                </MudText>
             </MudStack>
 
             <SendTransactionProgress DataLoader="BindingContext.LastTransactionId.DataLoader" Title="Sending transaction..." />
@@ -43,8 +46,11 @@
             if (!string.IsNullOrEmpty(TransactionId))
             {
                 <MudStack>
-                    <MudText Typo="Typo.h3">Transfer success!</MudText>
-                    <MudText>TransactionId: @TransactionId</MudText>
+                    <MudText Typo="Typo.h5">Transfer success!</MudText>
+                    <MudText>TransactionId</MudText>
+                    <MudText Class="KodeMono" Typo="Typo.h6">
+                        @TransactionId
+                    </MudText>
                 </MudStack>
             }
         }
@@ -108,6 +114,12 @@
             return;
 
         long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
+        if (amountLong <= 0)
+        {
+            Progress = "Amount has to be higher than 0.";
+            StateHasChanged();
+            return;
+        }
         if (amountLong > BindingContext.SelectedBalanceDataVM?.BalanceData?.Balance)
         {
             Progress = "Not enough balance available.";

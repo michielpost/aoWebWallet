@@ -1,4 +1,5 @@
 ﻿using aoWebWallet.ViewModels;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace aoWebWallet.Pages
@@ -18,6 +19,12 @@ namespace aoWebWallet.Pages
         {
             BindingContext.SelectedWallet = null;
             BindingContext.SelectedAddress = null;
+
+            if(Address != null && Address.Length != 43)
+            {
+                NavigationManager.NavigateTo("");
+            }
+
             BindingContext.SelectedAddress = Address;
 
             base.OnParametersSet();

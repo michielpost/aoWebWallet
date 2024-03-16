@@ -1,6 +1,7 @@
 ﻿using aoWebWallet.ViewModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System.Net;
 
 namespace aoWebWallet.Pages
 {
@@ -20,6 +21,12 @@ namespace aoWebWallet.Pages
         protected override void OnParametersSet()
         {
             BindingContext.SelectedTransactionId = null;
+
+            if (TxId != null && TxId.Length != 43)
+            {
+                NavigationManager.NavigateTo("");
+            }
+
             BindingContext.SelectedTransactionId = this.TxId;
 
             base.OnParametersSet();

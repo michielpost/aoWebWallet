@@ -3,6 +3,7 @@
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager;
 
 <PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
 
@@ -83,7 +84,9 @@
             @foreach (var transfer in BindingContext.TokenTransferList.Data)
             {
                 var tokenData = BindingContext.TokenList.Data?.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
-                if(tokenData == null)
+                    var isSend = BindingContext.SelectedAddress == transfer.From;
+                    var isReceive = BindingContext.SelectedAddress == transfer.To;
+                    if(tokenData == null)
                 {
                     continue;
                 }
@@ -99,8 +102,17 @@
                             <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@txUrl" Typo="Typo.body1">
                                 @transfer.Id
                             </MudLink>
-                            <MudText Typo="Typo.h6">@BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
-                            @if(BindingContext.SelectedAddress == transfer.From)
+
+                            @if(isSend)
+                            {
+                                <MudText Typo="Typo.h6" style="color:green">- @BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.h6" style="color:red">+ @BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
+                            }
+                            
+                            @if (isSend)
                             {
                                 string detailUrl = $"wallet/{transfer.To}";
                                 <MudIcon Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Receive"></MudIcon>
@@ -108,7 +120,7 @@
                                     @transfer.To
                                 </MudLink>
                             }
-                            else if(BindingContext.SelectedAddress == transfer.To)
+                            else if(isReceive)
                             {
                                 string detailUrl = $"wallet/{transfer.From}";
                                 <MudIcon Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIcon>
