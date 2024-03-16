@@ -6,6 +6,7 @@ using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Net;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
 using static MudBlazor.Colors;
@@ -43,11 +44,15 @@ namespace aoWebWallet.ViewModels
         [ObservableProperty]
         private BalanceDataViewModel? selectedBalanceDataVM;
 
+        [ObservableProperty]
+        private string? selectedTransactionId;
+
         public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
         public DataLoaderViewModel<List<TokenTransfer>> TokenTransferList { get; set; } = new();
+        public DataLoaderViewModel<TokenTransfer> SelectedTransaction { get; set; } = new();
 
         //TODO:
         //Actions List (optional? address)
@@ -95,6 +100,22 @@ namespace aoWebWallet.ViewModels
             }
 
             return TokenList.Data;
+        });
+
+        public Task LoadSelectedTokenTransfer() => SelectedTransaction.DataLoader.LoadAsync(async () =>
+        {
+            SelectedTransaction.Data = null;
+            if (!string.IsNullOrEmpty(SelectedTransactionId))
+            {
+                var result = await graphqlClient.GetTransactionsById(SelectedTransactionId);
+
+                SelectedTransaction.Data = result;
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         });
 
 
@@ -218,6 +239,11 @@ namespace aoWebWallet.ViewModels
                 SelectedWallet = null;
                 SelectedWalletIndex = null;
             }
+        }
+
+        partial void OnSelectedTransactionIdChanged(string? value)
+        {
+            this.LoadSelectedTokenTransfer();
         }
 
         partial void OnComputeUnitUrlChanged(string? value)

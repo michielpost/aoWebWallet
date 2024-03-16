@@ -82,6 +82,7 @@
                 {
                     continue;
                 }
+                string txUrl = $"transaction/{transfer.Id}";
 
                 <MudPaper Class="pa-4">
                     <MudStack Row=true>
@@ -93,9 +94,9 @@
                             <MudText Typo="Typo.body2">@tokenData.Ticker</MudText>
                         </MudStack>
 
-                        <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                        <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@txUrl" Typo="Typo.h6">
                             @transfer.Id
-                        </MudText>
+                        </MudLink>
 
                         <MudText Typo="Typo.h3">@BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
 
