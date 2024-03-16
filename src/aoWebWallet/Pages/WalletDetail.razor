@@ -66,6 +66,60 @@
         }
 
     </MudStack>
+
+    <MudDivider />
+    <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
+
+    <MudStack>
+        @if (BindingContext.TokenTransferList.Data != null)
+        {
+            <MudText Typo="Typo.h2">Transactions</MudText>
+
+            @foreach (var transfer in BindingContext.TokenTransferList.Data)
+            {
+                var tokenData = BindingContext.TokenList.Data?.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
+                if(tokenData == null)
+                {
+                    continue;
+                }
+
+                <MudPaper Class="pa-4">
+                    <MudStack Row=true>
+                        <MudText>@transfer.Timestamp.ToString("s")</MudText>
+
+                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(tokenData.Logo)" Size="Size.Large" title="@tokenData.TokenId" />
+                        <MudStack Justify="Justify.Center" Spacing="0">
+                            <MudText Typo="Typo.body1">@tokenData.Name</MudText>
+                            <MudText Typo="Typo.body2">@tokenData.Ticker</MudText>
+                        </MudStack>
+
+                        <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                            @transfer.Id
+                        </MudText>
+
+                        <MudText Typo="Typo.h3">@BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
+
+                        @if(BindingContext.SelectedAddress == transfer.From)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Receive"></MudIcon>
+                            <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                                @transfer.To
+                            </MudText>
+                        }
+                        else if(BindingContext.SelectedAddress == transfer.To)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIcon>
+                            <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                                @transfer.From
+                            </MudText>
+                        }
+
+                    </MudStack>
+                </MudPaper>
+            }
+        }
+
+    </MudStack>
 </MudContainer>
 
 

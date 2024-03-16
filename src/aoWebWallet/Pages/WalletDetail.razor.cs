@@ -9,6 +9,7 @@ namespace aoWebWallet.Pages
         {
             WatchDataLoaderVM(BindingContext.WalletList);
             WatchDataLoaderVM(BindingContext.BalanceDataList);
+            WatchDataLoaderVM(BindingContext.TokenTransferList);
 
             base.OnInitialized();
         }
@@ -16,6 +17,7 @@ namespace aoWebWallet.Pages
         protected override void OnParametersSet()
         {
             BindingContext.SelectedWallet = null;
+            BindingContext.SelectedAddress = null;
             BindingContext.SelectedAddress = Address;
 
             base.OnParametersSet();
@@ -25,10 +27,10 @@ namespace aoWebWallet.Pages
         {
             await BindingContext.LoadTokenList();
 
-            if (!string.IsNullOrEmpty(Address))
-            {
-                BindingContext.LoadBalanceDataList(Address);
-            }
+            //if (!string.IsNullOrEmpty(Address))
+            //{
+            //    BindingContext.LoadBalanceDataList(Address);
+            //}
 
             await base.LoadDataAsync();
         }

@@ -74,6 +74,7 @@ namespace aoWebWallet
             services.AddSingleton<MemoryDataCache>();
 
             services.AddScoped<TokenClient>();
+            services.AddScoped<GraphqlClient>();
 
             services.AddArweaveBlazor();
 

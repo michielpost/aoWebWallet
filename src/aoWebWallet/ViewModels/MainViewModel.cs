@@ -18,6 +18,7 @@ namespace aoWebWallet.ViewModels
         private readonly TokenClient tokenClient;
         private readonly StorageService storageService;
         private readonly ArweaveService arweaveService;
+        private readonly GraphqlClient graphqlClient;
         private readonly MemoryDataCache memoryDataCache;
 
         [ObservableProperty]
@@ -46,6 +47,7 @@ namespace aoWebWallet.ViewModels
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
+        public DataLoaderViewModel<List<TokenTransfer>> TokenTransferList { get; set; } = new();
 
         //TODO:
         //Actions List (optional? address)
@@ -58,14 +60,30 @@ namespace aoWebWallet.ViewModels
             TokenClient tokenClient,
             StorageService storageService,
             ArweaveService arweaveService,
+            GraphqlClient graphqlClient,
             MemoryDataCache memoryDataCache) : base()
         {
             this.dataService = dataService;
             this.tokenClient = tokenClient;
             this.storageService = storageService;
             this.arweaveService = arweaveService;
+            this.graphqlClient = graphqlClient;
             this.memoryDataCache = memoryDataCache;
         }
+
+        public Task LoadTokenTransferList(string address) => TokenTransferList.DataLoader.LoadAsync(async () =>
+        {
+            TokenTransferList.Data = new();
+
+            var incoming = await graphqlClient.GetTransactionsIn(address);
+            var outgoing = await graphqlClient.GetTransactionsOut(address);
+
+            var all = incoming.Concat(outgoing);
+
+            TokenTransferList.Data = all.OrderByDescending(x => x.Timestamp).ToList();
+
+            return TokenTransferList.Data;
+        });
 
         public Task LoadTokenList() => TokenList.DataLoader.LoadAsync(async () =>
         {
@@ -175,6 +193,7 @@ namespace aoWebWallet.ViewModels
                     var indexOf = all.IndexOf(current);
                     SelectedWalletIndex = (indexOf % 5) + 1;
                     await this.LoadBalanceDataList(address);
+                    await this.LoadTokenTransferList(address);
                 }
                 else
                 {
