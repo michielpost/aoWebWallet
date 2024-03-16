@@ -16,6 +16,7 @@
     {
         None = 0,
         Manual,
-        ArConnect
+        ArConnect,
+        Explorer
     }
 }

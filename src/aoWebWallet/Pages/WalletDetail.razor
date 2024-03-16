@@ -101,17 +101,19 @@
 
                         @if(BindingContext.SelectedAddress == transfer.From)
                         {
+                            string detailUrl = $"wallet/{transfer.To}";
                             <MudIcon Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Receive"></MudIcon>
-                            <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                            <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                 @transfer.To
-                            </MudText>
+                            </MudLink>
                         }
                         else if(BindingContext.SelectedAddress == transfer.To)
                         {
+                            string detailUrl = $"wallet/{transfer.From}";
                             <MudIcon Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIcon>
-                            <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                            <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                 @transfer.From
-                            </MudText>
+                            </MudLink>
                         }
 
                     </MudStack>

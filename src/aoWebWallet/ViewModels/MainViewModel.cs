@@ -192,14 +192,26 @@ namespace aoWebWallet.ViewModels
                     SelectedWallet = current;
                     var indexOf = all.IndexOf(current);
                     SelectedWalletIndex = (indexOf % 5) + 1;
-                    await this.LoadBalanceDataList(address);
-                    await this.LoadTokenTransferList(address);
+                   
                 }
                 else
                 {
-                    SelectedWallet = null;
-                    SelectedWalletIndex = null;
+                    var tempWallet = new Wallet
+                    {
+                        Address = address,
+                        AddedDate = DateTimeOffset.Now,
+                        IsConnected = false,
+                        IsReadOnly = true,
+                        LastUsedDate = DateTimeOffset.UtcNow,
+                        Name = address,
+                        Source = WalletTypes.Explorer
+                    };
+                    SelectedWallet = tempWallet;
+                    SelectedWalletIndex = 5;
                 }
+
+                await this.LoadBalanceDataList(address);
+                await this.LoadTokenTransferList(address);
             }
             else
             {
