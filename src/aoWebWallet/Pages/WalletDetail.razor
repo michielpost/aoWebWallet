@@ -25,6 +25,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
     </MudContainer>
 
+    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
     <DataLoaderProgress DataLoader="BindingContext.BalanceDataList.DataLoader" Title="Balances" />
 
     <MudStack>

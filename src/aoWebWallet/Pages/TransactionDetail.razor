@@ -8,6 +8,7 @@
 <MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
 
     <MudStack>
+        <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
         <DataLoaderProgress DataLoader="BindingContext.SelectedTransaction.DataLoader" Title="transaction" />
 
         @if (BindingContext.SelectedTransaction.Data != null)

@@ -245,7 +245,7 @@ namespace aoWebWallet.ViewModels
                         IsConnected = false,
                         IsReadOnly = true,
                         LastUsedDate = DateTimeOffset.UtcNow,
-                        Name = address,
+                        Name = null,
                         Source = WalletTypes.Explorer
                     };
                     SelectedWallet = tempWallet;

@@ -26,7 +26,8 @@
     eV-KRpB8wKowayHUUf7OpyKaUdr1WpTrRqkgiQdDVDk
     </p> -->
 
-    <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="Wallets" />
+    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="wallets" />
 
     <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-4">
             @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
