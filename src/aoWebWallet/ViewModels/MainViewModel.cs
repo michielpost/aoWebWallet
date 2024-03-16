@@ -47,6 +47,9 @@ namespace aoWebWallet.ViewModels
         [ObservableProperty]
         private string? selectedTransactionId;
 
+        [ObservableProperty]
+        private string? selectedTokenId;
+
         public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
@@ -88,6 +91,24 @@ namespace aoWebWallet.ViewModels
             TokenTransferList.Data = all.OrderByDescending(x => x.Timestamp).ToList();
 
             return TokenTransferList.Data;
+        });
+
+        public Task LoadTokenTransferListForToken(string? tokenId) => TokenTransferList.DataLoader.LoadAsync(async () =>
+        {
+            TokenTransferList.Data = new();
+
+            if (!string.IsNullOrWhiteSpace(tokenId))
+            {
+                var all = await graphqlClient.GetTransactionsForToken(tokenId);
+
+                TokenTransferList.Data = all.ToList();
+
+                return TokenTransferList.Data;
+            }
+            else
+            {
+                return null;
+            }
         });
 
         public Task LoadTokenList() => TokenList.DataLoader.LoadAsync(async () =>
@@ -244,6 +265,11 @@ namespace aoWebWallet.ViewModels
         partial void OnSelectedTransactionIdChanged(string? value)
         {
             this.LoadSelectedTokenTransfer();
+        }
+
+        partial void OnSelectedTokenIdChanged(string? value)
+        {
+            this.LoadTokenTransferListForToken(value);
         }
 
         partial void OnComputeUnitUrlChanged(string? value)

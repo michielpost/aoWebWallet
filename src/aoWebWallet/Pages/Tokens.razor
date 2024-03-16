@@ -21,13 +21,16 @@
         {
             @foreach (var token in BindingContext.TokenList.Data)
             {
+                var tokenUrl = $"token/{token.TokenId}";
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
                         <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
                         <MudStack Justify="Justify.Center" Spacing="0">
                             <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
                             <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                            <MudText Class="KodeMono" Typo="Typo.subtitle1">@token.TokenId</MudText>
+                            <MudLink Class="KodeMono" Typo="Typo.subtitle1" Href="@tokenUrl">
+                                @token.TokenId
+                            </MudLink>
                         </MudStack>
                         <MudSpacer />
                         @if(!token.IsSystemToken)
@@ -42,6 +45,7 @@
     </MudStack>
 
 
+  
 
 
 </MudContainer>
