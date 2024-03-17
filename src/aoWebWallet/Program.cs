@@ -9,6 +9,7 @@ using aoWebWallet.Services;
 using aoWebWallet.ViewModels;
 using ArweaveAO;
 using ArweaveBlazor;
+using System.Globalization;
 
 namespace aoWebWallet
 {
@@ -21,9 +22,19 @@ namespace aoWebWallet
         {
             if (Version != null)
             {
-                int sep = Version.LastIndexOf('-');
-                if (sep >= 0 && sep < Version.Length)
-                    return Version.Substring(sep + 1);
+                string shortVersion = Version;
+                int sep = shortVersion.LastIndexOf('-');
+                if (sep >= 0 && sep < shortVersion.Length)
+                    shortVersion = shortVersion.Substring(sep + 1);
+
+                int sep1 = shortVersion.LastIndexOf('+');
+                if (sep1 >= 0 && sep1 < shortVersion.Length)
+                    shortVersion = shortVersion.Substring(sep1 + 1);
+
+                if(shortVersion.Length > 7)
+                    shortVersion = shortVersion.Substring(0, 7);
+
+                return shortVersion;
             }
             return null;
         }
@@ -32,19 +43,17 @@ namespace aoWebWallet
         {
             if (Version != null)
             {
-                var shortVersion = Version;
-                int sep = Version.LastIndexOf('-');
+                string shortVersion = Version;
+                int sep = shortVersion.LastIndexOf('-');
                 if (sep >= 0)
-                    shortVersion = Version.Substring(0, sep);
+                    return shortVersion.Substring(0, sep);
 
-                int sep1 = Version.LastIndexOf('+');
-                if (sep1 >= 0)
-                    shortVersion = Version.Substring(0, sep1);
-
-                if (shortVersion.Length > 7)
-                    shortVersion = shortVersion.Substring(0, 7);
+                int sep1 = shortVersion.IndexOf('+');
+                if (sep1 >= 0 && sep1 < shortVersion.Length)
+                    shortVersion = shortVersion.Substring(0, sep1);
 
                 return shortVersion;
+
             }
             return Version;
         }
