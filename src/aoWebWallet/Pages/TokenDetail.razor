@@ -55,7 +55,14 @@
                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(tokenData.Logo)" Size="Size.Medium" title="@tokenData.TokenId" />
                         </ItemDot>
                         <ItemContent>
-                            <MudText  Typo="Typo.caption">@transfer.Timestamp.ToString("s")</MudText>
+                            @if(transfer.Timestamp.HasValue)
+                            {
+                                <MudText Typo="Typo.caption">@transfer.Timestamp.Value.ToString("s")</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.caption">unconfirmed</MudText>
+                            }
                             @*<MudText Typo="Typo.body1">@tokenData.Name</MudText>*@
                             <MudText style="font-weight:500;" Typo="Typo.body2">@tokenData.Ticker</MudText>
 

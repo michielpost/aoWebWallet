@@ -55,8 +55,6 @@ namespace aoWebWallet.Services
 
             if (edge.Node.Block != null)
                 transaction.Timestamp = DateTimeOffset.FromUnixTimeSeconds(edge.Node.Block.Timestamp);
-            else
-                transaction.Timestamp = DateTimeOffset.UtcNow;
 
             transaction.TokenId = edge.Node.Recipient;
             transaction.To = edge.Node.Tags.Where(x => x.Name == "Recipient").Select(x => x.Value).FirstOrDefault();
