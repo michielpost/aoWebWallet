@@ -16,7 +16,7 @@ Features:
 - Add custom tokens
 - Dark and Light theme
 
-**Explorer**
+**Explorer**  
 ao Web Wallet is also an explorer for the tokens on the ao netwerk. 
 - View transactions
 - Inspect the balances of any address

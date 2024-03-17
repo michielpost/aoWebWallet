@@ -4,28 +4,51 @@
 <PageTitle>About - @Program.PageTitlePostFix</PageTitle>
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudText Typo="Typo.h5">aoWebWallet</MudText>
+    <MudText Typo="Typo.h5">ao Web Wallet</MudText>
 
-    <MudGrid>
-        <MudItem >
+    <MudStack>
+        <MudItem xs="12" md="6">
             <MudPaper Elevation="2" Class="pa-4">
                 <MudText Align="Align.Left">Open Source web wallet for ao on Arweave</MudText>
-
                 <MudText Align="Align.Left">Created for the Hack the Weave hackathon</MudText>
-
-                   <MudText Align="MudBlazor.Align.Left">
-                        <a href="https://github.com/michielpost/aoWebWallet" target="_blank">GitHub</a> |
-           Version: @Program.GetVersionWithoutHash()
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h6" GutterBottom="true">Features</MudText>
+            <MudPaper Width="100%">
+                <MudList>
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Open Source" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Add ArConnect Wallets" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Add ReadOnly wallets" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="View balances of a wallet" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="View all transactions for a wallet" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Send tokens for ArConnect Wallets" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Receive instructions for all wallets" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Add custom tokens" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Dark and Light theme" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Explorer" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="View transactions" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="Inspect the balances of any address" />
+                    <MudListItem Icon="@Icons.Material.Filled.Star" Text="View all transactions for a token" />
+                </MudList>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Align="MudBlazor.Align.Left">
+                    <a href="https://github.com/michielpost/aoWebWallet" target="_blank">GitHub</a> |
+                    Version: @Program.GetVersionWithoutHash()
                     @if (!string.IsNullOrEmpty(versionHash))
                     {
                         <text>-</text>
 
                         <a href="https://github.com/michielpost/aoWebWallet/tree/@versionHash" target="_blank">@versionHash</a>
-                    }</MudText>
+                    }
+                </MudText>
 
             </MudPaper>
         </MudItem>
-    </MudGrid>
+    </MudStack>
 </MudContainer>
 
     @code {
