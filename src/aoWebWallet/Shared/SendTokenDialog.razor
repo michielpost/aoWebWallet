@@ -153,6 +153,11 @@
         {
             await BindingContext.LoadBalanceDataList(BindingContext.SelectedAddress);
         }
+
+        if (TransactionId != null)
+        {
+            await BindingContext.AddToLog(ActivityLogType.ViewToken, TransactionId);
+        }
     }
 
     public void Close()

@@ -79,6 +79,11 @@ namespace aoWebWallet.ViewModels
             this.memoryDataCache = memoryDataCache;
         }
 
+        public Task AddToLog(ActivityLogType type, string id)
+        {
+            return storageService.AddToLog(type, id);
+        }
+
         public Task LoadTokenTransferList(string address) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
             TokenTransferList.Data = new();
@@ -227,6 +232,8 @@ namespace aoWebWallet.ViewModels
 
             await storageService.SaveTokenList(new());
             await storageService.SaveWalletList(new());
+            await storageService.SaveUserSettings(new());
+            await storageService.ClearActivityLog();
 
             //Clear all data
             TokenList.Data = null;
@@ -257,6 +264,9 @@ namespace aoWebWallet.ViewModels
         partial void OnSelectedAddressChanged(string? value)
         {
             SelectWallet(value);
+
+            if (value != null)
+                this.AddToLog(ActivityLogType.ViewAddress, value);
         }
 
         private async Task SelectWallet(string? address)
@@ -301,11 +311,19 @@ namespace aoWebWallet.ViewModels
         partial void OnSelectedTransactionIdChanged(string? value)
         {
             this.LoadSelectedTokenTransfer();
+
+
+            if (value != null)
+                this.AddToLog(ActivityLogType.ViewTransaction, value);
         }
 
         partial void OnSelectedTokenIdChanged(string? value)
         {
             this.LoadTokenTransferListForToken(value);
+
+
+            if (value != null)
+                this.AddToLog(ActivityLogType.ViewToken, value);
         }
 
         partial void OnComputeUnitUrlChanged(string? value)

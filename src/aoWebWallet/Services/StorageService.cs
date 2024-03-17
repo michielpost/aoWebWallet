@@ -12,6 +12,7 @@ namespace aoWebWallet.Services
 
         private const string TOKEN_LIST_KEY = "TOKEN_LIST";
         private const string WALLET_LIST_KEY = "WALLET_LIST";
+        private const string USER_SETTINGS_KEY = "USER_SETTINGS";
         public StorageService(ILocalStorageService localStorage)
         {
             this.localStorage = localStorage;
@@ -102,5 +103,47 @@ namespace aoWebWallet.Services
         {
             return localStorage.SetItemAsync(WALLET_LIST_KEY, list);
         }
+
+        public ValueTask SaveUserSettings(UserSettings settings)
+        {
+            return localStorage.SetItemAsync(USER_SETTINGS_KEY, settings);
+        }
+
+        public async ValueTask<UserSettings> GetUserSettings()
+        {
+            var result = await localStorage.GetItemAsync<UserSettings>(USER_SETTINGS_KEY);
+            return result ?? new();
+        }
+
+        public async Task AddToLog(ActivityLogType type, string id)
+        {
+            var all = await GetLog(type);
+            var existing = all.Where(x => x.Id == id).FirstOrDefault();
+            if (existing == null)
+            {
+                existing = new LogData() { Id = id };
+                all.Add(existing);
+            }
+            existing.Count++;
+            existing.LastAddDateTime = DateTimeOffset.UtcNow;
+
+            await localStorage.SetItemAsync(type.ToString(), all);
+        }
+
+        public async ValueTask<List<LogData>> GetLog(ActivityLogType type)
+        {
+            var result = await localStorage.GetItemAsync<List<LogData>>(type.ToString());
+            return result ?? new();
+        }
+
+        public async Task ClearActivityLog()
+        {
+            var values = Enum.GetValues(typeof(ActivityLogType)).Cast<ActivityLogType>();
+            foreach (var val in values)
+            {
+                await localStorage.RemoveItemAsync(val.ToString());
+            }
+        }
+
     }
 }
