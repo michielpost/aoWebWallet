@@ -82,9 +82,14 @@
         IsExpanded = !IsExpanded;
     }
 
-    protected override async Task LoadDataAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await BindingContext.CheckHasArConnectExtension();
+        if (firstRender)
+        {
+            BindingContext.CheckHasArConnectExtension();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     public async Task Connect()
