@@ -1,9 +1,10 @@
 ﻿@inherits LayoutComponentBase
+@inject MainViewModel MainViewModel
 @{
     string? versionHash = Program.GetVersionHash();
 }
 
-<MudThemeProvider IsDarkMode="true" />
+<MudThemeProvider IsDarkMode="MainViewModel.IsDarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 

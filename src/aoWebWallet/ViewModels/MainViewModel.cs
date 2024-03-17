@@ -20,6 +20,9 @@ namespace aoWebWallet.ViewModels
         private readonly MemoryDataCache memoryDataCache;
 
         [ObservableProperty]
+        private bool isDarkMode = true;
+
+        [ObservableProperty]
         public bool? hasArConnectExtension;
 
         [ObservableProperty]
