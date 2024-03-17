@@ -156,7 +156,7 @@
 
         if (TransactionId != null)
         {
-            await BindingContext.AddToLog(ActivityLogType.ViewToken, TransactionId);
+            await BindingContext.AddToLog(ActivityLogType.SendTransaction, TransactionId);
         }
     }
 

@@ -32,9 +32,19 @@ namespace aoWebWallet
         {
             if (Version != null)
             {
+                var shortVersion = Version;
                 int sep = Version.LastIndexOf('-');
                 if (sep >= 0)
-                    return Version.Substring(0, sep);
+                    shortVersion = Version.Substring(0, sep);
+
+                int sep1 = Version.LastIndexOf('+');
+                if (sep1 >= 0)
+                    shortVersion = Version.Substring(0, sep1);
+
+                if (shortVersion.Length > 7)
+                    shortVersion = shortVersion.Substring(0, 7);
+
+                return shortVersion;
             }
             return Version;
         }

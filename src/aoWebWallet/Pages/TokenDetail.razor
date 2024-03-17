@@ -55,9 +55,9 @@
                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(tokenData.Logo)" Size="Size.Medium" title="@tokenData.TokenId" />
                         </ItemDot>
                         <ItemContent>
-                            @if(transfer.Timestamp.HasValue)
+                            @if(transfer.BlockHeight.HasValue)
                             {
-                                <MudText Typo="Typo.caption">@transfer.Timestamp.Value.ToString("s")</MudText>
+                                <MudText Typo="Typo.caption">@transfer.Timestamp.ToString("s")</MudText>
                             }
                             else
                             {

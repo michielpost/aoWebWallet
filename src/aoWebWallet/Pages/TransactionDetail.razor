@@ -25,9 +25,9 @@
 
             <MudPaper Class="pa-4">
                 <MudStack Row=true>
-                    @if (transfer.Timestamp.HasValue)
+                    @if (transfer.BlockHeight.HasValue)
                     {
-                        <MudText Typo="Typo.caption">@transfer.Timestamp.Value.ToString("s")</MudText>
+                        <MudText Typo="Typo.caption">@transfer.Timestamp.ToString("s")</MudText>
                     }
                     else
                     {

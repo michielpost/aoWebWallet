@@ -20,6 +20,7 @@ namespace aoWebWallet.Layout
         {
             if (firstRender)
             {
+                BindingContext.LoadUserSettings();
                 BindingContext.CheckHasArConnectExtension();
             }
 

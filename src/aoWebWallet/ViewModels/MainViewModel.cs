@@ -5,6 +5,7 @@ using ArweaveAO.Models.Token;
 using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MudBlazor;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
 
@@ -12,11 +13,14 @@ namespace aoWebWallet.ViewModels
 {
     public partial class MainViewModel : ObservableRecipient
     {
+        private const string CLAIM_PROCESS_ID = "";
+
         private readonly DataService dataService;
         private readonly TokenClient tokenClient;
         private readonly StorageService storageService;
         private readonly ArweaveService arweaveService;
         private readonly GraphqlClient graphqlClient;
+        private readonly ISnackbar snackbar;
         private readonly MemoryDataCache memoryDataCache;
 
         [ObservableProperty]
@@ -50,6 +54,16 @@ namespace aoWebWallet.ViewModels
         [ObservableProperty]
         private string? selectedTokenId;
 
+        [ObservableProperty]
+        private UserSettings? userSettings;
+
+        [ObservableProperty]
+        private bool canClaim1;
+        [ObservableProperty]
+        private bool canClaim2;
+        [ObservableProperty]
+        private bool canClaim3;
+
         public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();
         public DataLoaderViewModel<List<Token>> TokenList { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
@@ -69,6 +83,7 @@ namespace aoWebWallet.ViewModels
             StorageService storageService,
             ArweaveService arweaveService,
             GraphqlClient graphqlClient,
+            ISnackbar snackbar,
             MemoryDataCache memoryDataCache) : base()
         {
             this.dataService = dataService;
@@ -76,12 +91,14 @@ namespace aoWebWallet.ViewModels
             this.storageService = storageService;
             this.arweaveService = arweaveService;
             this.graphqlClient = graphqlClient;
+            this.snackbar = snackbar;
             this.memoryDataCache = memoryDataCache;
         }
 
-        public Task AddToLog(ActivityLogType type, string id)
+        public async Task AddToLog(ActivityLogType type, string id)
         {
-            return storageService.AddToLog(type, id);
+            await storageService.AddToLog(type, id);
+            await SetClaims();
         }
 
         public Task LoadTokenTransferList(string address) => TokenTransferList.DataLoader.LoadAsync(async () =>
@@ -206,6 +223,8 @@ namespace aoWebWallet.ViewModels
             {
                 await this.LoadSelectedTokenTransfer();
             }
+
+            this.SetClaims();
         }
         public async Task DeleteToken(string tokenId)
         {
@@ -218,6 +237,7 @@ namespace aoWebWallet.ViewModels
         {
             await storageService.SaveWallet(wallet);
             await LoadWalletList();
+            await SetClaims();
         }
 
         public async Task DeleteWallet(Wallet wallet)
@@ -339,6 +359,90 @@ namespace aoWebWallet.ViewModels
 
         }
 
+        public async Task LoadUserSettings()
+        {
+            UserSettings = await storageService.GetUserSettings();
+        }
+
+        public async Task SaveUserSettings()
+        {
+            if(UserSettings != null)
+                await storageService.SaveUserSettings(UserSettings);
+        }
+
+        public async Task SetClaims()
+        {
+            var viewTokenActivity = await storageService.GetLog(ActivityLogType.ViewToken);
+            var viewTransactionctivity = await storageService.GetLog(ActivityLogType.ViewTransaction);
+            var viewAddressActivity = await storageService.GetLog(ActivityLogType.ViewAddress);
+            var sendTransactionActivity = await storageService.GetLog(ActivityLogType.SendTransaction);
+
+            CanClaim1 = sendTransactionActivity.Count > 0;
+            CanClaim2 = CanClaim1 && sendTransactionActivity.Count > 1 && (WalletList.Data?.Count() > 1 || TokenList.Data?.Count() > 6);
+            CanClaim3 = CanClaim2 && sendTransactionActivity.Count > 1 && WalletList.Data?.Count() > 2 && viewTokenActivity.Count > 0 && viewAddressActivity.Count > 2 && viewTransactionctivity.Count > 1;
+
+            Console.WriteLine("1:" + CanClaim1);
+        }
+
+        public async Task Claim1()
+        {
+            if(UserSettings != null)
+            {
+                var tx = await Claim(1);
+                if (tx != null)
+                {
+                    UserSettings.Claimed1 = true;
+                    await storageService.SaveUserSettings(UserSettings);
+
+                    snackbar.Add("Claim 1 successful", Severity.Info);
+
+                }
+                else
+                {
+                    snackbar.Add("Claim was not successful.", Severity.Error);
+                }
+            }
+
+        }
+        public async Task Claim2()
+        {
+            if (UserSettings != null)
+            {
+                var tx = await Claim(2);
+                if (tx != null)
+                {
+                    UserSettings.Claimed2 = true;
+                    await storageService.SaveUserSettings(UserSettings);
+
+                    snackbar.Add("Claim 2 successful", Severity.Info);
+
+                }
+                else
+                {
+                    snackbar.Add("Claim was not successful.", Severity.Error);
+                }
+            }
+        }
+        public async Task Claim3()
+        {
+            if (UserSettings != null)
+            {
+                var tx = await Claim(3);
+                if (tx != null)
+                {
+                    UserSettings.Claimed3 = true;
+                    await storageService.SaveUserSettings(UserSettings);
+
+                    snackbar.Add("Claim 3 successful", Severity.Info);
+
+                }
+                else
+                {
+                    snackbar.Add("Claim was not successful.", Severity.Error);
+                }
+            }
+        }
+
         public async Task DisconnectArWallet()
         {
             await arweaveService.DisconnectAsync();
@@ -396,6 +500,22 @@ namespace aoWebWallet.ViewModels
                 new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Transfer"},
                 new ArweaveBlazor.Models.Tag() { Name = "Recipient", Value = address},
                 new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = amount.ToString()},
+            });
+
+                return new Transaction { Id = idResult };
+            });
+
+        public Task<Transaction?> Claim(int claim)
+            => LastTransactionId.DataLoader.LoadAsync(async () =>
+            {
+                await CheckHasArConnectExtension();
+                if (string.IsNullOrEmpty(ActiveArConnectAddress))
+                    return null;
+
+                var idResult = await arweaveService.SendAsync(CLAIM_PROCESS_ID, null, new List<ArweaveBlazor.Models.Tag>
+            {
+                new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Claim" + claim},
+                new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = claim.ToString()},
             });
 
                 return new Transaction { Id = idResult };
