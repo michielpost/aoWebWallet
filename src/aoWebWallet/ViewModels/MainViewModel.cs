@@ -382,6 +382,19 @@ namespace aoWebWallet.ViewModels
                 await storageService.SaveUserSettings(UserSettings);
         }
 
+        public async Task AddWalletAsReadonly()
+        {
+            if(SelectedWallet != null)
+            {
+                SelectedWallet.Source = WalletTypes.Manual;
+                await storageService.SaveWallet(SelectedWallet);
+                await LoadWalletList();
+
+                snackbar.Add("Wallet added to list as read-only wallet.", Severity.Info);
+
+            }
+        }
+
         public async Task SetClaims()
         {
             var viewTokenActivity = await storageService.GetLog(ActivityLogType.ViewToken);

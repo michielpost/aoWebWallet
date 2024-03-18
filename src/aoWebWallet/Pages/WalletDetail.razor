@@ -19,6 +19,10 @@
                 <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
             </MudStack>
             <MudSpacer />
+            @if(BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Add" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
+            }
         </MudStack>
     </MudPaper>
 
@@ -215,6 +219,11 @@
         BindingContext.SelectedBalanceDataVM = balanceDataVM;
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<SendTokenDialog>("Transfer Token", options);
+    }
+
+    private async Task AddWalletAsReadonly()
+    {
+        await BindingContext.AddWalletAsReadonly();
     }
 
     private async Task Claim1()

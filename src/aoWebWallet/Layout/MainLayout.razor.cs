@@ -20,8 +20,8 @@ namespace aoWebWallet.Layout
         {
             if (firstRender)
             {
-                BindingContext.LoadUserSettings();
-                BindingContext.CheckHasArConnectExtension();
+                await BindingContext.LoadUserSettings();
+                await BindingContext.CheckHasArConnectExtension();
             }
 
             await base.OnAfterRenderAsync(firstRender);
