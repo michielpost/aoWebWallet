@@ -40,7 +40,7 @@
             var data = await TokenClient.GetTokenMetaData(TokenId);
             if (data != null)
             {
-                await BindingContext.AddToken(TokenId, data);
+                await BindingContext.AddToken(TokenId, data, isUserAdded: true);
 
                 Snackbar.Add($"Token added ({data.Name})", Severity.Info);
 

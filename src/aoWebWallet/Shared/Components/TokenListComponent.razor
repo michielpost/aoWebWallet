@@ -1,0 +1,36 @@
+﻿@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+
+@if (token != null)
+{
+    <MudPaper Class="pa-4 pt-5 pb-4 mb-0">
+        <MudStack Row="true">
+            <div style="display:flex; flex-direction: row; align-items:center; max-height: 50px;">
+                <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
+                <MudStack Justify="Justify.Center" Spacing="0">
+                    <MudText style="font-weight: 500;" Typo="Typo.body1">@token.TokenData?.Name</MudText>
+                    <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
+                    <MudLink Class="KodeMono" Typo="Typo.subtitle1" Href="@TokenUrl">
+                        @token.TokenId
+                    </MudLink>
+                </MudStack>
+            </div>
+            <MudSpacer />
+            @if (!token.IsSystemToken && DeleteToken != null)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteToken(token); }"></MudIconButton>
+            }
+        </MudStack>
+    </MudPaper>
+}
+
+
+@code {
+    public string TokenUrl => $"token/{token?.TokenId}";
+
+    [Parameter]
+    public Token? token { get; set; }
+
+    [Parameter]
+    public Action<Token>? DeleteToken { get; set; }
+}

@@ -8,6 +8,7 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
+            WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
             WatchDataLoaderVM(BindingContext.BalanceDataList);
             WatchDataLoaderVM(BindingContext.TokenTransferList);

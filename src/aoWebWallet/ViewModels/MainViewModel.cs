@@ -208,10 +208,10 @@ namespace aoWebWallet.ViewModels
             WalletList.Data = list;
         }
 
-        public async Task AddToken(string tokenId, TokenData data)
+        public async Task AddToken(string tokenId, TokenData data, bool isUserAdded = false)
         {
             BalanceDataList.Data = null;
-            await storageService.AddToken(tokenId, data);
+            await storageService.AddToken(tokenId, data, isUserAdded);
             await LoadTokenList();
 
             if(!string.IsNullOrEmpty(SelectedAddress))
@@ -275,7 +275,7 @@ namespace aoWebWallet.ViewModels
                 var data = await tokenClient.GetTokenMetaData(tokenId);
                 if (data != null)
                 {
-                    await AddToken(tokenId, data);
+                    await AddToken(tokenId, data, isUserAdded: false);
                 }
             }
         }
@@ -498,6 +498,7 @@ namespace aoWebWallet.ViewModels
                 var idResult = await arweaveService.SendAsync(tokenId, null, new List<ArweaveBlazor.Models.Tag>
             {
                 new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Transfer"},
+                new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
                 new ArweaveBlazor.Models.Tag() { Name = "Recipient", Value = address},
                 new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = amount.ToString()},
             });
@@ -515,6 +516,7 @@ namespace aoWebWallet.ViewModels
                 var idResult = await arweaveService.SendAsync(CLAIM_PROCESS_ID, null, new List<ArweaveBlazor.Models.Tag>
             {
                 new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Claim" + claim},
+                new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
                 new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = claim.ToString()},
             });
 

@@ -40,7 +40,7 @@ namespace aoWebWallet.Services
                 list.Add(new Token { TokenId = tokenId, IsSystemToken = true });
         }
 
-        public async ValueTask AddToken(string tokenId, TokenData data)
+        public async ValueTask AddToken(string tokenId, TokenData data, bool isUserAdded)
         {
             var list = await GetTokenIds();
 
@@ -48,7 +48,7 @@ namespace aoWebWallet.Services
             if (existing != null)
                 return;
             else
-                list.Add(new Token { TokenId = tokenId, TokenData = data});
+                list.Add(new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded });
 
             await SaveTokenList(list);
         }

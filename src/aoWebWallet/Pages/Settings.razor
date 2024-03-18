@@ -8,33 +8,36 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudText Typo="Typo.h5" Class="mb-4">Settings</MudText>
 
-    <MudGrid>
+    <MudStack>
         <MudItem xs="12" sm="6" md="6">
             <MudPaper Class="pa-4">
                 <MudButton OnClick="ClearUserData">Clear all user data</MudButton>
             </MudPaper>
-
-            @if(!string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
-            {
+        </MudItem>
+        @if (!string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
+        {
+            <MudItem xs="12" sm="6" md="6">
                 <MudPaper Class="pa-4">
                     <MudButton OnClick="DisconnectArWallet">Disconnect ArConnect Extension</MudButton>
                 </MudPaper>
-            }
-         
+            </MudItem>
 
-           @*  <MudPaper Class="pa-4">
-                <MudSelect @bind-Value="newUrl" T="string" Label="Select API URL" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
-                </MudSelect>
-            </MudPaper>
+        }
 
-            <MudPaper Class="pa-4">
-                <MudTextField T="string" @bind-Value="customUrl" Label="Custom URL" InputType="InputType.Url" />
-            </MudPaper>
 
-            <MudButton OnClick="Submit">Save</MudButton>
-            *@
-        </MudItem>
-    </MudGrid>
+        @*  <MudPaper Class="pa-4">
+        <MudSelect @bind-Value="newUrl" T="string" Label="Select API URL" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
+        </MudSelect>
+        </MudPaper>
+
+        <MudPaper Class="pa-4">
+        <MudTextField T="string" @bind-Value="customUrl" Label="Custom URL" InputType="InputType.Url" />
+        </MudPaper>
+
+        <MudButton OnClick="Submit">Save</MudButton>
+        *@
+
+    </MudStack>
 </MudContainer>
 
 @code {

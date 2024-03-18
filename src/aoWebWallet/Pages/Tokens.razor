@@ -19,29 +19,36 @@
     <MudStack>
         @if (BindingContext.TokenList.Data != null)
         {
-            @foreach (var token in BindingContext.TokenList.Data)
+            var autoAddedTokens = BindingContext.TokenList.Data.Where(x => !x.IsSystemToken && !x.IsUserAdded);
+
+            if (autoAddedTokens.Any())
             {
-                var tokenUrl = $"token/{token.TokenId}";
-                <MudPaper Class="pa-4 pt-5 pb-4 mb-0">
-                    <MudStack Row="true">
-                        <div style="display:flex; flex-direction: row; align-items:center; max-height: 50px;">
-                            <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
-                            <MudStack Justify="Justify.Center" Spacing="0">
-                                <MudText style="font-weight: 500;" Typo="Typo.body1">@token.TokenData?.Name</MudText>
-                                <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                                <MudLink Class="KodeMono" Typo="Typo.subtitle1" Href="@tokenUrl">
-                                    @token.TokenId
-                                </MudLink>
-                            </MudStack>
-                        </div>
-                        <MudSpacer />
-                        @if(!token.IsSystemToken)
+                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                    <MudTabPanel Text="My Tokens">
+                        @foreach (var token in BindingContext.TokenList.Data.Where(x => x.IsSystemToken || x.IsUserAdded))
                         {
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteToken(token); }"></MudIconButton>
+                            <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
                         }
-                    </MudStack>
-                </MudPaper>
+                    </MudTabPanel>
+                    <MudTabPanel Text="Other Tokens">
+                        @foreach (var token in autoAddedTokens)
+                        {
+                            <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
+                        }
+                    </MudTabPanel>
+                </MudTabs>
             }
+            else
+            {
+                foreach (var token in BindingContext.TokenList.Data)
+                {
+                    <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
+                }
+            }
+
+
+
+
         }
     </MudStack>
 </MudContainer>
@@ -62,7 +69,7 @@
             $"Are you sure you want to delete {token.TokenData?.Name}?",
             yesText: "Delete!", cancelText: "Cancel");
 
-        if(result != null)
+        if (result != null)
         {
             await BindingContext.DeleteToken(token.TokenId);
 
