@@ -48,11 +48,16 @@
 
 <body>
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <div class="all-together-loading">
+            <img style="margin-bottom: 22px;" width="252px" src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzExLjU4IDI0MC45MiI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbC1ydWxlOiBldmVub2RkOwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8ZyBpZD0iTGF5ZXJfMS0yIiBkYXRhLW5hbWU9IkxheWVyIDEiPgogICAgPGc+CiAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIwIDI0MC40NSA4MC4yIDI0MC40NSA5Ni41NyAxOTYuMTkgNTkuNzQgMTIwLjc5IDAgMjQwLjQ1Ii8+CiAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIxMjMuNTcgMS4xMiA5Ni41NyA2Mi42IDE4MC44NiAyNDAuNDUgMjQxLjU4IDI0MC40NSAyMTIuNzcgMTgwLjYyIDEyMy41NyAxLjEyIi8+CiAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSI3ODUuMDEgNDYuODUgODIxLjg0IDEyMi4yNiA4ODEuNTggMi41OSA4MDEuMzggMi41OSA3ODUuMDEgNDYuODUiLz4KICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjQ3MiAxLjEyIDUwMC44IDYwLjk2IDU5MCAyNDAuNDUgNjE3LjAxIDE3OC45OCA1MzIuNzIgMS4xMiA0NzIgMS4xMiIvPgogICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iNzEzLjM0IDEuNTkgNzEzLjU4IDEuMTIgNjMzLjM4IDEuMTIgNjE3LjAxIDQ1LjM4IDY1My44NCAxMjAuNzkgNjgyLjY0IDYzLjEgNzcxIDI0MC45MiA3OTguMDEgMTc5LjQ1IDcxMy43MiAxLjU5IDcxMy4zNCAxLjU5Ii8+CiAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIxMjMxLjM4IDIuNTkgMTIxNS4wMSA0Ni44NSAxMjUxLjg0IDEyMi4yNiAxMzExLjU4IDIuNTkgMTIzMS4zOCAyLjU5Ii8+CiAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSI5MDIgMS4xMiA5MzAuOCA2MC45NiAxMDIwIDI0MC40NSAxMDQ3LjAxIDE3OC45OCA5NjIuNzIgMS4xMiA5MDIgMS4xMiIvPgogICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iMTE0My4zNCAxLjU5IDExNDMuNTggMS4xMiAxMDYzLjM4IDEuMTIgMTA0Ny4wMSA0NS4zOCAxMDgzLjg0IDEyMC43OSAxMTEyLjY0IDYzLjEgMTIwMSAyNDAuOTIgMTIyOC4wMSAxNzkuNDUgMTE0My43MiAxLjU5IDExNDMuMzQgMS41OSIvPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Im0zNjEuOCwwYy02Ni40LDAtMTIwLjIzLDUzLjgzLTEyMC4yMywxMjAuMjNzNTMuODMsMTIwLjIzLDEyMC4yMywxMjAuMjMsMTIwLjIzLTUzLjgzLDEyMC4yMy0xMjAuMjNTNDI4LjIsMCwzNjEuOCwwWm0wLDE5My4yNmMtNDAuMzQsMC03My4wMy0zMi43LTczLjAzLTczLjAzczMyLjctNzMuMDMsNzMuMDMtNzMuMDMsNzMuMDMsMzIuNyw3My4wMyw3My4wMy0zMi43LDczLjAzLTczLjAzLDczLjAzWiIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+'/>
+            <div class="circle-text">
+                <svg class="loading-progress">
+                    <circle r="40%" cx="50%" cy="50%" />
+                    <circle r="40%" cx="50%" cy="50%" />
+                </svg>
+                <div class="loading-progress-text"></div>
+            </div>
+        </div>
     </div>
 
     <div id="blazor-error-ui">
