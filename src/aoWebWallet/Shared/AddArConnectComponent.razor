@@ -16,11 +16,16 @@
             }
             else if (!BindingContext.HasArConnectExtension.Value)
             {
-                <MudLink Href="https://www.arconnect.io/" style="cursor:pointer;">Download ArConnect</MudLink>
+                <MudButton Href="https://www.arconnect.io/" style="cursor:pointer;">
+                    <div style="width:100%; margin-left:5px; display: flex;  align-items:center; padding:8px;">
+                        <MudImage style="width:31px; height:31px;" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" Class="rounded-lg" />
+                        <MudText Typo="Typo.subtitle2" style="margin-left:10px;">Download ArConnect</MudText>
+                    </div>
+                </MudButton>
             }
             else if (BindingContext.HasArConnectExtension.Value)
             {
-                if(string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
+                if (string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
                 {
                     <MudButton style="border-radius:22px;width:100%; margin-top:5px; display: flex;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);" OnClick="Connect" Elevation="3">
                         <div style="width:100%; margin-left:5px; display: flex;  align-items:center; padding:8px;">
@@ -37,10 +42,10 @@
                     {
 
 
-                        <MudButton style="border-radius:22px;width:100%; margin-top:5px; display: flex;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);"  OnClick="Connect" Elevation="3">
+                        <MudButton style="border-radius:22px;width:100%; margin-top:5px; display: flex;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);" OnClick="Connect" Elevation="3">
                             <div style="width:100%; margin-left:5px; display: flex;  align-items:center; padding:8px;">
-                            <MudImage style="width:31px; height:31px;" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" Class="rounded-lg"/>
-                            <MudText Typo="Typo.subtitle2" style="margin-left:10px;">Connect with ArConnect</MudText>
+                                <MudImage style="width:31px; height:31px;" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" Class="rounded-lg" />
+                                <MudText Typo="Typo.subtitle2" style="margin-left:10px;">Connect with ArConnect</MudText>
                             </div>
                         </MudButton>
 
@@ -55,9 +60,9 @@
                 }
             }
 
-           @*  @if (!HideAddButton)
+            @*  @if (!HideAddButton)
             {
-                <MudButton Color="Color.Primary" OnClick="Submit">Add</MudButton>
+            <MudButton Color="Color.Primary" OnClick="Submit">Add</MudButton>
             } *@
         </MudCollapse>
     </MudStack>
@@ -86,7 +91,8 @@
     {
         if (firstRender)
         {
-            BindingContext.CheckHasArConnectExtension();
+            await BindingContext.CheckHasArConnectExtension();
+            StateHasChanged();
         }
 
         await base.OnAfterRenderAsync(firstRender);

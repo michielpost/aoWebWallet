@@ -30,6 +30,9 @@ This project is build with C#, using the Blazor framework and compiled to WebAss
 
 ## Screenshots
 
+## Donations
+Happy with this application? Donations help fund the further development. Donations can go to: zsXSvJtHVSK4QyPch4Uf0JMiZi9uEhgVvyz6qeEJcfY
+
 
 ## Install for local development
 
