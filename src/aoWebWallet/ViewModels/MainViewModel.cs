@@ -13,7 +13,7 @@ namespace aoWebWallet.ViewModels
 {
     public partial class MainViewModel : ObservableRecipient
     {
-        private const string CLAIM_PROCESS_ID = "";
+        private const string CLAIM_PROCESS_ID = "MHKFm549j6tCN0t6yF2ltUc1D3AqxWZRWKdtbncvrVQ";
 
         private readonly DataService dataService;
         private readonly TokenClient tokenClient;
@@ -181,7 +181,7 @@ namespace aoWebWallet.ViewModels
 
             var result = new List<DataLoaderViewModel<BalanceDataViewModel>>();
 
-            foreach (var token in tokens)
+            foreach (var token in tokens.Where(x => x.IsVisible))
             {
                 var balanceData = new DataLoaderViewModel<BalanceDataViewModel>();
                 balanceData.Data = new BalanceDataViewModel {  Token = token };
@@ -224,13 +224,25 @@ namespace aoWebWallet.ViewModels
                 await this.LoadSelectedTokenTransfer();
             }
 
-            this.SetClaims();
+            await this.SetClaims();
         }
         public async Task DeleteToken(string tokenId)
         {
             BalanceDataList.Data = null;
             await storageService.DeleteToken(tokenId);
             await this.LoadTokenList();
+        }
+
+        public async Task TokenToggleVisibility(string tokenId)
+        {
+            var all = await storageService.GetTokenIds();
+            var token = all.Where(x => x.TokenId == tokenId).FirstOrDefault();
+            if(token != null)
+            {
+                token.IsVisible = !token.IsVisible;
+                await storageService.SaveTokenList(all);
+                await this.LoadTokenList();
+            }
         }
 
         public async Task SaveWallet(Wallet wallet)
@@ -389,12 +401,15 @@ namespace aoWebWallet.ViewModels
             if(UserSettings != null)
             {
                 var tx = await Claim(1);
-                if (tx != null)
+                if (tx != null && !string.IsNullOrEmpty(tx.Id))
                 {
                     UserSettings.Claimed1 = true;
                     await storageService.SaveUserSettings(UserSettings);
 
-                    snackbar.Add("Claim 1 successful", Severity.Info);
+                    snackbar.Add("Claim 1 successful. You received 10 AOWW!", Severity.Info);
+
+                    if(SelectedAddress != null)
+                        await LoadBalanceDataList(this.SelectedAddress);
 
                 }
                 else
@@ -414,7 +429,10 @@ namespace aoWebWallet.ViewModels
                     UserSettings.Claimed2 = true;
                     await storageService.SaveUserSettings(UserSettings);
 
-                    snackbar.Add("Claim 2 successful", Severity.Info);
+                    snackbar.Add("Claim 2 successful. You received 20 AOWW!", Severity.Info);
+
+                    if (SelectedAddress != null)
+                        await LoadBalanceDataList(this.SelectedAddress);
 
                 }
                 else
@@ -433,7 +451,10 @@ namespace aoWebWallet.ViewModels
                     UserSettings.Claimed3 = true;
                     await storageService.SaveUserSettings(UserSettings);
 
-                    snackbar.Add("Claim 3 successful", Severity.Info);
+                    snackbar.Add("Claim 3 successful. You received 30 AOWW!", Severity.Info);
+
+                    if (SelectedAddress != null)
+                        await LoadBalanceDataList(this.SelectedAddress);
 
                 }
                 else
@@ -515,9 +536,8 @@ namespace aoWebWallet.ViewModels
 
                 var idResult = await arweaveService.SendAsync(CLAIM_PROCESS_ID, null, new List<ArweaveBlazor.Models.Tag>
             {
-                new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Claim" + claim},
+                new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "claim" + claim},
                 new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
-                new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = claim.ToString()},
             });
 
                 return new Transaction { Id = idResult };

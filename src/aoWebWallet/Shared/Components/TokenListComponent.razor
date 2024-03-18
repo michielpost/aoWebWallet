@@ -20,6 +20,18 @@
             {
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteToken(token); }"></MudIconButton>
             }
+
+            @if (ToggleVisibility != null)
+            {
+                if (token.IsVisible)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.VisibilityOff" aria-label="visibility" OnClick="() => { ToggleVisibility(token); }"></MudIconButton>
+                }
+                else
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" aria-label="visibility" OnClick="() => { ToggleVisibility(token); }"></MudIconButton>
+                }
+            }
         </MudStack>
     </MudPaper>
 }
@@ -33,4 +45,8 @@
 
     [Parameter]
     public Action<Token>? DeleteToken { get; set; }
+
+
+    [Parameter]
+    public Action<Token>? ToggleVisibility { get; set; }
 }

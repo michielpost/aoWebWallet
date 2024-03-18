@@ -66,10 +66,12 @@
                             @*<MudText Typo="Typo.body1">@tokenData.Name</MudText>*@
                             <MudText style="font-weight:500;" Typo="Typo.body2">@tokenData.Ticker</MudText>
 
-                            <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@txUrl" Typo="Typo.body1">
-                                @transfer.Id
-                            </MudLink>
-                            <br/>
+                            <MudStack Row=true>
+                                <MudText>txId: </MudText>
+                                <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@txUrl" Typo="Typo.body1">
+                                    @transfer.Id
+                                </MudLink>
+                            </MudStack>
 
                             @{
                                 string detailUrlFrom = $"wallet/{transfer.From}";

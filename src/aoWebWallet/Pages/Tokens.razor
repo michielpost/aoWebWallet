@@ -19,32 +19,29 @@
     <MudStack>
         @if (BindingContext.TokenList.Data != null)
         {
-            var autoAddedTokens = BindingContext.TokenList.Data.Where(x => !x.IsSystemToken && !x.IsUserAdded);
+            var autoAddedTokens = BindingContext.TokenList.Data.Where(x => !x.IsVisible);
 
-            if (autoAddedTokens.Any())
-            {
-                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                    <MudTabPanel Text="My Tokens">
-                        @foreach (var token in BindingContext.TokenList.Data.Where(x => x.IsSystemToken || x.IsUserAdded))
-                        {
-                            <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
-                        }
-                    </MudTabPanel>
-                    <MudTabPanel Text="Other Tokens">
-                        @foreach (var token in autoAddedTokens)
-                        {
-                            <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
-                        }
-                    </MudTabPanel>
-                </MudTabs>
-            }
-            else
-            {
-                foreach (var token in BindingContext.TokenList.Data)
-                {
-                    <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
-                }
-            }
+            <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                <MudTabPanel Text="My Tokens">
+                    @foreach (var token in BindingContext.TokenList.Data.Where(x => x.IsVisible))
+                    {
+                        <TokenListComponent token="token" DeleteToken="DeleteToken" ToggleVisibility="ToggleVisibility"></TokenListComponent>
+                    }
+                </MudTabPanel>
+                <MudTabPanel Text="Other Tokens" Disabled="!autoAddedTokens.Any()">
+                    @foreach (var token in autoAddedTokens)
+                    {
+                        <TokenListComponent token="token" DeleteToken="DeleteToken" ToggleVisibility="ToggleVisibility"></TokenListComponent>
+                    }
+                </MudTabPanel>
+            </MudTabs>
+            @* else
+        {
+        foreach (var token in BindingContext.TokenList.Data)
+        {
+        <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
+        }
+        } *@
 
 
 
@@ -60,6 +57,14 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddTokenDialog>("Add Token", options);
+    }
+
+    private async void ToggleVisibility(Token token)
+    {
+        
+        await BindingContext.TokenToggleVisibility(token.TokenId);
+
+        StateHasChanged();
     }
 
     private async void DeleteToken(Token token)
