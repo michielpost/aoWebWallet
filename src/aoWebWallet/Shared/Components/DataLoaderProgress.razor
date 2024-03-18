@@ -1,10 +1,10 @@
-﻿@if (DataLoader == null 
-    || DataLoader.LoadingState == LoadingState.None 
+﻿@if (DataLoader == null
+    || DataLoader.LoadingState == LoadingState.None
     || DataLoader.LoadingState == LoadingState.Finished)
     return;
 
 <MudText Typo="Typo.overline">@DataLoader.LoadingState.ToString() @Title</MudText>
-<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+<MudProgressLinear Color="Color.Primary" Indeterminate="true" />
 
 @code {
     [Parameter]
