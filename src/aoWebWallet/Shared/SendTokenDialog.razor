@@ -152,6 +152,7 @@
         if (!string.IsNullOrEmpty(BindingContext.SelectedAddress))
         {
             await BindingContext.LoadBalanceDataList(BindingContext.SelectedAddress);
+            await BindingContext.LoadTokenTransferList(BindingContext.SelectedAddress);
         }
 
         if (TransactionId != null)

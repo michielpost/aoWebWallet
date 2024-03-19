@@ -107,7 +107,8 @@
                             <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
                             @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
                             {
-                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>
+                                var hasBalance = balance.Data?.BalanceData?.Balance ?? 0;
+                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>
                             }
                         </MudStack>
                     </MudStack>
@@ -118,6 +119,9 @@
     </MudStack>
 
 
+    <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-4">
+        <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
+    </MudContainer>
     <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
 
     <MudStack>
@@ -219,6 +223,12 @@
         BindingContext.SelectedBalanceDataVM = balanceDataVM;
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<SendTokenDialog>("Transfer Token", options);
+    }
+
+    private async Task RefreshTransactions()
+    {
+        if(BindingContext.SelectedAddress != null)
+            await BindingContext.LoadTokenTransferList(BindingContext.SelectedAddress);
     }
 
     private async Task AddWalletAsReadonly()

@@ -29,7 +29,20 @@ This project was created for the [Hack the Weave](https://www.weaversofficial.co
 This project is build with C#, using the Blazor framework and compiled to WebAssembly. Compiling to WebAssembly results in an application that only contains static files that can be hosted anywhere, also on Arweave!
 
 ## Screenshots
+Start
+![Start](screenshots/01_start.png)
 
+Wallets
+![Wallets](screenshots/02_wallets.png)
+
+Balances and Transactions
+![Balances and Transactions](screenshots/03_transactions.png)
+
+Transfer Tokens
+![Transfer Tokens](screenshots/04_transfer.png)
+
+Token Explorer
+![Token Explorer](screenshots/05_token_explorer.png)
 
 
 ## Install for local development
