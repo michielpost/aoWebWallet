@@ -16,7 +16,7 @@ namespace aoWebWallet.Pages
         {
             if (firstRender)
             {
-                BindingContext.CheckHasArConnectExtension();
+                await BindingContext.CheckHasArConnectExtension();
 
                 await BindingContext.LoadWalletList();
                 await BindingContext.LoadTokenList();
@@ -25,12 +25,12 @@ namespace aoWebWallet.Pages
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        protected override async Task LoadDataAsync()
-        {
+        //protected override async Task LoadDataAsync()
+        //{
            
 
-            //BindingContext.LoadStats();
-        }
+        //    //BindingContext.LoadStats();
+        //}
 
     }
 }

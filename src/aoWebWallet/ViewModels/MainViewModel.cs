@@ -437,7 +437,7 @@ namespace aoWebWallet.ViewModels
             if (UserSettings != null)
             {
                 var tx = await Claim(2);
-                if (tx != null)
+                if (tx != null && !string.IsNullOrEmpty(tx.Id))
                 {
                     UserSettings.Claimed2 = true;
                     await storageService.SaveUserSettings(UserSettings);
@@ -459,7 +459,7 @@ namespace aoWebWallet.ViewModels
             if (UserSettings != null)
             {
                 var tx = await Claim(3);
-                if (tx != null)
+                if (tx != null && !string.IsNullOrEmpty(tx.Id))
                 {
                     UserSettings.Claimed3 = true;
                     await storageService.SaveUserSettings(UserSettings);
