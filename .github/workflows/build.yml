@@ -3,8 +3,6 @@ name: Build
 # Run workflow on every push to the master branch
 on:
   push:
-    branches-ignore:
-      - master
 
 jobs:
   publish:

@@ -25,7 +25,7 @@ namespace ArweaveBlazor
         {
             moduleTask = new(() => LoadScripts("./_content/ArweaveBlazor/arweaveJsInterop.js", jsRuntime).AsTask());
             arweaveTask = new(() => LoadScripts("https://unpkg.com/arweave/bundles/web.bundle.min.js", jsRuntime).AsTask());
-            //aoTask = new(() => LoadScripts("https://www.unpkg.com/@permaweb/aoconnect@0.0.45/dist/browser.js", jsRuntime).AsTask());
+            //aoTask = new(() => LoadScripts("https://www.unpkg.com/@permaweb/aoconnect@0.0.48/dist/browser.js", jsRuntime).AsTask());
             InitArweave();
         }
 

@@ -13,7 +13,7 @@ namespace aoWebWallet.ViewModels
 {
     public partial class MainViewModel : ObservableRecipient
     {
-        private const string CLAIM_PROCESS_ID = "MHKFm549j6tCN0t6yF2ltUc1D3AqxWZRWKdtbncvrVQ";
+        private const string CLAIM_PROCESS_ID = "5Mv1TBYZvKjNlWUpH78hWORIhqj1uqn_wdkJrA7emfU";
 
         private readonly DataService dataService;
         private readonly TokenClient tokenClient;

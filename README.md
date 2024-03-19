@@ -30,8 +30,6 @@ This project is build with C#, using the Blazor framework and compiled to WebAss
 
 ## Screenshots
 
-## Donations
-Happy with this application? Donations help fund the further development. Donations can go to: zsXSvJtHVSK4QyPch4Uf0JMiZi9uEhgVvyz6qeEJcfY
 
 
 ## Install for local development
@@ -47,5 +45,13 @@ Run:
 - Start the app: `dotnet watch` (for hot reloading support) or `dotnet run`
 - Now listening on: http://localhost:35441/
 
+## Credits
+* [Michiel Post](http://www.michielpost.nl) ([@michielpostnl](https://twitter.com/michielpostnl)) - tech and development
+* [Nuno Lopes](https://github.com/lopezi) ([@2n1u0](https://twitter.com/2n1u0)) - design and frontend
+
+## Donations
+Happy with this application? Donations help fund the further development. Donations can go to: zsXSvJtHVSK4QyPch4Uf0JMiZi9uEhgVvyz6qeEJcfY
+
 ## Open source credits
 [MudBlazor Components](https://mudblazor.com/) - UI Components
+

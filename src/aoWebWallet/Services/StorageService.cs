@@ -46,7 +46,12 @@ namespace aoWebWallet.Services
 
             var existing = list.Where(x => x.TokenId == tokenId).FirstOrDefault();
             if (existing != null)
-                return;
+            {
+                existing.IsVisible = true;
+
+                if(!existing.IsSystemToken)
+                    existing.IsUserAdded = true;
+            }
             else
                 list.Add(new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded });
 
