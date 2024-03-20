@@ -149,3 +149,7 @@ a, .btn-link {
 }
 .mdc-dialog .mdc-dialog__surface { max-width: none !important; }
 
+.margin-rewards-button {
+    margin-top:5px;
+}
+
