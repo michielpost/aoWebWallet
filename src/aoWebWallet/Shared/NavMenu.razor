@@ -16,14 +16,15 @@
     <MudNavLink Href="token-explorer" Match="NavLinkMatch.Prefix" Class="aoww-main-nav-text" Icon="@Icons.Material.Filled.Explore">Token Explorer</MudNavLink>
 
     <div style="margin-top: auto; display:flex; flex-direction: row;">
+        <div style="border-right: 1px solid gray;">
+                <MudNavLink Href="settings" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
+                <MudNavLink style="margin-bottom:5px;" Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Info">About</MudNavLink>
+            </div>
         <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin-left:10px; padding:5px;">
             <MudIcon Icon="@icons[index]" Color="Color.Primary" />
             <MudButton Variant="Variant.Filled" OnClick="ToggleTheme" DisableElevation="true" Size="Size.Small">Theme</MudButton>
         </div>
-        <div style="border-left: 1px solid gray;">
-            <MudNavLink Href="settings" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
-            <MudNavLink style="margin-bottom:5px;" Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Info">About</MudNavLink>
-        </div>
+
     </div>
     <div style="display:flex; flex-direction: column; justify-content:center; padding:3px 0 11px 0; margin-top:8px; align-items: center; width:100%" >
         <MudDivider DividerType="DividerType.FullWidth" Class="mb-8"/>
