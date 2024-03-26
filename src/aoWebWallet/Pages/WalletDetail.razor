@@ -108,7 +108,7 @@
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
                             <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
-                            @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
+                            @if ((BindingContext.SelectedWallet?.CanSend ?? false))
                             {
                                 var hasBalance = balance.Data?.BalanceData?.Balance ?? 0;
                                 <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>

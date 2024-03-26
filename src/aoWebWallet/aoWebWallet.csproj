@@ -12,7 +12,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MudBlazor" Version="6.17.0" />
+		<PackageReference Include="ArweaveAO" Version="0.0.1" />
+		<PackageReference Include="ArweaveBlazor" Version="0.0.3" />
+		<PackageReference Include="MudBlazor" Version="6.19.1" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
 		<PackageReference Include="BlazorWasmPreRendering.Build" Version="3.1.0-preview.4" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
@@ -21,8 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ArweaveAO\ArweaveAO.csproj" />
-	  <ProjectReference Include="..\ArweaveBlazor\ArweaveBlazor.csproj" />
 	  <ProjectReference Include="..\webvNext.DataLoader\webvNext.DataLoader.csproj" />
 	</ItemGroup>
 

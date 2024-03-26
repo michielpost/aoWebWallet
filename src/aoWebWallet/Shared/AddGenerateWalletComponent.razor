@@ -1,0 +1,67 @@
+﻿@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject TokenClient TokenClient
+@inject ArweaveService ArweaveService
+@inject ISnackbar Snackbar
+
+<MudPaper Class="pa-8">
+    <MudStack Spacing="2">
+        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Generate new wallet" : "Generate new wallet")</MudButton>
+        <MudDivider />
+        <MudCollapse Expanded="IsExpanded">
+            <MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
+            <MudText Color="Color.Secondary">@Progress</MudText>
+            <div style="width:100%;">
+                <MudButton style="margin-top:10px; display:flex; margin-left:auto;" Color="Color.Primary" OnClick="Submit">Generate</MudButton>
+            </div>
+        </MudCollapse>
+    </MudStack>
+</MudPaper>
+
+
+
+@code {
+    [Parameter]
+    public bool HideAddButton { get; set; }
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; } = default!;
+
+
+    public string? Name { get; set; }
+    public string? Progress { get; set; }
+
+    [Parameter]
+    public bool IsExpanded { get; set; }
+
+    private void OnExpandCollapseClick()
+    {
+        IsExpanded = !IsExpanded;
+    }
+
+    public async Task<bool> Submit()
+    {
+        var jwk = await ArweaveService.GenerateWallet();
+        var address = await ArweaveService.GetAddress(jwk);
+
+        var wallet = new Wallet
+            {
+                Address = address,
+                Name = Name,
+                Jwk = jwk,
+                Source = WalletTypes.Generated,
+                IsReadOnly = false,
+                LastBackedUpDate = null,
+                AddedDate = DateTimeOffset.UtcNow
+            };
+
+        await BindingContext.SaveWallet(wallet);
+
+        Snackbar.Add($"Wallet added ({address})", Severity.Info);
+
+        if (MudDialog != null)
+        {
+            MudDialog.Close();
+        }
+        return true;
+    }
+}

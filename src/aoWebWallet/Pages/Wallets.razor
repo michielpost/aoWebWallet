@@ -60,10 +60,19 @@
                                     {
                                         <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
                                     }
+                                    @if (wallet.NeedsBackup)
+                                    {
+                                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                                        <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
+                                    }
                                 </div>
                             </MudStack>
                             <MudSpacer />
 
+                            @if(!string.IsNullOrEmpty(wallet.Jwk))
+                            {
+                                <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>
+                            }
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
 
                         </MudStack>
@@ -79,6 +88,8 @@
                 <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
                     <MudItem lg="6" xs="12">
                         <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
+                        <AddUploadWalletComponent IsExpanded="true"></AddUploadWalletComponent>
+                        <AddGenerateWalletComponent IsExpanded="true"></AddGenerateWalletComponent>
                         <AddWalletComponent IsExpanded="true"></AddWalletComponent>
                     </MudItem>
                 </MudGrid>
@@ -111,6 +122,12 @@
 
             Snackbar.Add($"Wallet deleted ({wallet.Address})", Severity.Info);
         }
+        StateHasChanged();
+    }
+
+    private async void DownloadWallet(Wallet wallet)
+    {
+        await BindingContext.DownloadWallet(wallet);
         StateHasChanged();
     }
 }
