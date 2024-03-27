@@ -3,6 +3,8 @@ using aoWebWallet.Services;
 using ArweaveAO;
 using ArweaveAO.Models.Token;
 using ArweaveBlazor;
+using ClipLazor.Components;
+using ClipLazor.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MudBlazor;
@@ -21,6 +23,7 @@ namespace aoWebWallet.ViewModels
         private readonly ArweaveService arweaveService;
         private readonly GraphqlClient graphqlClient;
         private readonly ISnackbar snackbar;
+        private readonly IClipLazor clipboard;
         private readonly MemoryDataCache memoryDataCache;
 
         [ObservableProperty]
@@ -84,6 +87,7 @@ namespace aoWebWallet.ViewModels
             ArweaveService arweaveService,
             GraphqlClient graphqlClient,
             ISnackbar snackbar,
+            IClipLazor clipboard,
             MemoryDataCache memoryDataCache) : base()
         {
             this.dataService = dataService;
@@ -92,6 +96,7 @@ namespace aoWebWallet.ViewModels
             this.arweaveService = arweaveService;
             this.graphqlClient = graphqlClient;
             this.snackbar = snackbar;
+            this.clipboard = clipboard;
             this.memoryDataCache = memoryDataCache;
         }
 
@@ -534,6 +539,23 @@ namespace aoWebWallet.ViewModels
                     }
                     this.WalletList.ForcePropertyChanged();
                     await storageService.SaveWalletList(this.WalletList.Data);
+                }
+            }
+        }
+
+        public async Task CopyToClipboard(string? text)
+        {
+            bool isSupported = await clipboard.IsClipboardSupported();
+            bool isWritePermitted = await clipboard.IsPermitted(PermissionCommand.Write);
+            if (isSupported && !string.IsNullOrEmpty(text))
+            {
+                if (isWritePermitted)
+                {
+                    var isCopied = await clipboard.WriteTextAsync(text.AsMemory());
+                    if (isCopied)
+                    {
+                        snackbar.Add($"Text copied: {text}", Severity.Info);
+                    }
                 }
             }
         }

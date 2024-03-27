@@ -6,13 +6,13 @@
 
 <MudPaper Class="pa-8">
     <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Generate new wallet" : "Generate new wallet")</MudButton>
+        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Create a new wallet" : "Create a new wallet")</MudButton>
         <MudDivider />
         <MudCollapse Expanded="IsExpanded">
             <MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
             <MudText Color="Color.Secondary">@Progress</MudText>
             <div style="width:100%;">
-                <MudButton style="margin-top:10px; display:flex; margin-left:auto;" Color="Color.Primary" OnClick="Submit">Generate</MudButton>
+                <MudButton style="margin-top:10px; display:flex; margin-left:auto;" Color="Color.Primary" OnClick="Submit">Create</MudButton>
             </div>
         </MudCollapse>
     </MudStack>

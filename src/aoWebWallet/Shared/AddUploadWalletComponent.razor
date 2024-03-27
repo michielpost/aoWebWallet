@@ -25,7 +25,10 @@
                                   Outlined="true"
                                   Class="@_dragClass">
                             <MudText Typo="Typo.h6">
-                                Drag and drop wallet file or click here
+                                Drag and drop wallet file or click here. 
+                            </MudText>
+                            <MudText Typo="Typo.subtitle1">
+                                Your files won't be uploaded and are only read by the local app.
                             </MudText>
                             @foreach (var file in _fileNames)
                             {
@@ -113,6 +116,9 @@
                             var address = await ArweaveService.GetAddress(jwk);
                             var name = file.Name;
 
+                            if (string.IsNullOrEmpty(address))
+                                throw new Exception("No address");
+
                             var wallet = new Wallet
                                 {
                                     Address = address,
@@ -125,7 +131,10 @@
 
                             _fileNames.Add(wallet);
                         }
-                        catch { }
+                        catch
+                        {
+                            Snackbar.Add($"Unable to read wallet file: {file.Name}", Severity.Error);
+                        }
 
                     }
                 }

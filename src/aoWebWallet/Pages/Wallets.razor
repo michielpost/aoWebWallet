@@ -47,7 +47,7 @@
                                     <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                         @wallet.Address
                                     </MudLink>
-                                    <MudIcon Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" />
+                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(wallet.Address); }" />
                                 </div>
 
                                 <div style="display:flex; flex-direction:row;">
