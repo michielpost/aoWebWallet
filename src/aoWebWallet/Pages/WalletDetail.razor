@@ -18,6 +18,7 @@
                 </MudText>
                 <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
             </MudStack>
+            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Address); }" />
             <MudSpacer />
             <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
                 <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
@@ -72,6 +73,9 @@
     }
 
     <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-2">
+        <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
+        </MudTooltip>
         <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
             <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
         </MudTooltip>
@@ -113,7 +117,7 @@
                                 <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
                             </MudTooltip>
 
-                            @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
+                            @if ((BindingContext.SelectedWallet?.CanSend ?? false))
                             {
                                 var hasBalance = balance.Data?.BalanceData?.Balance ?? 0;
                                 <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Left">
@@ -233,6 +237,12 @@
         BindingContext.SelectedBalanceDataVM = balanceDataVM;
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<SendTokenDialog>("Transfer Token", options);
+    }
+
+    private async Task RefreshBalances()
+    {
+        if (BindingContext.SelectedAddress != null)
+            await BindingContext.LoadBalanceDataList(BindingContext.SelectedAddress);
     }
 
     private async Task RefreshTransactions()

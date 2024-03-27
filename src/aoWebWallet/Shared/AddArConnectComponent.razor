@@ -106,7 +106,7 @@
         {
             Snackbar.Add($"Please allow this website access to ArConnect", Severity.Info);
         }
-        await ArweaveService.ConnectAsync(new string[] { "ACCESS_ADDRESS", "SIGN_TRANSACTION" }, "aoWebWallet");
+        await ArweaveService.ConnectArConnectAsync(new string[] { "ACCESS_ADDRESS", "SIGN_TRANSACTION" }, "aoWebWallet");
 
         await BindingContext.GetActiveArConnectAddress();
 

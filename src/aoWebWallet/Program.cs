@@ -10,6 +10,7 @@ using aoWebWallet.ViewModels;
 using ArweaveAO;
 using ArweaveBlazor;
 using System.Globalization;
+using ClipLazor.Extention;
 
 namespace aoWebWallet
 {
@@ -102,6 +103,8 @@ namespace aoWebWallet
             services.AddScoped<MainViewModel>();
 
             services.AddBlazoredLocalStorage();
+
+            services.AddClipboard();
         }
     }
 }
