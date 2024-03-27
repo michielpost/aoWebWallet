@@ -21,7 +21,14 @@
                 <MudNavLink style="margin-bottom:5px;" Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Info">About</MudNavLink>
             </div>
         <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin-left:10px; padding:5px;">
-            <MudIcon Icon="@icons[index]" Color="Color.Primary" />
+            @if(BindingContext.IsDarkMode)
+            {
+                <MudIcon Icon="@icons[1]" Color="Color.Primary" />
+            }
+            else
+            {
+                <MudIcon Icon="@icons[0]" Color="Color.Primary" />
+            }
             <MudButton Variant="Variant.Filled" OnClick="ToggleTheme" DisableElevation="true" Size="Size.Small">Theme</MudButton>
         </div>
 
@@ -35,19 +42,15 @@
 </MudNavMenu>
 
 @code{
-    private int index = 1;
     private string[] icons = { Icons.Material.Filled.WbSunny, Icons.Material.Filled.NightlightRound };
 
-    private void ToggleTheme()
+    protected override void OnInitialized()
     {
-        index = (index + 1) % 2;
-        if (index == 0)
-        {
-            BindingContext.IsDarkMode = false;
-        }
-        else
-        {
-            BindingContext.IsDarkMode = true;
-        }
+        base.OnInitialized();
+    }
+
+    private Task ToggleTheme()
+    {
+        return BindingContext.SetIsDarkMode(!BindingContext.IsDarkMode);
     }
 }
