@@ -43,7 +43,7 @@
                                        Variant="Variant.Filled">
                                 Open file picker
                             </MudButton>
-                            <MudButton OnClick="@Upload"
+                            @*  <MudButton OnClick="@AddWallets"
                                        Color="Color.Primary"
                                        Disabled="@(!_fileNames.Any())"
                                        Variant="Variant.Filled">
@@ -54,7 +54,7 @@
                                        Disabled="@(!_fileNames.Any())"
                                        Variant="Variant.Filled">
                                 Clear
-                            </MudButton>
+                            </MudButton> *@
                         </MudToolBar>
                     </ButtonTemplate>
                 </MudFileUpload>
@@ -140,9 +140,12 @@
                 }
             }
         }
+
+        await AddWallets();
+
     }
 
-    private async Task Upload()
+    private async Task AddWallets()
     {
         foreach (var wallet in _fileNames)
         {
