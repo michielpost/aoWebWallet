@@ -81,7 +81,7 @@ namespace aoWebWallet.ViewModels
         /// <summary>
         /// Gets the <see cref="IAsyncRelayCommand{T}"/> responsible for loading the source markdown docs.
         /// </summary>
-        public MainViewModel(DataService dataService, 
+        public MainViewModel(DataService dataService,
             TokenClient tokenClient,
             StorageService storageService,
             ArweaveService arweaveService,
@@ -123,7 +123,7 @@ namespace aoWebWallet.ViewModels
             return TokenTransferList.Data;
         });
 
-       
+
         public Task LoadTokenTransferListForToken(string? tokenId) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
             TokenTransferList.Data = new();
@@ -205,7 +205,7 @@ namespace aoWebWallet.ViewModels
 
         });
 
-        
+
 
         public async Task LoadWalletList()
         {
@@ -333,7 +333,7 @@ namespace aoWebWallet.ViewModels
                     SelectedWallet = current;
                     var indexOf = all.IndexOf(current);
                     SelectedWalletIndex = (indexOf % 5) + 1;
-                   
+
                 }
                 else
                 {
@@ -554,7 +554,7 @@ namespace aoWebWallet.ViewModels
                     var isCopied = await clipboard.WriteTextAsync(text.AsMemory());
                     if (isCopied)
                     {
-                        snackbar.Add($"Text copied: {text}", Severity.Info);
+                        snackbar.Add("Address copied to clipboard", Severity.Success);
                     }
                 }
             }
