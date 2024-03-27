@@ -395,12 +395,19 @@ namespace aoWebWallet.ViewModels
         public async Task LoadUserSettings()
         {
             UserSettings = await storageService.GetUserSettings();
+            if (UserSettings != null)
+            {
+                IsDarkMode = UserSettings.IsDarkMode ?? true;
+            }
         }
 
         public async Task SaveUserSettings()
         {
-            if(UserSettings != null)
+            if (UserSettings != null)
+            {
                 await storageService.SaveUserSettings(UserSettings);
+                IsDarkMode = UserSettings.IsDarkMode ?? true;
+            }
         }
 
         public async Task AddWalletAsReadonly()
@@ -619,5 +626,14 @@ namespace aoWebWallet.ViewModels
 
                 return new Transaction { Id = idResult };
             });
+
+        public async Task SetIsDarkMode(bool isDarkMode)
+        {
+            if(UserSettings != null)
+            {
+                UserSettings.IsDarkMode = isDarkMode;
+                await SaveUserSettings();
+            }
+        }
     }
 }

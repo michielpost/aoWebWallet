@@ -1,4 +1,5 @@
 ﻿using aoWebWallet.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -60,6 +61,11 @@ namespace aoWebWallet.Pages
         protected virtual Task LoadDataAsync()
         {
             return Task.CompletedTask;
+        }
+
+        protected void WatchObject<D>(D obj) where D : ObservableObject
+        {
+            ObjWatch.Add(obj);
         }
 
         protected void WatchDataLoaderVM<D>(DataLoaderViewModel<D> vm) where D : class
