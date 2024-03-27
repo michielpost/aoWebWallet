@@ -21,7 +21,7 @@
                 <MudNavLink style="margin-bottom:5px;" Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Info">About</MudNavLink>
             </div>
         <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin-left:10px; padding:5px;">
-            @if(BindingContext.IsDarkMode)
+            @if (BindingContext.UserSettings?.IsDarkMode ?? true)
             {
                 <MudIcon Icon="@icons[1]" Color="Color.Primary" />
             }
@@ -46,7 +46,22 @@
 
     protected override void OnInitialized()
     {
+        BindingContext.PropertyChanged += BindingContext_PropertyChanged;
+
         base.OnInitialized();
+    }
+
+    private void BindingContext_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainViewModel.IsDarkMode))
+        {
+            this.StateHasChanged();
+        }
+    }
+
+    public virtual void Dispose()
+    {
+        BindingContext.PropertyChanged -= BindingContext_PropertyChanged;
     }
 
     private Task ToggleTheme()
