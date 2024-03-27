@@ -19,6 +19,9 @@
                 <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
             </MudStack>
             <MudSpacer />
+            <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
+            </MudTooltip>
             @if(BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
             {
                 <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
@@ -69,7 +72,9 @@
     }
 
     <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-2">
-        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
+        <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
+            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
+        </MudTooltip>
     </MudContainer>
 
     <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
@@ -98,20 +103,22 @@
                             <DataLoaderProgress DataLoader="balance.DataLoader" Title="balance" />
                             @if (balance.Data?.BalanceData != null)
                             {
-                                <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex align-center">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
-                                    <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>
-                                </MudContainer>
+                                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>
                             }
                         </MudStack>
                         <MudSpacer />
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
-                            <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
+                            <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Left">
+                                <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
+                            </MudTooltip>
+
                             @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
                             {
                                 var hasBalance = balance.Data?.BalanceData?.Balance ?? 0;
-                                <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>
+                                <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Left">
+                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>
+                                </MudTooltip>
                             }
                         </MudStack>
                     </MudStack>

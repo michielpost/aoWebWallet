@@ -24,7 +24,9 @@
     <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-3">
             @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
                 {
-                    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
+                    <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
+                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
+                    </MudTooltip>
                 }
     </MudContainer>
 
@@ -47,9 +49,10 @@
                                     <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                         @wallet.Address
                                     </MudLink>
-                                    <MudIcon Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" />
+                                    <MudTooltip ShowOnClick="true" ShowOnFocus="false" ShowOnHover="false" Duration="1000" Text="Work in progress" Arrow="true" >
+                                        <MudIcon Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" />
+                                    </MudTooltip>
                                 </div>
-
                                 <div style="display:flex; flex-direction:row;">
                                     @if (wallet.IsReadOnly)
                                     {
@@ -63,9 +66,7 @@
                                 </div>
                             </MudStack>
                             <MudSpacer />
-
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
-
                         </MudStack>
                     </MudPaper>
 
