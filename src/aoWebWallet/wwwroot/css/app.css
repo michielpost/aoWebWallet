@@ -152,7 +152,13 @@ a, .btn-link {
 .margin-rewards-button {
     margin-top:5px;
 }
-button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard:hover{
+
+.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard:hover{
+    background-color: rgba(1,1,1,0);
+    opacity: 1;
+}
+
+.mud-button-root.mud-icon-button:hover{
     background-color: rgba(1,1,1,0);
     opacity: 1;
 }
