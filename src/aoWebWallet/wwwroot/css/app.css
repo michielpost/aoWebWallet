@@ -152,12 +152,21 @@ a, .btn-link {
 .margin-rewards-button {
     margin-top:5px;
 }
-.copy-clipboard {
-    position:relative;
-    margin-left:7px;
-    top: 5px;
-    cursor: pointer;
-    transition: transform .2s;
+
+.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard:hover{
+    background-color: rgba(1,1,1,0);
+    opacity: 1;
+}
+
+.mud-button-root.mud-icon-button:hover{
+    background-color: rgba(1,1,1,0);
+    opacity: 1;
+}
+
+button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard{
+    padding:0;
+    margin-left: 7px;
+    margin-top: 6px;
     opacity: 0.5;
 }
 
