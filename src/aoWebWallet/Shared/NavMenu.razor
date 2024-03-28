@@ -5,7 +5,7 @@
     @if ((BindingContext.WalletList.Data ?? new()).Any())
     {
         <MudNavLink Href="" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-        <MudNavGroup Class="mt-2 mb-2 aoww-main-nav-text flex" Title="Wallets" Icon="@Icons.Material.Filled.Wallet" Expanded="true">
+        <MudNavGroup Class="mt-2 mb-2" Title="Wallets" Icon="@Icons.Material.Filled.Wallet" Expanded="true">
             @{
                 int logoCount = 1;
             }
@@ -14,10 +14,11 @@
                 string logoUrl = $"images/account--{logoCount}.svg";
                 string detailUrl = $"wallet/{wallet.Address}";
 
-                <MudStack Row=true>
-                    <MudAvatar Image="@logoUrl" Size="Size.Small" Class="rounded-full ml-11  aoww-nested-nav-items" />
-                    <MudNavLink Href="@detailUrl" style="font-size:12px;" Match="NavLinkMatch.All">@wallet.Address.ToShortAddress()</MudNavLink>
-                </MudStack>
+                    <MudNavLink Class="menu-wallets" Href="@detailUrl" style="font-size:12px;" Match="NavLinkMatch.All">
+                        <MudAvatar Image="@logoUrl" Size="Size.Small" Class="rounded-full mr-2" />
+                        <div>@wallet.Address.ToShortAddress()</div>
+                    </MudNavLink>
+
                 logoCount++;
             }
         </MudNavGroup>

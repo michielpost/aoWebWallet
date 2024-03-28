@@ -140,8 +140,11 @@ a, .btn-link {
     font-size: 1.11em ;
 }
 
-.aoww-nested-nav-items {
-    margin-right: -35px;
+.menu-wallets a.mud-nav-link .mud-nav-link-text{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
 }
 
 .mud-nav-item a:hover{
