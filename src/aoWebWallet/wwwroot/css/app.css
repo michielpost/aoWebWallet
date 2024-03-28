@@ -188,4 +188,11 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
     font-size: 1.7rem;
 }
 
+.tx-wrap {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
+
 
