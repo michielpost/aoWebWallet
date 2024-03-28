@@ -20,12 +20,12 @@
                 @if (BindingContext.SelectedWallet?.NeedsBackup ?? false)
                 {
                     <MudStack Row="true">
-                    <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
-                    <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
+                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                        <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
                     </MudStack>
                 }
             </MudStack>
-            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Address); }" />
+            <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Address); }" />
             <MudSpacer />
             @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Jwk))
             {
@@ -34,7 +34,7 @@
                 </MudTooltip>
             }
             <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
+                <MudIconButton Class="mt-1" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
             </MudTooltip>
             @if(BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
             {
