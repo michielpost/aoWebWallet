@@ -40,7 +40,7 @@ namespace aoWebWallet.Services
                 list.Add(new Token { TokenId = tokenId, IsSystemToken = true });
         }
 
-        public async ValueTask AddToken(string tokenId, TokenData data, bool isUserAdded)
+        public async ValueTask<Token> AddToken(string tokenId, TokenData data, bool isUserAdded)
         {
             var list = await GetTokenIds();
 
@@ -53,9 +53,14 @@ namespace aoWebWallet.Services
                     existing.IsUserAdded = true;
             }
             else
-                list.Add(new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded });
+            {
+                existing = new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded };
+                list.Add(existing);
+            }
 
             await SaveTokenList(list);
+
+            return existing;
         }
 
         public async ValueTask DeleteToken(string tokenId)
@@ -132,7 +137,9 @@ namespace aoWebWallet.Services
             existing.Count++;
             existing.LastAddDateTime = DateTimeOffset.UtcNow;
 
-            await localStorage.SetItemAsync(type.ToString(), all);
+            var ordered = all.OrderByDescending(x => x.LastAddDateTime).Take(15).ToList();
+
+            await localStorage.SetItemAsync(type.ToString(), ordered);
         }
 
         public async ValueTask<List<LogData>> GetLog(ActivityLogType type)

@@ -145,15 +145,18 @@ namespace aoWebWallet.ViewModels
             }
         });
 
-        public Task LoadTokenList() => TokenList.DataLoader.LoadAsync(async () =>
+        public Task LoadTokenList(bool force = false) => TokenList.DataLoader.LoadAsync(async () =>
         {
-            TokenList.Data = new();
-            await foreach (var item in dataService.LoadTokenDataAsync())
+            if (TokenList.Data == null || force)
             {
-                TokenList.Data.Add(item);
-                TokenList.ForcePropertyChanged();
+                TokenList.Data = new();
+                await foreach (var item in dataService.LoadTokenDataAsync())
+                {
+                    TokenList.Data.Add(item);
+                    TokenList.ForcePropertyChanged();
+                }
             }
-
+            TokenList.ForcePropertyChanged();
             return TokenList.Data;
         });
 
@@ -182,7 +185,7 @@ namespace aoWebWallet.ViewModels
         {
             //First clear
             BalanceDataList.Data = null;
-            var tokens = await storageService.GetTokenIds();
+            var tokens = TokenList.Data ?? new();
 
             var result = new List<DataLoaderViewModel<BalanceDataViewModel>>();
 
@@ -207,17 +210,32 @@ namespace aoWebWallet.ViewModels
 
 
 
-        public async Task LoadWalletList()
+        public async Task LoadWalletList(bool force = false)
         {
-            var list = await storageService.GetWallets();
-            WalletList.Data = list;
+            if (WalletList.Data == null || force)
+            {
+                var list = await storageService.GetWallets();
+                WalletList.Data = list;
+            }
         }
 
         public async Task AddToken(string tokenId, TokenData data, bool isUserAdded = false)
         {
             BalanceDataList.Data = null;
-            await storageService.AddToken(tokenId, data, isUserAdded);
-            await LoadTokenList();
+            var newToken = await storageService.AddToken(tokenId, data, isUserAdded);
+            var existing = TokenList.Data?.Where(x => x.TokenId == newToken.TokenId).FirstOrDefault();
+            if(existing == null)
+            {
+                if (TokenList.Data == null)
+                    TokenList.Data = new();
+
+                TokenList.Data.Add(newToken);
+                TokenList.ForcePropertyChanged();
+            }
+            else
+            {
+                existing = newToken;
+            }
 
             if(!string.IsNullOrEmpty(SelectedAddress))
             {
@@ -235,32 +253,32 @@ namespace aoWebWallet.ViewModels
         {
             BalanceDataList.Data = null;
             await storageService.DeleteToken(tokenId);
-            await this.LoadTokenList();
+            await this.LoadTokenList(force: true);
         }
 
         public async Task TokenToggleVisibility(string tokenId)
         {
-            var all = await storageService.GetTokenIds();
+            var all = TokenList.Data ?? new();
             var token = all.Where(x => x.TokenId == tokenId).FirstOrDefault();
             if(token != null)
             {
                 token.IsVisible = !token.IsVisible;
                 await storageService.SaveTokenList(all);
-                await this.LoadTokenList();
+                await this.LoadTokenList(force: true);
             }
         }
 
         public async Task SaveWallet(Wallet wallet)
         {
             await storageService.SaveWallet(wallet);
-            await LoadWalletList();
+            await LoadWalletList(force: true);
             await SetClaims();
         }
 
         public async Task DeleteWallet(Wallet wallet)
         {
             await storageService.DeleteWallet(wallet);
-            await LoadWalletList();
+            await LoadWalletList(force: true);
         }
 
         public async Task DownloadWallet(Wallet wallet)
@@ -331,7 +349,12 @@ namespace aoWebWallet.ViewModels
         {
             if (!string.IsNullOrEmpty(address))
             {
-                var all = await storageService.GetWallets();
+                if (this.WalletList.Data == null)
+                {
+                    await LoadWalletList();
+                }
+
+                var all = this.WalletList.Data ?? new();
                 var current = all.Where(x => x.Address == address).FirstOrDefault();
                 if (current != null)
                 {
@@ -356,8 +379,8 @@ namespace aoWebWallet.ViewModels
                     SelectedWalletIndex = 5;
                 }
 
-                await this.LoadBalanceDataList(address);
-                await this.LoadTokenTransferList(address);
+                this.LoadBalanceDataList(address);
+                this.LoadTokenTransferList(address);
             }
             else
             {
@@ -370,7 +393,6 @@ namespace aoWebWallet.ViewModels
         {
             this.LoadSelectedTokenTransfer();
 
-
             if (value != null)
                 this.AddToLog(ActivityLogType.ViewTransaction, value);
         }
@@ -378,7 +400,6 @@ namespace aoWebWallet.ViewModels
         partial void OnSelectedTokenIdChanged(string? value)
         {
             this.LoadTokenTransferListForToken(value);
-
 
             if (value != null)
                 this.AddToLog(ActivityLogType.ViewToken, value);
@@ -421,7 +442,7 @@ namespace aoWebWallet.ViewModels
             {
                 SelectedWallet.Source = WalletTypes.Manual;
                 await storageService.SaveWallet(SelectedWallet);
-                await LoadWalletList();
+                await LoadWalletList(force: true);
 
                 snackbar.Add("Wallet added to list as read-only wallet.", Severity.Info);
 

@@ -20,7 +20,7 @@ namespace aoWebWallet.Pages
         protected override void OnParametersSet()
         {
             BindingContext.SelectedWallet = null;
-            BindingContext.SelectedAddress = null;
+            //BindingContext.SelectedAddress = null;
 
             if(Address != null && Address.Length != 43)
             {
