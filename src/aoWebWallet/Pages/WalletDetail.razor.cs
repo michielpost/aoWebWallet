@@ -1,4 +1,5 @@
-﻿using aoWebWallet.ViewModels;
+﻿using aoWebWallet.Models;
+using aoWebWallet.ViewModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -41,6 +42,12 @@ namespace aoWebWallet.Pages
             //}
 
             await base.LoadDataAsync();
+        }
+
+        private async void DownloadWallet(Wallet wallet)
+        {
+            await BindingContext.DownloadWallet(wallet);
+            StateHasChanged();
         }
 
     }

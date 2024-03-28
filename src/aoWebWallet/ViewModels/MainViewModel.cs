@@ -274,8 +274,13 @@ namespace aoWebWallet.ViewModels
 
             if (this.WalletList.Data != null)
             {
-                await storageService.SaveWalletList(this.WalletList.Data);
-                //await LoadWalletList();
+                var selected = this.WalletList.Data.Where(x => x.Address == address).FirstOrDefault();
+                if(selected != null)
+                {
+                    selected.LastBackedUpDate = DateTimeOffset.UtcNow;
+                    await storageService.SaveWalletList(this.WalletList.Data);
+                    //await LoadWalletList();
+                }
             }
         }
 

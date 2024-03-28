@@ -17,15 +17,30 @@
                     @Address
                 </MudText>
                 <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
+                @if (BindingContext.SelectedWallet?.NeedsBackup ?? false)
+                {
+                    <MudStack Row="true">
+                    <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                    <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
+                    </MudStack>
+                }
             </MudStack>
             <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Address); }" />
             <MudSpacer />
+            @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Jwk))
+            {
+                <MudTooltip Text="Download wallet file" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet); }"></MudIconButton>
+                </MudTooltip>
+            }
             <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-                <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
             </MudTooltip>
             @if(BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
             {
-                <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
+                <MudTooltip Text="Add as readonly wallet" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
+                </MudTooltip>
             }
         </MudStack>
     </MudPaper>
@@ -73,9 +88,9 @@
     }
 
     <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-2">
-        <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
+@*         <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
             <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
-        </MudTooltip>
+        </MudTooltip> *@
         <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
             <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
         </MudTooltip>
