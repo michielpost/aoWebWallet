@@ -147,64 +147,7 @@
             <MudTimeline TimelinePosition="TimelinePosition.Left">
                 @foreach (var transfer in BindingContext.TokenTransferList.Data)
                 {
-                    var tokenData = BindingContext.TokenList.Data?.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
-                    var isSend = BindingContext.SelectedAddress == transfer.From;
-                    var isReceive = BindingContext.SelectedAddress == transfer.To;
-                    if (tokenData == null)
-                    {
-                        continue;
-                    }
-                    string txUrl = $"transaction/{transfer.Id}";
-                    <MudTimelineItem>
-                        <ItemDot>
-                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(tokenData.Logo)" Size="Size.Medium" title="@tokenData.TokenId" />
-                        </ItemDot>
-                        <ItemContent>
-                            @if (transfer.BlockHeight.HasValue)
-                            {
-                                <MudText Typo="Typo.caption">@transfer.Timestamp.ToString("s")</MudText>
-                            }
-                            else
-                            {
-                                <MudText Typo="Typo.caption">unconfirmed</MudText>
-                            }
-                            @*<MudText Typo="Typo.body1">@tokenData.Name</MudText>*@
-                            <MudText style="font-weight:500;" Typo="Typo.body2">@tokenData.Ticker</MudText>
-                            <MudStack Row=true>
-                                <MudText>txId: </MudText>
-                                <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@txUrl" Typo="Typo.body1">
-                                    @transfer.Id
-                                </MudLink>
-                            </MudStack>
-
-
-                            @if (isSend)
-                            {
-                                <MudText Typo="Typo.h6" style="color:red">- @BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
-                            }
-                            else
-                            {
-                                <MudText Typo="Typo.h6" style="color:green">+ @BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
-                            }
-
-                            @if (isSend)
-                            {
-                                string detailUrl = $"wallet/{transfer.To}";
-                                <MudIcon Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Receive"></MudIcon>
-                                <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
-                                    @transfer.To
-                                </MudLink>
-                            }
-                            else if (isReceive)
-                            {
-                                string detailUrl = $"wallet/{transfer.From}";
-                                <MudIcon Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIcon>
-                                <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
-                                    @transfer.From
-                                </MudLink>
-                            }
-                        </ItemContent>
-                    </MudTimelineItem>
+                   <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedAddress" />
                 }
             </MudTimeline>
 
