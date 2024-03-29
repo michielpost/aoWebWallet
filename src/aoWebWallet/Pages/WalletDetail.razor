@@ -174,10 +174,7 @@
             </MudStack>
         </MudItem>
 
-        @{
-            var processes = BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == BindingContext.SelectedAddress).FirstOrDefault();
-        }
-        @if (processes?.Data?.Processes.Any() ?? false)
+        @if (BindingContext.SelectedProcessData?.Data?.Processes.Any() ?? false)
         {
             <MudItem xs12 sm="4">
                 <MudStack>
@@ -187,7 +184,7 @@
 
 
                     <MudTimeline TimelinePosition="TimelinePosition.Left">
-                        @foreach (var process in processes.Data.Processes)
+                        @foreach (var process in BindingContext.SelectedProcessData.Data.Processes)
                         {
                             var linkUrl = $"/wallet/{process.Id}";
                             <MudStack Row=true>

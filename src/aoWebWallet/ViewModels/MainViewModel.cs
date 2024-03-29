@@ -1,4 +1,5 @@
 ﻿using aoWebWallet.Models;
+using aoWebWallet.Pages;
 using aoWebWallet.Services;
 using ArweaveAO;
 using ArweaveAO.Models.Token;
@@ -75,6 +76,7 @@ namespace aoWebWallet.ViewModels
         public DataLoaderViewModel<List<TokenTransfer>> TokenTransferList { get; set; } = new();
         public DataLoaderViewModel<TokenTransfer> SelectedTransaction { get; set; } = new();
         public DataLoaderViewModel<List<DataLoaderViewModel<WalletProcessDataViewModel>>> ProcessesDataList { get; set; } = new();
+        public DataLoaderViewModel<WalletProcessDataViewModel> SelectedProcessData { get; set; } = new();
 
 
         //TODO:
@@ -242,6 +244,29 @@ namespace aoWebWallet.ViewModels
 
         });
 
+        public async Task LoadSelectedWalletProcessData()
+        {
+            if (string.IsNullOrEmpty(SelectedAddress))
+                return;
+
+            SelectedProcessData.Data = null;
+
+            var address = SelectedAddress;
+            
+            SelectedProcessData.Data = new WalletProcessDataViewModel { Address = address };
+
+            SelectedProcessData.DataLoader.LoadAsync(() =>
+            {
+                return memoryDataCache!.GetAsync($"{nameof(LoadProcessesDataList)}-{address}", async () =>
+                {
+                    var data = await graphqlClient.GetAoProcessesForAddress(address);
+                    return new WalletProcessDataViewModel() { Address = address, Processes = data };
+                }, TimeSpan.FromMinutes(1));
+
+
+            }, (x) => { SelectedProcessData.Data = x; });
+        }
+
 
         public async Task LoadWalletList(bool force = false)
         {
@@ -375,6 +400,7 @@ namespace aoWebWallet.ViewModels
         partial void OnSelectedAddressChanged(string? value)
         {
             SelectWallet(value);
+            LoadSelectedWalletProcessData();
 
             if (value != null)
                 this.AddToLog(ActivityLogType.ViewAddress, value);
