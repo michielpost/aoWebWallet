@@ -68,6 +68,10 @@
                                 </div>
                             </MudStack>
                             <MudSpacer />
+                            @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
+                            {
+                                <MudChip>AOS</MudChip>
+                            }
                             @if(!string.IsNullOrEmpty(wallet.Jwk))
                             {
                                 <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>

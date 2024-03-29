@@ -8,6 +8,7 @@ using ClipLazor.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MudBlazor;
+using System.Net;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
 
@@ -73,6 +74,8 @@ namespace aoWebWallet.ViewModels
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
         public DataLoaderViewModel<List<TokenTransfer>> TokenTransferList { get; set; } = new();
         public DataLoaderViewModel<TokenTransfer> SelectedTransaction { get; set; } = new();
+        public DataLoaderViewModel<List<DataLoaderViewModel<WalletProcessDataViewModel>>> ProcessesDataList { get; set; } = new();
+
 
         //TODO:
         //Actions List (optional? address)
@@ -208,6 +211,36 @@ namespace aoWebWallet.ViewModels
 
         });
 
+        public Task LoadProcessesDataList() => ProcessesDataList.DataLoader.LoadAsync(async () =>
+        {
+            ProcessesDataList.Data = null;
+
+            var result = new List<DataLoaderViewModel<WalletProcessDataViewModel>>();
+
+            foreach (var wallet in WalletList.Data ?? new())
+            {
+                var address = wallet.Address;
+                var processData = new DataLoaderViewModel<WalletProcessDataViewModel>();
+                processData.Data = new WalletProcessDataViewModel { Address = address };
+
+                processData.DataLoader.LoadAsync(() =>
+                {
+                    return memoryDataCache!.GetAsync($"{nameof(LoadProcessesDataList)}-{address}", async () =>
+                    {
+                        var data = await graphqlClient.GetAoProcessesForAddress(address);
+                        return new WalletProcessDataViewModel() { Address = address, Processes = data };
+                    }, TimeSpan.FromMinutes(1));
+
+                   
+                }, (x) => { processData.Data = x; ProcessesDataList.ForcePropertyChanged(); });
+                result.Add(processData);
+            }
+
+            ProcessesDataList.Data = result;
+
+            return result;
+
+        });
 
 
         public async Task LoadWalletList(bool force = false)
@@ -216,6 +249,8 @@ namespace aoWebWallet.ViewModels
             {
                 var list = await storageService.GetWallets();
                 WalletList.Data = list;
+
+                await LoadProcessesDataList();
             }
         }
 

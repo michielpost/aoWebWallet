@@ -36,7 +36,7 @@
             <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
                 <MudIconButton Class="mt-1" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
             </MudTooltip>
-            @if(BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
+            @if (BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
             {
                 <MudTooltip Text="Add as readonly wallet" Arrow="true" Placement="Placement.Left">
                     <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
@@ -69,7 +69,7 @@
                                 <MudButton aria-label="claim token" OnClick="Claim1" Disabled="!BindingContext.CanClaim1 || BindingContext.UserSettings.Claimed1">Claim Reward (1/3)</MudButton>
                             }
 
-                            if(BindingContext.UserSettings.Claimed2)
+                            if (BindingContext.UserSettings.Claimed2)
                             {
                                 <MudIcon Class="margin-rewards-button" Icon="@Icons.Material.Filled.Star" Title="Claim 2" />
                             }
@@ -88,8 +88,8 @@
     }
 
     <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-2">
-@*         <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-            <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
+        @*         <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
+        <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
         </MudTooltip> *@
         <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
             <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
@@ -147,31 +147,64 @@
 
     </MudStack>
 
+    <MudGrid Spacing="6">
+        <MudItem xs="12" sm="8">
+            <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
 
-    <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-4">
-        <MudTooltip Text="Refresh transactions" Arrow="true" Placement="Placement.Left">
-            <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
-        </MudTooltip>
-
-    </MudContainer>
-    <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
-
-    <MudStack>
-        @if (BindingContext.TokenTransferList.Data != null)
-        {
-            <MudText Typo="Typo.h5">Transactions</MudText>
-
-
-            <MudTimeline TimelinePosition="TimelinePosition.Left">
-                @foreach (var transfer in BindingContext.TokenTransferList.Data)
+            <MudStack>
+                @if (BindingContext.TokenTransferList.Data != null)
                 {
-                   <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedAddress" />
-                }
-            </MudTimeline>
+                    <MudStack Row="true">
+                        <MudText Typo="Typo.h5">Transactions</MudText>
+                        <MudSpacer />
+                        <MudTooltip Text="Refresh transactions" Arrow="true" Placement="Placement.Left">
+                            <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
+                        </MudTooltip>
+                    </MudStack>
 
+                    <MudTimeline TimelinePosition="TimelinePosition.Left">
+                        @foreach (var transfer in BindingContext.TokenTransferList.Data)
+                        {
+                            <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedAddress" />
+                        }
+                    </MudTimeline>
+
+                }
+
+            </MudStack>
+        </MudItem>
+
+        @{
+            var processes = BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == BindingContext.SelectedAddress).FirstOrDefault();
+        }
+        @if (processes?.Data?.Processes.Any() ?? false)
+        {
+            <MudItem xs12 sm="4">
+                <MudStack>
+
+                    <MudText Typo="Typo.h5">AOS</MudText>
+                    <MudText Typo="Typo.subtitle1">List of owned AOS processes</MudText>
+
+
+                    <MudTimeline TimelinePosition="TimelinePosition.Left">
+                        @foreach (var process in processes.Data.Processes)
+                        {
+                            var linkUrl = $"/wallet/{process.Id}";
+                            <MudStack Row=true>
+                                <MudText>@process.Name</MudText>
+                                <MudSpacer />
+                                <MudLink Href="@linkUrl">@process.Id.ToShortAddress()</MudLink>
+                            </MudStack>
+                        }
+                    </MudTimeline>
+
+
+                </MudStack>
+            </MudItem>
         }
 
-    </MudStack>
+    </MudGrid>
+
 </MudContainer>
 
 
@@ -208,7 +241,7 @@
 
     private async Task RefreshTransactions()
     {
-        if(BindingContext.SelectedAddress != null)
+        if (BindingContext.SelectedAddress != null)
             await BindingContext.LoadTokenTransferList(BindingContext.SelectedAddress);
     }
 

@@ -8,6 +8,7 @@ namespace aoWebWallet.Pages
         {
             WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
+            WatchDataLoaderVM(BindingContext.ProcessesDataList);
 
             base.OnInitialized();
         }

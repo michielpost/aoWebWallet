@@ -70,6 +70,27 @@ namespace aoWebWallet.Services
             return transaction;
         }
 
+        private static AoProcessInfo? GetAoProcessInfo(Edge edge)
+        {
+            if (edge == null || edge.Node == null)
+                return null;
+
+
+            var name = edge.Node.Tags.Where(x => x.Name == "Name").Select(x => x.Value).FirstOrDefault();
+            if (string.IsNullOrEmpty(name))
+                return null;
+
+            var processInfo = new AoProcessInfo()
+            {
+                Id = edge.Node.Id,
+                Name = name,
+            };
+
+            processInfo.Version = edge.Node.Tags.Where(x => x.Name == "Version").Select(x => x.Value).FirstOrDefault();
+
+            return processInfo;
+        }
+
         public async Task<List<TokenTransfer>> GetTransactionsOut(string adddress, string? fromTxId = null)
         {
             string query = "query {\r\n  transactions(\r\n    first: 100\r\n    sort: HEIGHT_DESC\r\n owners: [\"" + adddress + "\"]\r\n    tags: [\r\n      { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
@@ -119,6 +140,24 @@ namespace aoWebWallet.Services
 
                 if (transaction != null)
                     result.Add(transaction);
+            }
+
+            return result;
+        }
+
+        public async Task<List<AoProcessInfo>> GetAoProcessesForAddress(string address)
+        {
+            string query = "query {\r\n    transactions(\r\n      first: 100,\r\n      owners: [\"" + address + "\"],\r\n      tags: [\r\n        { name: \"Data-Protocol\", values: [\"ao\"] },\r\n        { name: \"Type\", values: [\"Process\"]},\r\n        { name: \"App-Name\", values: [\"aos\"]},\r\n        \r\n      ]\r\n    ) {\r\n      edges {\r\n        node {\r\n          id\r\n          tags {\r\n          name\r\n          value\r\n        }\r\n        }\r\n      }\r\n    }\r\n  }";
+            var queryResult = await PostQueryAsync(query);
+
+            var result = new List<AoProcessInfo>();
+
+            foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
+            {
+                AoProcessInfo? processInfo = GetAoProcessInfo(edge);
+
+                if (processInfo != null)
+                    result.Add(processInfo);
             }
 
             return result;
