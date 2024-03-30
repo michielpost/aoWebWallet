@@ -195,4 +195,14 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
     display: block;
 }
 
+.mud-avatar>.mud-image.aos-process {
+    width: 40%;
+    height: 20%;
+}
+
+.mud-avatar.mud-avatar-medium {
+    width: 35px !important;
+    height: 35px !important;
+}
+
 

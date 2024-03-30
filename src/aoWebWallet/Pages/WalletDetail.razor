@@ -147,18 +147,18 @@
 
     </MudStack>
 
-    <MudGrid Spacing="6">
-        <MudItem xs="12" sm="8">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" sm="6">
             <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
 
             <MudStack>
                 @if (BindingContext.TokenTransferList.Data != null)
                 {
-                    <MudStack Row="true">
+                    <MudStack Row="true" style="display: block !important;">
                         <MudText Typo="Typo.h5">Transactions</MudText>
                         <MudSpacer />
-                        <MudTooltip Text="Refresh transactions" Arrow="true" Placement="Placement.Left">
-                            <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
+                        <MudTooltip Text="Refresh transactions" Arrow="true" Placement="Placement.Right">
+                            <MudIconButton Class="ml-6" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
                         </MudTooltip>
                     </MudStack>
 
@@ -168,40 +168,40 @@
                             <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedAddress" />
                         }
                     </MudTimeline>
-
                 }
-
             </MudStack>
         </MudItem>
 
         @if (BindingContext.SelectedProcessData?.Data?.Processes.Any() ?? false)
         {
-            <MudItem xs12 sm="4">
-                <MudStack>
-
+            <MudItem xs="12" sm="6">
+                <MudStack
                     <MudText Typo="Typo.h5">AOS</MudText>
                     <MudText Typo="Typo.subtitle1">List of owned AOS processes</MudText>
-
-
                     <MudTimeline TimelinePosition="TimelinePosition.Left">
                         @foreach (var process in BindingContext.SelectedProcessData.Data.Processes)
                         {
                             var linkUrl = $"/wallet/{process.Id}";
-                            <MudStack Row=true>
-                                <MudText>@process.Name</MudText>
-                                <MudSpacer />
-                                <MudLink Href="@linkUrl">@process.Id.ToShortAddress()</MudLink>
-                            </MudStack>
+                            <MudTimelineItem>
+                                <ItemDot>
+                                    <MudAvatar Color="Color.Secondary" Variant="Variant.Outlined">
+                                        <MudImage title="AO Process"  class="aos-process" Src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTEuOTciIHZpZXdCb3g9IjAgMCA0MjkgMjE0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMCAyMTRINzEuMzc2M0w4NS45NDI5IDE3NC42MUw1My4xNjgxIDEwNy41TDAgMjE0WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTE4OS4zNjYgMTYwLjc1TDEwOS45NzggMUw4NS45NDI5IDU1LjcwODlMMTYwLjk2MSAyMTRIMjE1TDE4OS4zNjYgMTYwLjc1WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zMjIgMjE0QzM4MS4wOTQgMjE0IDQyOSAxNjYuMDk0IDQyOSAxMDdDNDI5IDQ3LjkwNTUgMzgxLjA5NCAwIDMyMiAwQzI2Mi45MDYgMCAyMTUgNDcuOTA1NSAyMTUgMTA3QzIxNSAxNjYuMDk0IDI2Mi45MDYgMjE0IDMyMiAyMTRaTTMyMiAxNzJDMzU3Ljg5OSAxNzIgMzg3IDE0Mi44OTkgMzg3IDEwN0MzODcgNzEuMTAxNSAzNTcuODk5IDQyIDMyMiA0MkMyODYuMTAxIDQyIDI1NyA3MS4xMDE1IDI1NyAxMDdDMjU3IDE0Mi44OTkgMjg2LjEwMSAxNzIgMzIyIDE3MloiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPg==" Elevation="25" />
+                                    </MudAvatar>
+                                </ItemDot>
+                                <ItemContent>
+                                    <MudStack Row=true>
+                                        <MudText>@process.Name</MudText>
+                                        <MudSpacer /><br />
+                                        <MudLink Href="@linkUrl">@process.Id.ToShortAddress()</MudLink>
+                                    </MudStack>
+                                </ItemContent>
+                            </MudTimelineItem>
                         }
                     </MudTimeline>
-
-
                 </MudStack>
             </MudItem>
         }
-
     </MudGrid>
-
 </MudContainer>
 
 
