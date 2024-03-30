@@ -1,9 +1,6 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-
-
-
 .KodeMono {
     font-family: "Kode Mono", monospace !important;
     font-optical-sizing: auto;
@@ -195,15 +192,15 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
     display: block;
 }
 
+.mud-avatar.mud-avatar-medium {
+    width: 35px !important;
+    height: 35px !important;
+}
+
 .mud-avatar>.mud-image.aos-process {
     width: 16px;
     height: 16px;
     object-fit: contain;
-}
-
-.mud-avatar.mud-avatar-medium {
-    width: 35px !important;
-    height: 35px !important;
 }
 
 
