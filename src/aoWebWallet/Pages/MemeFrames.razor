@@ -1,0 +1,64 @@
+﻿@page "/meme-frames"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudText Class="mb-4" Typo="Typo.h5">Meme Frames</MudText>
+
+    <MudGrid Spacing="2" Justify="Justify.Center">
+        <MudItem xs="12" sm="4">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderAvatar>
+                        <MudAvatar Color="Color.Secondary">I</MudAvatar>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.body1">Name: MEME</MudText>
+                        <MudText Typo="Typo.body2">Creator: Andy Tudhope</MudText>
+                        <MudText Typo="Typo.body2">  Mint cap: 1,000,000 CRED   </MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Class="pb-0">
+                    <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                            <b>25%</b>
+                        </MudText>
+                    </MudProgressLinear>
+                    <MudText Class="mb-2" Typo="Typo.body2">
+                     Theme: The zeroth memecoin minted on ao: winner of hackathon prizes, poet of iframes, informer of votes, verifier of processes, pilgrim of the hyper parallel spaces between, believer in dreams, drafter of the dankest memes.
+                    </MudText>
+                    <MudTextField Class="mt-0" T="string" Label="Amount" HelperText="The amount to perform below action" HelperTextOnFocus="true" Variant="Variant.Text" />
+                </MudCardContent>
+
+                 <MudCardActions>
+                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                        <MudButton>Mint</MudButton>
+                        <MudButton Disabled="true">Stake</MudButton>
+                        <MudButton Disabled="true">Yay</MudButton>
+                        <MudButton Disabled="true">Nay</MudButton>
+                    </MudButtonGroup>
+                </MudCardActions>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="4">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">.</MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="4">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">.</MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code
+{
+
+
+}
