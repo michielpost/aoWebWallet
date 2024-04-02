@@ -16,8 +16,18 @@
                 <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
                     @Address
                 </MudText>
-                <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
-                @if (BindingContext.SelectedWallet?.NeedsBackup ?? false)
+                <MudStack Row="true">
+                    @if (BindingContext.SelectedWallet?.IsConnected ?? false)
+                    {
+                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                    }
+                    <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Wallet.Name</MudText>
+                    @if (BindingContext.SelectedWallet?.Wallet.OwnerAddress != null)
+                    {
+                        <MudChip>owner: @BindingContext.SelectedWallet?.Wallet.OwnerAddress</MudChip>
+                    }
+                </MudStack>
+                @if (BindingContext.SelectedWallet?.Wallet.NeedsBackup ?? false)
                 {
                     <MudStack Row="true">
                         <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
@@ -25,18 +35,18 @@
                     </MudStack>
                 }
             </MudStack>
-            <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Address); }" />
+            <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Wallet.Address); }" />
             <MudSpacer />
-            @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Jwk))
+            @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.Jwk))
             {
                 <MudTooltip Text="Download wallet file" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet); }"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet.Wallet); }"></MudIconButton>
                 </MudTooltip>
             }
             <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
                 <MudIconButton Class="mt-1" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
             </MudTooltip>
-            @if (BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
+            @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
             {
                 <MudTooltip Text="Add as readonly wallet" Arrow="true" Placement="Placement.Left">
                     <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
@@ -45,7 +55,7 @@
         </MudStack>
     </MudPaper>
 
-    @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
+    @if (BindingContext.SelectedWallet?.IsConnected ?? false)
     {
         <MudPaper>
             <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex mb-4 pr-4">

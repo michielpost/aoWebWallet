@@ -157,7 +157,7 @@
         }
 
         long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
-        var result = await BindingContext.SendToken(BindingContext.SelectedWallet, BindingContext.SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
+        var result = await BindingContext.SendToken(BindingContext.SelectedWallet.Wallet, BindingContext.SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
         TransactionId = result?.Id;
 
         if (!string.IsNullOrEmpty(BindingContext.SelectedAddress))

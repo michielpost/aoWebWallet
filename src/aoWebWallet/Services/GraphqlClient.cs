@@ -61,9 +61,13 @@ namespace aoWebWallet.Services
             else
                 transaction.Timestamp = DateTimeOffset.UtcNow;
 
+            var fromProcess = edge.Node.Tags.Where(x => x.Name == "From-Process").Select(x => x.Value).FirstOrDefault();
+            if (!string.IsNullOrEmpty(fromProcess))
+                transaction.From = fromProcess;
+
             transaction.TokenId = edge.Node.Recipient;
             transaction.To = edge.Node.Tags.Where(x => x.Name == "Recipient").Select(x => x.Value).FirstOrDefault();
-
+            
             string? quantity = edge.Node.Tags.Where(x => x.Name == "Quantity").Select(x => x.Value).FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(quantity) && long.TryParse(quantity, out long quantityLong))
                 transaction.Quantity = quantityLong;
@@ -83,6 +87,7 @@ namespace aoWebWallet.Services
             var processInfo = new AoProcessInfo()
             {
                 Id = edge.Node.Id,
+                Owner = edge.Node.Owner?.Address,
                 Name = name,
             };
 
@@ -94,6 +99,24 @@ namespace aoWebWallet.Services
         public async Task<List<TokenTransfer>> GetTransactionsOut(string adddress, string? fromTxId = null)
         {
             string query = "query {\r\n  transactions(\r\n    first: 100\r\n    sort: HEIGHT_DESC\r\n owners: [\"" + adddress + "\"]\r\n    tags: [\r\n      { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
+            var queryResult = await PostQueryAsync(query);
+
+            var result = new List<TokenTransfer>();
+
+            foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
+            {
+                TokenTransfer? transaction = GetTransaction(edge);
+
+                if (transaction != null)
+                    result.Add(transaction);
+            }
+
+            return result;
+        }
+
+        public async Task<List<TokenTransfer>> GetTransactionsOutFromProcess(string address, string? fromTxId = null)
+        {
+            string query = "query {\r\n  transactions(\r\n    first: 100\r\n    sort: HEIGHT_DESC\r\n tags: [\r\n   { name: \"From-Process\", values: [\"" + address + "\"] }\r\n    { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<TokenTransfer>();
@@ -163,10 +186,23 @@ namespace aoWebWallet.Services
             return result;
         }
 
-        //public async Task GetTransactionsForToken(string tokenId, string fromTxId)
-        //{
+        public async Task<AoProcessInfo?> GetOwnerForAoProcessAddress(string address)
+        {
+            string query = "query {\r\n    transactions(\r\n      first: 50,\r\n      ids: [\"" + address + "\"],\r\n      tags: [\r\n        { name: \"Data-Protocol\", values: [\"ao\"] },\r\n        { name: \"Type\", values: [\"Process\"]},\r\n        { name: \"App-Name\", values: [\"aos\"]},\r\n        \r\n      ]\r\n    ) {\r\n      edges {\r\n        node {\r\n          id\r\n        \towner {\r\n         \t address\r\n        \t}\r\n          tags {\r\n          name\r\n          value\r\n        }\r\n        }\r\n      }\r\n    }\r\n  }";
+            var queryResult = await PostQueryAsync(query);
 
-        //}
+            var result = new List<AoProcessInfo>();
+
+            foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
+            {
+                AoProcessInfo? processInfo = GetAoProcessInfo(edge);
+
+                if (processInfo != null)
+                    result.Add(processInfo);
+            }
+
+            return result.FirstOrDefault();
+        }
 
         protected async Task<GraphqlResponse?> PostQueryAsync(string query)
         {

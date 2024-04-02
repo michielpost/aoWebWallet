@@ -1,4 +1,5 @@
-﻿using aoWebWallet.Models;
+﻿using aoWebWallet.Extensions;
+using aoWebWallet.Models;
 using aoWebWallet.Pages;
 using aoWebWallet.Services;
 using ArweaveAO;
@@ -9,7 +10,7 @@ using ClipLazor.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MudBlazor;
-using System.Net;
+using System.Text.Json;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
 
@@ -45,7 +46,7 @@ namespace aoWebWallet.ViewModels
         private string? selectedAddress;
 
         [ObservableProperty]
-        private Wallet? selectedWallet;
+        private WalletDetailsViewModel? selectedWallet;
 
         [ObservableProperty]
         private int? selectedWalletIndex;
@@ -117,8 +118,9 @@ namespace aoWebWallet.ViewModels
 
             var incoming = await graphqlClient.GetTransactionsIn(address);
             var outgoing = await graphqlClient.GetTransactionsOut(address);
+            var outgoingProcess = await graphqlClient.GetTransactionsOutFromProcess(address);
 
-            var all = incoming.Concat(outgoing);
+            var all = incoming.Concat(outgoing).Concat(outgoingProcess);
 
             TokenTransferList.Data = all.OrderByDescending(x => x.Timestamp).ToList();
 
@@ -174,7 +176,7 @@ namespace aoWebWallet.ViewModels
 
                 SelectedTransaction.Data = result;
 
-                if(result != null)
+                if (result != null)
                     TryAddTokenIds(new List<string?>() { result.TokenId });
 
                 return result;
@@ -197,12 +199,12 @@ namespace aoWebWallet.ViewModels
             foreach (var token in tokens.Where(x => x.IsVisible))
             {
                 var balanceData = new DataLoaderViewModel<BalanceDataViewModel>();
-                balanceData.Data = new BalanceDataViewModel {  Token = token };
+                balanceData.Data = new BalanceDataViewModel { Token = token };
 
                 balanceData.DataLoader.LoadAsync(async () =>
                 {
                     var balanceData = await tokenClient.GetBalance(token.TokenId, address);
-                    return new BalanceDataViewModel() {  BalanceData = balanceData, Token = token };
+                    return new BalanceDataViewModel() { BalanceData = balanceData, Token = token };
                 }, (x) => { balanceData.Data = x; BalanceDataList.ForcePropertyChanged(); });
                 result.Add(balanceData);
             }
@@ -233,7 +235,7 @@ namespace aoWebWallet.ViewModels
                         return new WalletProcessDataViewModel() { Address = address, Processes = data };
                     }, TimeSpan.FromMinutes(1));
 
-                   
+
                 }, (x) => { processData.Data = x; ProcessesDataList.ForcePropertyChanged(); });
                 result.Add(processData);
             }
@@ -252,7 +254,7 @@ namespace aoWebWallet.ViewModels
             SelectedProcessData.Data = null;
 
             var address = SelectedAddress;
-            
+
             SelectedProcessData.Data = new WalletProcessDataViewModel { Address = address };
 
             SelectedProcessData.DataLoader.LoadAsync(() =>
@@ -267,13 +269,64 @@ namespace aoWebWallet.ViewModels
             }, (x) => { SelectedProcessData.Data = x; });
         }
 
+        public async Task LoadSelectedWalletOwnerData()
+        {
+            if (string.IsNullOrEmpty(SelectedAddress))
+                return;
+
+            if (SelectedWallet?.Wallet.OwnerAddress != null)
+            {
+                CheckCanOwnerOfSelectedWalletSend();
+                return;
+            }
+
+            var address = SelectedAddress;
+
+            var ownerAddress = await memoryDataCache!.GetAsync($"{nameof(LoadSelectedWalletOwnerData)}-{address}", async () =>
+            {
+                var data = await graphqlClient.GetOwnerForAoProcessAddress(address);
+                return data?.Owner;
+            }, TimeSpan.FromMinutes(1));
+
+            if (SelectedWallet != null)
+                SelectedWallet.Wallet.OwnerAddress = ownerAddress;
+
+            CheckCanOwnerOfSelectedWalletSend();
+        }
+
+        private void CheckCanOwnerOfSelectedWalletSend()
+        {
+            if (!string.IsNullOrEmpty(SelectedWallet?.Wallet.OwnerAddress))
+            {
+                var owner = WalletList.Data?.Where(x => x.Address == SelectedWallet.Wallet.OwnerAddress).FirstOrDefault();
+                if (owner != null)
+                {
+                    var details = new WalletDetailsViewModel(owner);
+                    var canOwnerSend = details?.CanSend ?? false;
+                    SelectedWallet.OwnerCanSend = canOwnerSend;
+                }
+            }
+        }
 
         public async Task LoadWalletList(bool force = false)
         {
             if (WalletList.Data == null || force)
             {
                 var list = await storageService.GetWallets();
+
+                //foreach (var wallet in list)
+                //{
+                //    if(wallet.Source == WalletTypes.AoProcess && !string.IsNullOrEmpty(wallet.OwnerAddress))
+                //    {
+                //        var owner = list.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+                //        var canOwnerSend = owner?.CanSend ?? false;
+                //        wallet.OwnerCanSend = canOwnerSend;
+                //    }
+                //}
+
                 WalletList.Data = list;
+
+               
 
                 await LoadProcessesDataList();
             }
@@ -284,7 +337,7 @@ namespace aoWebWallet.ViewModels
             BalanceDataList.Data = null;
             var newToken = await storageService.AddToken(tokenId, data, isUserAdded);
             var existing = TokenList.Data?.Where(x => x.TokenId == newToken.TokenId).FirstOrDefault();
-            if(existing == null)
+            if (existing == null)
             {
                 if (TokenList.Data == null)
                     TokenList.Data = new();
@@ -297,7 +350,7 @@ namespace aoWebWallet.ViewModels
                 existing = newToken;
             }
 
-            if(!string.IsNullOrEmpty(SelectedAddress))
+            if (!string.IsNullOrEmpty(SelectedAddress))
             {
                 await LoadBalanceDataList(SelectedAddress);
             }
@@ -320,7 +373,7 @@ namespace aoWebWallet.ViewModels
         {
             var all = TokenList.Data ?? new();
             var token = all.Where(x => x.TokenId == tokenId).FirstOrDefault();
-            if(token != null)
+            if (token != null)
             {
                 token.IsVisible = !token.IsVisible;
                 await storageService.SaveTokenList(all);
@@ -353,7 +406,7 @@ namespace aoWebWallet.ViewModels
             if (this.WalletList.Data != null)
             {
                 var selected = this.WalletList.Data.Where(x => x.Address == address).FirstOrDefault();
-                if(selected != null)
+                if (selected != null)
                 {
                     selected.LastBackedUpDate = DateTimeOffset.UtcNow;
                     await storageService.SaveWalletList(this.WalletList.Data);
@@ -379,7 +432,7 @@ namespace aoWebWallet.ViewModels
 
         private async Task TryAddTokenIds(List<string?> allTokenIds)
         {
-           foreach(var tokenId in allTokenIds)
+            foreach (var tokenId in allTokenIds)
             {
                 if (string.IsNullOrEmpty(tokenId))
                     continue;
@@ -401,9 +454,15 @@ namespace aoWebWallet.ViewModels
         {
             SelectWallet(value);
             LoadSelectedWalletProcessData();
+            LoadSelectedWalletOwnerData();
 
             if (value != null)
                 this.AddToLog(ActivityLogType.ViewAddress, value);
+        }
+
+        partial void OnSelectedWalletChanged(WalletDetailsViewModel? value)
+        {
+            CheckHasArConnectExtension();
         }
 
         private async Task SelectWallet(string? address)
@@ -419,7 +478,7 @@ namespace aoWebWallet.ViewModels
                 var current = all.Where(x => x.Address == address).FirstOrDefault();
                 if (current != null)
                 {
-                    SelectedWallet = current;
+                    SelectedWallet = new WalletDetailsViewModel(current);
                     var indexOf = all.IndexOf(current);
                     SelectedWalletIndex = (indexOf % 5) + 1;
 
@@ -430,18 +489,17 @@ namespace aoWebWallet.ViewModels
                     {
                         Address = address,
                         AddedDate = DateTimeOffset.Now,
-                        IsConnected = false,
-                        IsReadOnly = true,
                         LastUsedDate = DateTimeOffset.UtcNow,
                         Name = null,
                         Source = WalletTypes.Explorer
                     };
-                    SelectedWallet = tempWallet;
+                    SelectedWallet = new WalletDetailsViewModel(tempWallet);
                     SelectedWalletIndex = 5;
                 }
 
                 this.LoadBalanceDataList(address);
                 this.LoadTokenTransferList(address);
+
             }
             else
             {
@@ -499,13 +557,16 @@ namespace aoWebWallet.ViewModels
 
         public async Task AddWalletAsReadonly()
         {
-            if(SelectedWallet != null)
+            if (SelectedWallet != null)
             {
-                SelectedWallet.Source = WalletTypes.Manual;
-                await storageService.SaveWallet(SelectedWallet);
+                SelectedWallet.Wallet.Source = WalletTypes.Manual;
+                if(SelectedWallet.Wallet.OwnerAddress != null)
+                    SelectedWallet.Wallet.Source = WalletTypes.AoProcess;
+
+                await storageService.SaveWallet(SelectedWallet.Wallet);
                 await LoadWalletList(force: true);
 
-                snackbar.Add("Wallet added to list as read-only wallet.", Severity.Info);
+                snackbar.Add("Wallet added to list.", Severity.Info);
 
             }
         }
@@ -526,7 +587,7 @@ namespace aoWebWallet.ViewModels
 
         public async Task Claim1()
         {
-            if(UserSettings != null)
+            if (UserSettings != null)
             {
                 var tx = await Claim(1);
                 if (tx != null && !string.IsNullOrEmpty(tx.Id))
@@ -536,7 +597,7 @@ namespace aoWebWallet.ViewModels
 
                     snackbar.Add("Claim 1 successful. You received 10 AOWW!", Severity.Info);
 
-                    if(SelectedAddress != null)
+                    if (SelectedAddress != null)
                         await LoadBalanceDataList(this.SelectedAddress);
 
                 }
@@ -607,32 +668,24 @@ namespace aoWebWallet.ViewModels
 
         public async Task GetActiveArConnectAddress()
         {
-            if (this.WalletList.Data != null)
-            {
-                var wallets = this.WalletList.Data.Where(x => x.IsConnected && x.Source == WalletTypes.ArConnect);
-                foreach (var wallet in wallets)
-                {
-                    wallet.IsConnected = false;
-                }
-                this.WalletList.ForcePropertyChanged();
-                await storageService.SaveWalletList(this.WalletList.Data);
-            }
+            //if (this.WalletList.Data != null)
+            //{
+            //    var wallets = this.WalletList.Data.Where(x => x.IsConnected && x.Source == WalletTypes.ArConnect);
+            //    foreach (var wallet in wallets)
+            //    {
+            //        wallet.IsConnected = false;
+            //    }
+            //    this.WalletList.ForcePropertyChanged();
+            //    await storageService.SaveWalletList(this.WalletList.Data);
+            //}
 
             if (HasArConnectExtension.HasValue && HasArConnectExtension.Value)
             {
                 ActiveArConnectAddress = await arweaveService.GetActiveAddress();
 
-                if (this.WalletList.Data != null)
+                if (this.SelectedWallet != null)
                 {
-                    var wallets = this.WalletList.Data.Where(x => !x.IsConnected
-                        && x.Source == WalletTypes.ArConnect
-                        && x.Address == ActiveArConnectAddress);
-                    foreach (var wallet in wallets)
-                    {
-                        wallet.IsConnected = true;
-                    }
-                    this.WalletList.ForcePropertyChanged();
-                    await storageService.SaveWalletList(this.WalletList.Data);
+                    this.SelectedWallet.IsConnected = SelectedWallet.Wallet.Address == ActiveArConnectAddress;
                 }
             }
         }
@@ -659,6 +712,13 @@ namespace aoWebWallet.ViewModels
             if (wallet.Source == WalletTypes.ArConnect)
                 return SendTokenWithArConnect(tokenId, address, amount);
 
+            if (!string.IsNullOrEmpty(wallet.OwnerAddress))
+            {
+                var ownerWallet = WalletList.Data!.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+                return SendTokenWithEval(ownerWallet?.Jwk, wallet.Address, tokenId, address, amount);
+
+            }
+
             if (!string.IsNullOrEmpty(wallet.Jwk))
                 return SendTokenWithJwk(wallet.Jwk, tokenId, address, amount);
 
@@ -666,7 +726,35 @@ namespace aoWebWallet.ViewModels
 
         }
 
-        public Task<Transaction?> SendTokenWithJwk(string jwk, string tokenId, string address, long amount)
+        public Task<Transaction?> SendTokenWithEval(string? jwk, string processId, string tokenId, string address, long amount)
+          => LastTransactionId.DataLoader.LoadAsync(async () =>
+          {
+
+              var transferTags = new List<ArweaveBlazor.Models.Tag>
+              {
+                    new ArweaveBlazor.Models.Tag() { Name = "Target", Value = tokenId},
+                    new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Transfer"},
+                    new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
+                    new ArweaveBlazor.Models.Tag() { Name = "Recipient", Value = address},
+                    new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = amount.ToString()},
+              };
+
+
+
+              var data = $"Send({transferTags.ToSendCommand()})";
+
+              var evalTags = new List<ArweaveBlazor.Models.Tag>
+              {
+                    new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Eval"},
+                    new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
+              };
+
+              var idResult = await arweaveService.SendAsync(jwk, processId, data, evalTags);
+
+              return new Transaction { Id = idResult };
+          });
+
+        public Task<Transaction?> SendTokenWithJwk(string? jwk, string tokenId, string address, long amount)
            => LastTransactionId.DataLoader.LoadAsync(async () =>
            {
                var idResult = await arweaveService.SendAsync(jwk, tokenId, null, new List<ArweaveBlazor.Models.Tag>
@@ -687,15 +775,7 @@ namespace aoWebWallet.ViewModels
                 if (string.IsNullOrEmpty(ActiveArConnectAddress))
                     return null;
 
-                var idResult = await arweaveService.SendAsync(null, tokenId, null, new List<ArweaveBlazor.Models.Tag>
-            {
-                new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Transfer"},
-                new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
-                new ArweaveBlazor.Models.Tag() { Name = "Recipient", Value = address},
-                new ArweaveBlazor.Models.Tag() { Name = "Quantity", Value = amount.ToString()},
-            });
-
-                return new Transaction { Id = idResult };
+                return await SendTokenWithJwk(null, tokenId, address, amount);
             });
 
         public Task<Transaction?> Claim(int claim)
@@ -716,7 +796,7 @@ namespace aoWebWallet.ViewModels
 
         public async Task SetIsDarkMode(bool isDarkMode)
         {
-            if(UserSettings != null)
+            if (UserSettings != null)
             {
                 UserSettings.IsDarkMode = isDarkMode;
                 await SaveUserSettings();

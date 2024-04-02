@@ -56,10 +56,7 @@
                                         <MudText Typo="Typo.body2">read-only &nbsp;</MudText>
                                     }
                                     <MudText Typo="Typo.body2">@wallet.Name</MudText>
-                                    @if (wallet.IsConnected)
-                                    {
-                                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
-                                    }
+                                   
                                     @if (wallet.NeedsBackup)
                                     {
                                         <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
