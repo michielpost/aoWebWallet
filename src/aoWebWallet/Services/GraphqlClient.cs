@@ -96,9 +96,39 @@ namespace aoWebWallet.Services
             return processInfo;
         }
 
-        public async Task<List<TokenTransfer>> GetTransactionsOut(string adddress, string? fromTxId = null)
+        public async Task<List<TokenTransfer>> GetTransactionsOut(string address, string? fromTxId = null)
         {
-            string query = "query {\r\n  transactions(\r\n    first: 100\r\n    sort: HEIGHT_DESC\r\n owners: [\"" + adddress + "\"]\r\n    tags: [\r\n      { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
+            string query = $$"""
+                                query {
+                                  transactions(
+                                    first: 100
+                                    sort: HEIGHT_DESC
+                                    owners: ["{{address}}"]
+                                    tags: [
+                                      { name: "Data-Protocol", values: ["ao"] }
+                                      { name: "Action", values: ["Transfer"] }
+                                    ]
+                                  ) {
+                                    edges {
+                                      node {
+                                        id
+                                        recipient
+                                        owner {
+                                          address
+                                        }
+                                        block {
+                                          timestamp
+                                          height
+                                        }
+                                        tags {
+                                          name
+                                          value
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                                """;
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<TokenTransfer>();
@@ -116,7 +146,38 @@ namespace aoWebWallet.Services
 
         public async Task<List<TokenTransfer>> GetTransactionsOutFromProcess(string address, string? fromTxId = null)
         {
-            string query = "query {\r\n  transactions(\r\n    first: 100\r\n    sort: HEIGHT_DESC\r\n tags: [\r\n   { name: \"From-Process\", values: [\"" + address + "\"] }\r\n    { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
+            string query = $$"""
+                query {
+                  transactions(
+                    first: 100
+                    sort: HEIGHT_DESC
+                    tags: [
+                      { name: "From-Process", values: ["{{address}}"] }
+                      { name: "Data-Protocol", values: ["ao"] }
+                      { name: "Action", values: ["Transfer"] }
+                    ]
+                  ) {
+                    edges {
+                      node {
+                        id
+                        recipient
+                        owner {
+                          address
+                        }
+                        block {
+                          timestamp
+                          height
+                        }
+                        tags {
+                          name
+                          value
+                        }
+                      }
+                    }
+                  }
+                }
+                
+                """;
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<TokenTransfer>();
@@ -134,7 +195,37 @@ namespace aoWebWallet.Services
 
         public async Task<TokenTransfer?> GetTransactionsById(string txId)
         {
-            string query = "query {\r\n  transactions(\r\n    first: 1\r\n sort: HEIGHT_DESC\r\n   ids: [\"" + txId + "\"]\r\n    tags: [\r\n      { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
+            string query = $$"""
+                query {
+                  transactions(
+                    first: 1
+                    sort: HEIGHT_DESC
+                    ids: ["{{txId}}"]
+                    tags: [
+                      { name: "Data-Protocol", values: ["ao"] }
+                      { name: "Action", values: ["Transfer"] }
+                    ]
+                  ) {
+                    edges {
+                      node {
+                        id
+                        recipient
+                        owner {
+                          address
+                        }
+                        block {
+                          timestamp
+                          height
+                        }
+                        tags {
+                          name
+                          value
+                        }
+                      }
+                    }
+                  }
+                }                
+                """;
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<TokenTransfer>();
@@ -152,7 +243,37 @@ namespace aoWebWallet.Services
 
         public async Task<List<TokenTransfer>> GetTransactionsForToken(string tokenId, string? fromTxId = null)
         {
-            string query = "query {\r\n  transactions(\r\n    first: 50\r\n sort: HEIGHT_DESC\r\n   recipients: [\"" + tokenId + "\"]\r\n    tags: [\r\n      { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
+            string query = $$"""
+                query {
+                  transactions(
+                    first: 50
+                    sort: HEIGHT_DESC
+                    recipients: ["{{tokenId}}"]
+                    tags: [
+                      { name: "Data-Protocol", values: ["ao"] }
+                      { name: "Action", values: ["Transfer"] }
+                    ]
+                  ) {
+                    edges {
+                      node {
+                        id
+                        recipient
+                        owner {
+                          address
+                        }
+                        block {
+                          timestamp
+                          height
+                        }
+                        tags {
+                          name
+                          value
+                        }
+                      }
+                    }
+                  }
+                }                
+                """;
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<TokenTransfer>();
@@ -170,10 +291,34 @@ namespace aoWebWallet.Services
 
         public async Task<List<AoProcessInfo>> GetAoProcessesForAddress(string address)
         {
-            string query = "query {\r\n    transactions(\r\n      first: 100,\r\n      owners: [\"" + address + "\"],\r\n      tags: [\r\n        { name: \"Data-Protocol\", values: [\"ao\"] },\r\n        { name: \"Type\", values: [\"Process\"]},\r\n        { name: \"App-Name\", values: [\"aos\"]},\r\n        \r\n      ]\r\n    ) {\r\n      edges {\r\n        node {\r\n          id\r\n          tags {\r\n          name\r\n          value\r\n        }\r\n        }\r\n      }\r\n    }\r\n  }";
+            string query = $$"""
+                query {
+                  transactions(
+                    first: 100
+                    owners: ["{{address}}"]
+                    tags: [
+                      { name: "Data-Protocol", values: ["ao"] }
+                      { name: "Type", values: ["Process"] }
+                      { name: "App-Name", values: ["aos"] }
+                    ]
+                  ) {
+                    edges {
+                      node {
+                        id
+                        tags {
+                          name
+                          value
+                        }
+                      }
+                    }
+                  }
+                }
+                """;
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<AoProcessInfo>();
+
+            Console.WriteLine("AOresult:" + (queryResult?.Data?.Transactions?.Edges.Count ?? 0).ToString());
 
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
@@ -188,7 +333,32 @@ namespace aoWebWallet.Services
 
         public async Task<AoProcessInfo?> GetOwnerForAoProcessAddress(string address)
         {
-            string query = "query {\r\n    transactions(\r\n      first: 50,\r\n      ids: [\"" + address + "\"],\r\n      tags: [\r\n        { name: \"Data-Protocol\", values: [\"ao\"] },\r\n        { name: \"Type\", values: [\"Process\"]},\r\n        { name: \"App-Name\", values: [\"aos\"]},\r\n        \r\n      ]\r\n    ) {\r\n      edges {\r\n        node {\r\n          id\r\n        \towner {\r\n         \t address\r\n        \t}\r\n          tags {\r\n          name\r\n          value\r\n        }\r\n        }\r\n      }\r\n    }\r\n  }";
+            string query = $$"""
+                query {
+                  transactions(
+                    first: 50
+                    ids: ["{{address}}"]
+                    tags: [
+                      { name: "Data-Protocol", values: ["ao"] }
+                      { name: "Type", values: ["Process"] }
+                      { name: "App-Name", values: ["aos"] }
+                    ]
+                  ) {
+                    edges {
+                      node {
+                        id
+                        owner {
+                          address
+                        }
+                        tags {
+                          name
+                          value
+                        }
+                      }
+                    }
+                  }
+                }                
+                """;
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<AoProcessInfo>();
