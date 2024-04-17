@@ -47,15 +47,9 @@ namespace aoWebWallet.Pages
             }
         }
 
-        internal async void ObjWatch_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        internal void ObjWatch_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             this.StateHasChanged();
-            await ChartRenderAsync();
-        }
-
-        protected virtual Task ChartRenderAsync()
-        {
-            return Task.CompletedTask;
         }
 
         protected virtual Task LoadDataAsync()

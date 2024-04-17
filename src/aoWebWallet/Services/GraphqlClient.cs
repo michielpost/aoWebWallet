@@ -318,8 +318,6 @@ namespace aoWebWallet.Services
 
             var result = new List<AoProcessInfo>();
 
-            Console.WriteLine("AOresult:" + (queryResult?.Data?.Transactions?.Edges.Count ?? 0).ToString());
-
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
                 AoProcessInfo? processInfo = GetAoProcessInfo(edge);

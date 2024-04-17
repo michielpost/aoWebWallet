@@ -326,8 +326,6 @@ namespace aoWebWallet.ViewModels
 
                 WalletList.Data = list;
 
-               
-
                 await LoadProcessesDataList();
             }
         }

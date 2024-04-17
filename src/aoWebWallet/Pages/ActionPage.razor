@@ -13,10 +13,11 @@
 
     <MudStack>
         TODO: Select a wallet, or create a new wallet
+        <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
 
         @if (BindingContext.WalletList.Data != null)
         {
-            if (BindingContext.WalletList.Data.Any())
+            if (!BindingContext.WalletList.Data.Any())
             {
                 <MudButton aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog">Add Wallet</MudButton>
             }

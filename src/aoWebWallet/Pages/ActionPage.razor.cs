@@ -14,7 +14,11 @@ namespace aoWebWallet.Pages
             GetQueryStringValues();
             WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
+            WatchDataLoaderVM(BindingContext.BalanceDataList);
+
             NavigationManager.LocationChanged += NavigationManager_LocationChanged;
+
+            base.OnInitialized();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -99,18 +103,20 @@ namespace aoWebWallet.Pages
 
        
 
-        public void Dispose()
+        public override void Dispose()
         {
             NavigationManager.LocationChanged -= NavigationManager_LocationChanged;
+
+            base.Dispose();
         }
 
-        protected override async Task LoadDataAsync()
-        {
-            await BindingContext.LoadTokenList();
+        //protected override async Task LoadDataAsync()
+        //{
+        //    await BindingContext.LoadTokenList();
 
-            await base.LoadDataAsync();
+        //    await base.LoadDataAsync();
 
-        }
+        //}
 
     }
 }
