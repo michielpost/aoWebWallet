@@ -13,7 +13,21 @@ namespace aoWebWallet.Pages
         {
             GetQueryStringValues();
             WatchDataLoaderVM(BindingContext.TokenList);
+            WatchDataLoaderVM(BindingContext.WalletList);
             NavigationManager.LocationChanged += NavigationManager_LocationChanged;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await BindingContext.CheckHasArConnectExtension();
+
+                await BindingContext.LoadWalletList();
+                await BindingContext.LoadTokenList();
+            }
+
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         private void NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
@@ -47,6 +61,10 @@ namespace aoWebWallet.Pages
                     string? actionValue = val.ToString();
                     ActionParamType actionParamType = ActionParamType.Filled;
 
+                    var actionValueSplit = actionValue.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    actionValue = actionValueSplit.FirstOrDefault();
+                    List<string> args = actionValueSplit.Skip(1).ToList();
+
                     if (key.Equals("Target", StringComparison.InvariantCultureIgnoreCase))
                         actionParamType = ActionParamType.Target;
                     if (key.Equals("X-Quantity", StringComparison.InvariantCultureIgnoreCase))
@@ -69,6 +87,7 @@ namespace aoWebWallet.Pages
                     {
                         Key = actionKey,
                         Value = actionValue,
+                        Args = args,
                         ParamType = actionParamType
                     });
 

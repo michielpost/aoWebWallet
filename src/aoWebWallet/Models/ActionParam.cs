@@ -24,7 +24,10 @@
         public required string Key { get; set; }
         public string? Value { get; set; }
 
-        public string? TokenId { get; set; }
+        /// <summary>
+        /// Arguments (like TokenId)
+        /// </summary>
+        public List<string> Args { get; set; } = new();
 
         public ActionParamType ParamType { get; set; }
 
@@ -38,7 +41,7 @@
         Input,
         Integer,
         Process,
-        Balance, //Must have balance
-        Quantity, //Does not care about balance
+        Balance, //Arg1: TokenId //Must have balance
+        Quantity, //Arg1: TokenId //Does not care about balance
     }
 }

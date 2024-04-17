@@ -11,18 +11,55 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h5">Action Page</MudText>
 
-   <MudStack>
-       TODO: Select a wallet, or create a new wallet
-   </MudStack>
+    <MudStack>
+        TODO: Select a wallet, or create a new wallet
+
+        @if (BindingContext.WalletList.Data != null)
+        {
+            if (BindingContext.WalletList.Data.Any())
+            {
+                <MudButton aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog">Add Wallet</MudButton>
+            }
+            else
+            {
+                <MudSelect @bind-Value="@selectedWallet" Label="Select a wallet" Variant="Variant.Outlined" MaxHeight="250">
+                    @foreach (var wallet in BindingContext.WalletList.Data ?? new())
+                    {
+                        <MudSelectItem Value="@wallet.Address">
+                            <MudStack Row="true">
+                                @* <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" /> *@
+                                <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
+                                    <div style="display:flex; white-space: nowrap;">
+                                        <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                                            @wallet.Address
+                                        </MudText>
+                                    </div>
+                                    <div style="display:flex; flex-direction:row;">
+                                        <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                                    </div>
+                                </MudStack>
+                            </MudStack>
+
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+        }
+
+    </MudStack>
 
     <MudStack>
         Target: @AoAction.Target?.Value
     </MudStack>
 
     <MudStack>
-        @foreach(var value in AoAction.Filled)
+        @foreach (var value in AoAction.Filled)
         {
             <p>@value.Key = @value.Value | @value.ParamType</p>
+            @foreach (var arg in value.Args)
+            {
+                <b>@arg</b>
+            }
         }
 
     </MudStack>
@@ -30,7 +67,7 @@
     <MudStack>
         @foreach (var param in AoAction.AllInputs)
         {
-            if(param.ParamType == ActionParamType.Input
+            if (param.ParamType == ActionParamType.Input
             || param.ParamType == ActionParamType.Integer
             || param.ParamType == ActionParamType.Process
             )
@@ -45,17 +82,17 @@
 
     </MudStack>
 
-   
+
 </MudContainer>
 
 @code
 {
+    private string? selectedWallet;
 
-    private void OnValidSubmit(EditContext context)
+    private void OpenDialog()
     {
-        //success = true;
-        StateHasChanged();
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<AddWalletDialog>("Add Wallet", options);
     }
-
 
 }
