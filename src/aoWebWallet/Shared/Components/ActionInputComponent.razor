@@ -1,0 +1,71 @@
+﻿@using aoWebWallet.Models
+<p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p>
+
+@if (ActionParam.ParamType == ActionParamType.Input)
+{
+    <MudTextField @ref="mudTextField" T="string" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateStringValue"></MudTextField>
+}
+else if (ActionParam.ParamType == ActionParamType.Process)
+{
+    <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" />
+}
+else if (ActionParam.ParamType == ActionParamType.Integer)
+{
+    <MudTextField @ref="mudIntField" T="int" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateIntValue"></MudTextField>
+}
+
+
+@code {
+
+    [Parameter]
+    public required ActionParam ActionParam { get; set; }
+
+    MudTextField<string>? mudTextField;
+    MudTextField<string>? mudProcessField;
+    MudTextField<int>? mudIntField;
+
+    public string? stringValue = null;
+    public int? intValue = null;
+
+    public async void UpdateStringValue(string e)
+    {
+        if (mudTextField != null)
+            await mudTextField.Validate();
+        if(mudProcessField != null)
+            await mudProcessField.Validate();
+
+        if (!(mudTextField?.ValidationErrors.Any() ?? false)
+            && !(mudProcessField?.ValidationErrors.Any() ?? false))
+        {
+            ActionParam.Value = e;
+        }
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+    public IEnumerable<string> ValidateProcess(string input)
+    {
+        if (input.Length != 43)
+        {
+            Console.WriteLine("Invalid");
+
+            yield return "Address must have length of 43 characters.";
+        }
+    }
+
+    public async void UpdateIntValue(int e)
+    {
+        if (mudIntField != null)
+            await mudIntField.Validate();
+
+        if (!(mudIntField?.ValidationErrors.Any() ?? false))
+            ActionParam.Value = e.ToString();
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+}

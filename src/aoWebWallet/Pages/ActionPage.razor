@@ -1,0 +1,61 @@
+﻿@page "/action"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager;
+
+<PageTitle>@Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h5">Action Page</MudText>
+
+   <MudStack>
+       TODO: Select a wallet, or create a new wallet
+   </MudStack>
+
+    <MudStack>
+        Target: @AoAction.Target?.Value
+    </MudStack>
+
+    <MudStack>
+        @foreach(var value in AoAction.Filled)
+        {
+            <p>@value.Key = @value.Value | @value.ParamType</p>
+        }
+
+    </MudStack>
+
+    <MudStack>
+        @foreach (var param in AoAction.AllInputs)
+        {
+            if(param.ParamType == ActionParamType.Input
+            || param.ParamType == ActionParamType.Integer
+            || param.ParamType == ActionParamType.Process
+            )
+            {
+                <ActionInputComponent ActionParam="param" />
+            }
+            else if (param.ParamType == ActionParamType.Quantity || param.ParamType == ActionParamType.Balance)
+            {
+                //TODO: Quantity, with token and denomination and enough balance check
+            }
+        }
+
+    </MudStack>
+
+   
+</MudContainer>
+
+@code
+{
+
+    private void OnValidSubmit(EditContext context)
+    {
+        //success = true;
+        StateHasChanged();
+    }
+
+
+}

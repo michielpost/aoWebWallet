@@ -90,7 +90,7 @@
 
     public MudButton? confButtonRef;
 
-    public int Denomination => BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0;
+    //public int Denomination => BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0;
     public string DenominationFormat => "F" + (BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 1).ToString();
 
     public async Task Submit()
