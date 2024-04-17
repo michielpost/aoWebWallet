@@ -1,0 +1,51 @@
+﻿@using ArweaveAO.Models.Token
+@using aoWebWallet.Models
+<p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p>
+
+@if (ActionParam.ParamType == ActionParamType.Quantity
+|| ActionParam.ParamType == ActionParamType.Balance)
+{
+    <MudTextField @ref="mudTextField" T="decimal" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateDecimalValue" Format="@DenominationFormat"></MudTextField>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public required ActionParam ActionParam { get; set; }
+
+    [Parameter]
+    public required Token Token { get; set; }
+
+    [Parameter]
+    public BalanceData? BalanceData { get; set; }
+
+    public string DenominationFormat => "F" + (Token.TokenData?.Denomination ?? 1).ToString();
+
+    MudTextField<decimal>? mudTextField;
+
+    public async void UpdateDecimalValue(decimal e)
+    {
+        if (mudTextField != null)
+            await mudTextField.Validate();
+
+        if (Token.TokenData?.Denomination == null)
+        {
+            ActionParam.Value = null;
+            return;
+        }
+
+        if (!(mudTextField?.ValidationErrors.Any() ?? false))
+        {
+            long amountLong = BalanceHelper.DecimalToTokenAmount(e, Token.TokenData.Denomination.Value);
+
+            ActionParam.Value = amountLong.ToString();
+        }
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+}

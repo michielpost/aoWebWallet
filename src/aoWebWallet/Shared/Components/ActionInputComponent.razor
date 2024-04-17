@@ -24,10 +24,7 @@ else if (ActionParam.ParamType == ActionParamType.Integer)
     MudTextField<string>? mudProcessField;
     MudTextField<int>? mudIntField;
 
-    public string? stringValue = null;
-    public int? intValue = null;
-
-    public async void UpdateStringValue(string e)
+    public async void UpdateStringValue(string? e)
     {
         if (mudTextField != null)
             await mudTextField.Validate();
@@ -45,9 +42,9 @@ else if (ActionParam.ParamType == ActionParamType.Integer)
         StateHasChanged();
     }
 
-    public IEnumerable<string> ValidateProcess(string input)
+    public IEnumerable<string> ValidateProcess(string? input)
     {
-        if (input.Length != 43)
+        if (input == null || input.Length != 43)
         {
             Console.WriteLine("Invalid");
 

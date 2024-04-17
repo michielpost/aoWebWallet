@@ -40,7 +40,7 @@ namespace aoWebWallet.Pages
             StateHasChanged();
         }
 
-        void GetQueryStringValues()
+        private async void GetQueryStringValues()
         {
             var uri = new Uri(NavigationManager.Uri);
             var query = uri.Query;
@@ -97,6 +97,16 @@ namespace aoWebWallet.Pages
 
                 }
             }
+
+            //Add and load tokens
+            var tokens = AoAction
+                            .AllInputs
+                            .Where(x => x.ParamType == ActionParamType.Balance || x.ParamType == ActionParamType.Quantity)
+                            .Select(x => x.Args.FirstOrDefault())
+                            .Distinct()
+                            .ToList();
+
+            await BindingContext.TryAddTokenIds(tokens);
 
             StateHasChanged();
         }

@@ -40,7 +40,25 @@ namespace aoWebWallet.Services
                 list.Add(new Token { TokenId = tokenId, IsSystemToken = true });
         }
 
-        public async ValueTask<Token> AddToken(string tokenId, TokenData data, bool isUserAdded)
+        public async Task AddTokenId(string tokenId, bool isUserAdded = true, bool isVisible = false)
+        {
+            if(tokenId.Length != 43) 
+                return;
+
+            var list = await GetTokenIds();
+
+            var existing = list.Where(x => x.TokenId == tokenId).FirstOrDefault();
+            if (existing != null)
+                return;
+            
+            
+            existing = new Token { TokenId = tokenId, IsUserAdded = isUserAdded, IsVisible = isVisible };
+            list.Add(existing);
+
+            await SaveTokenList(list);
+        }
+
+        public async ValueTask<Token> AddToken(string tokenId, TokenData data, bool isUserAdded, bool isVisible = true)
         {
             var list = await GetTokenIds();
 
@@ -54,7 +72,7 @@ namespace aoWebWallet.Services
             }
             else
             {
-                existing = new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded };
+                existing = new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded, IsVisible = isVisible };
                 list.Add(existing);
             }
 

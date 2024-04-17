@@ -77,7 +77,20 @@
             }
             else if (param.ParamType == ActionParamType.Quantity || param.ParamType == ActionParamType.Balance)
             {
-                //TODO: Quantity, with token and denomination and enough balance check
+                var tokenId = param.Args.FirstOrDefault();
+                var token = BindingContext.TokenList.Data?.Where(x => x.TokenId == tokenId && x.TokenData != null).FirstOrDefault();
+
+                if(token != null)
+                {
+                    //TODO: Quantity, with token and denomination and enough balance check
+                    <ActionQuantityComponent ActionParam="param" Token="token" />
+                }
+                else {
+                   <MudText>Loading Token Data...</MudText>
+                }
+
+                
+
             }
         }
 

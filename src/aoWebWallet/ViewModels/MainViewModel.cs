@@ -428,11 +428,11 @@ namespace aoWebWallet.ViewModels
             BalanceDataList.Data = null;
         }
 
-        private async Task TryAddTokenIds(List<string?> allTokenIds)
+        public async Task TryAddTokenIds(List<string?> allTokenIds)
         {
             foreach (var tokenId in allTokenIds)
             {
-                if (string.IsNullOrEmpty(tokenId))
+                if (string.IsNullOrEmpty(tokenId) || tokenId.Length != 43)
                     continue;
 
                 var exist = TokenList.Data?.Where(x => x.TokenId == tokenId).Any() ?? false;
@@ -800,5 +800,6 @@ namespace aoWebWallet.ViewModels
                 await SaveUserSettings();
             }
         }
+
     }
 }
