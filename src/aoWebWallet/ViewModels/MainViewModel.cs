@@ -749,7 +749,7 @@ namespace aoWebWallet.ViewModels
                     new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
               };
 
-              var idResult = await arweaveService.SendAsync(jwk, processId, data, evalTags);
+              var idResult = await arweaveService.SendAsync(jwk, processId, null, data, evalTags);
 
               return new Transaction { Id = idResult };
           });
@@ -757,7 +757,7 @@ namespace aoWebWallet.ViewModels
         public Task<Transaction?> SendTokenWithJwk(string? jwk, string tokenId, string address, long amount)
            => LastTransactionId.DataLoader.LoadAsync(async () =>
            {
-               var idResult = await arweaveService.SendAsync(jwk, tokenId, null, new List<ArweaveBlazor.Models.Tag>
+               var idResult = await arweaveService.SendAsync(jwk, tokenId, null, null, new List<ArweaveBlazor.Models.Tag>
            {
                 new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "Transfer"},
                 new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
@@ -785,7 +785,7 @@ namespace aoWebWallet.ViewModels
                 if (string.IsNullOrEmpty(ActiveArConnectAddress))
                     return null;
 
-                var idResult = await arweaveService.SendAsync(null, CLAIM_PROCESS_ID, null, new List<ArweaveBlazor.Models.Tag>
+                var idResult = await arweaveService.SendAsync(null, CLAIM_PROCESS_ID, null, null, new List<ArweaveBlazor.Models.Tag>
             {
                 new ArweaveBlazor.Models.Tag() { Name = "Action", Value = "claim" + claim},
                 new ArweaveBlazor.Models.Tag() { Name = "Wallet", Value = "aoww"},
