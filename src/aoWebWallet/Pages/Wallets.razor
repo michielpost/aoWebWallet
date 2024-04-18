@@ -3,6 +3,8 @@
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject TokenDataService dataService
+@inject ClipboardService ClipboardService
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
@@ -18,7 +20,7 @@
         <MudText Typo="Typo.h5">Wallet</MudText>
     }
 
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
+        <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-3">
             @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
@@ -48,7 +50,7 @@
                                     <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
                                         @wallet.Address
                                     </MudLink>
-                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(wallet.Address); }" />
+                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(wallet.Address); }" />
                                 </div>
                                 <div style="display:flex; flex-direction:row;">
                                     @if (wallet.IsReadOnly)

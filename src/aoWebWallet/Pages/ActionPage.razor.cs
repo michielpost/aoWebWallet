@@ -1,4 +1,5 @@
 ﻿using aoWebWallet.Models;
+using aoWebWallet.Services;
 using aoWebWallet.ViewModels;
 using Microsoft.AspNetCore.Components.Routing;
 using System.Net;
@@ -12,9 +13,8 @@ namespace aoWebWallet.Pages
         protected override void OnInitialized()
         {
             GetQueryStringValues();
-            WatchDataLoaderVM(BindingContext.TokenList);
+            //WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
-            WatchDataLoaderVM(BindingContext.BalanceDataList);
 
             NavigationManager.LocationChanged += NavigationManager_LocationChanged;
 
@@ -28,7 +28,7 @@ namespace aoWebWallet.Pages
                 await BindingContext.CheckHasArConnectExtension();
 
                 await BindingContext.LoadWalletList();
-                await BindingContext.LoadTokenList();
+                await dataService.LoadTokenList();
             }
 
             await base.OnAfterRenderAsync(firstRender);
@@ -104,9 +104,9 @@ namespace aoWebWallet.Pages
                             .Where(x => x.ParamType == ActionParamType.Balance || x.ParamType == ActionParamType.Quantity)
                             .Select(x => x.Args.FirstOrDefault())
                             .Distinct()
-                            .ToList();
+            .ToList();
 
-            await BindingContext.TryAddTokenIds(tokens);
+            await dataService.TryAddTokenIds(tokens);
 
             StateHasChanged();
         }

@@ -3,7 +3,8 @@
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager NavigationManager;
+@inject NavigationManager NavigationManager
+@inject TokenDataService dataService
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
@@ -13,7 +14,6 @@
 
     <MudStack>
         TODO: Select a wallet, or create a new wallet
-        <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
 
         @if (BindingContext.WalletList.Data != null)
         {
@@ -78,7 +78,7 @@
             else if (param.ParamType == ActionParamType.Quantity || param.ParamType == ActionParamType.Balance)
             {
                 var tokenId = param.Args.FirstOrDefault();
-                var token = BindingContext.TokenList.Data?.Where(x => x.TokenId == tokenId && x.TokenData != null).FirstOrDefault();
+                var token = dataService.TokenList.Where(x => x.TokenId == tokenId && x.TokenData != null).FirstOrDefault();
 
                 if(token != null)
                 {

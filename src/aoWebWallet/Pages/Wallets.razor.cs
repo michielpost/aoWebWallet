@@ -6,7 +6,7 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
-            WatchDataLoaderVM(BindingContext.TokenList);
+            //WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
             WatchDataLoaderVM(BindingContext.ProcessesDataList);
 
@@ -20,7 +20,7 @@ namespace aoWebWallet.Pages
                 await BindingContext.CheckHasArConnectExtension();
 
                 await BindingContext.LoadWalletList();
-                await BindingContext.LoadTokenList();
+                await dataService.LoadTokenList();
             }
 
             await base.OnAfterRenderAsync(firstRender);

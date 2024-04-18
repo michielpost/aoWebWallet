@@ -3,31 +3,32 @@ using System.Net;
 
 namespace aoWebWallet.Pages
 {
-    public partial class TokenDetail : MvvmComponentBase<MainViewModel>
+    public partial class TokenDetail : MvvmComponentBase<TokenDetailViewModel>
     {
         protected override void OnInitialized()
         {
-            WatchDataLoaderVM(BindingContext.TokenList);
+            //WatchDataLoaderVM(dataService.TokenList);
             WatchDataLoaderVM(BindingContext.TokenTransferList);
 
             base.OnInitialized();
         }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
-            BindingContext.SelectedTokenId = null;
-            if (TokenId != null && TokenId.Length != 43)
+            if (TokenId == null || TokenId.Length != 43)
             {
                 NavigationManager.NavigateTo("");
             }
-            BindingContext.SelectedTokenId = TokenId;
 
-            base.OnParametersSet();
+            if(TokenId != null)
+                await BindingContext.Initialize(TokenId);
+
+            base.OnParametersSetAsync();
         }
 
         protected override async Task LoadDataAsync()
         {
-            await BindingContext.LoadTokenList();
+            await dataService.LoadTokenList();
 
             await base.LoadDataAsync();
 

@@ -1,9 +1,10 @@
 ﻿@page "/token/{tokenId}"
 @using aoWebWallet.Models
-@inherits MvvmComponentBase<MainViewModel>
+@inherits MvvmComponentBase<TokenDetailViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager;
+@inject TokenDataService dataService;
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
@@ -11,12 +12,12 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h5">Token Explorer</MudText>
 
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudStack>
-        @if (BindingContext.TokenList.Data != null)
+        @if (dataService.TokenList != null)
         {
-            var token = BindingContext.TokenList.Data.Where(x => x.TokenId == TokenId).FirstOrDefault();
+            var token = dataService.TokenList.Where(x => x.TokenId == TokenId).FirstOrDefault();
             if (token != null)
             {
                 <MudPaper Class="pa-4 mb-14 mt-4">

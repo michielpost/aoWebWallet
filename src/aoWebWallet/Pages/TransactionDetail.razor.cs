@@ -1,11 +1,12 @@
-﻿using aoWebWallet.ViewModels;
+﻿using aoWebWallet.Models;
+using aoWebWallet.ViewModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System.Net;
 
 namespace aoWebWallet.Pages
 {
-    public partial class TransactionDetail : MvvmComponentBase<MainViewModel>
+    public partial class TransactionDetail : MvvmComponentBase<TransactionDetailViewModel>
     {
         [Parameter]
         public string? TxId { get; set; }
@@ -18,23 +19,22 @@ namespace aoWebWallet.Pages
             base.OnInitialized();
         }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
-            BindingContext.SelectedTransactionId = null;
-
             if (TxId != null && TxId.Length != 43)
             {
                 NavigationManager.NavigateTo("");
             }
 
-            BindingContext.SelectedTransactionId = this.TxId;
+            if (TxId != null)
+                await BindingContext.Initialize(TxId);
 
-            base.OnParametersSet();
+            base.OnParametersSetAsync();
         }
 
         protected override async Task LoadDataAsync()
         {
-            await BindingContext.LoadTokenList();
+            await dataService.LoadTokenList();
 
             //if (!string.IsNullOrEmpty(Address))
             //{

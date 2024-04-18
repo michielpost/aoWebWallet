@@ -1,5 +1,4 @@
-﻿@inherits MvvmComponentBase<MainViewModel>
-@inject TokenClient TokenClient
+﻿@inject TokenDataService dataService
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -37,10 +36,10 @@
         Progress = "Checking metadata...";
         try
         {
-            var data = await TokenClient.GetTokenMetaData(TokenId);
+            var data = await dataService.LoadTokenDataAsync(TokenId);
             if (data != null)
             {
-                await BindingContext.AddToken(TokenId, data, isUserAdded: true);
+                await dataService.AddToken(TokenId, data, isUserAdded: true);
 
                 Snackbar.Add($"Token added ({data.Name})", Severity.Info);
 

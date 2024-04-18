@@ -6,17 +6,14 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
-            WatchDataLoaderVM(BindingContext.TokenList);
-
             base.OnInitialized();
         }
 
         protected override async Task LoadDataAsync()
         {
-            await BindingContext.LoadTokenList();
+            await dataService.LoadTokenList();
 
             await base.LoadDataAsync();
-
         }
 
     }

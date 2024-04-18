@@ -1,9 +1,12 @@
 ﻿@page "/wallet/{address}"
 @using aoWebWallet.Models
-@inherits MvvmComponentBase<MainViewModel>
+@inherits MvvmComponentBase<WalletDetailViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager NavigationManager;
+@inject NavigationManager NavigationManager
+@inject TokenDataService dataService
+@inject MainViewModel MainViewModel
+@inject ClipboardService ClipboardService
 
 <PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
 
@@ -35,7 +38,7 @@
                     </MudStack>
                 }
             </MudStack>
-            <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Wallet.Address); }" />
+            <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(BindingContext.SelectedWallet?.Wallet.Address); }" />
             <MudSpacer />
             @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.Jwk))
             {
@@ -49,7 +52,7 @@
             @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
             {
                 <MudTooltip Text="Add as readonly wallet" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="BindingContext.AddWalletAsReadonly"></MudIconButton>
                 </MudTooltip>
             }
         </MudStack>
@@ -59,10 +62,10 @@
     {
         <MudPaper>
             <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex mb-4 pr-4">
-                @if (BindingContext.UserSettings != null)
+                @if (MainViewModel.UserSettings != null)
                 {
                     <MudStack Row=true Justify="Justify.Center">
-                        @if (BindingContext.UserSettings.Claimed1 && BindingContext.UserSettings.Claimed2 && BindingContext.UserSettings.Claimed3)
+                        @if (MainViewModel.UserSettings.Claimed1 && MainViewModel.UserSettings.Claimed2 && MainViewModel.UserSettings.Claimed3)
                         {
                             <MudIcon Class="margin-rewards-button" Icon="@Icons.Material.Filled.Favorite" Title="Favorite" />
                             <MudText aria-label="claim token">All Rewards Claimed (3/3)</MudText>
@@ -70,25 +73,25 @@
                         else
                         {
 
-                            if (BindingContext.UserSettings.Claimed1)
+                            if (MainViewModel.UserSettings.Claimed1)
                             {
                                 <MudIcon Class="margin-rewards-button" Icon="@Icons.Material.Filled.Star" Title="Claim 1" />
                             }
                             else
                             {
-                                <MudButton aria-label="claim token" OnClick="Claim1" Disabled="!BindingContext.CanClaim1 || BindingContext.UserSettings.Claimed1">Claim Reward (1/3)</MudButton>
+                                <MudButton aria-label="claim token" OnClick="Claim1" Disabled="!BindingContext.CanClaim1 || MainViewModel.UserSettings.Claimed1">Claim Reward (1/3)</MudButton>
                             }
 
-                            if (BindingContext.UserSettings.Claimed2)
+                            if (MainViewModel.UserSettings.Claimed2)
                             {
                                 <MudIcon Class="margin-rewards-button" Icon="@Icons.Material.Filled.Star" Title="Claim 2" />
                             }
                             else
                             {
-                                <MudButton aria-label="claim token" OnClick="Claim2" Disabled="!BindingContext.CanClaim2 || BindingContext.UserSettings.Claimed2">Claim Reward (2/3)</MudButton>
+                                <MudButton aria-label="claim token" OnClick="Claim2" Disabled="!BindingContext.CanClaim2 || MainViewModel.UserSettings.Claimed2">Claim Reward (2/3)</MudButton>
                             }
 
-                            <MudButton aria-label="claim token" OnClick="Claim3" Disabled="!BindingContext.CanClaim3 || BindingContext.UserSettings.Claimed3">Claim Reward (3/3)</MudButton>
+                            <MudButton aria-label="claim token" OnClick="Claim3" Disabled="!BindingContext.CanClaim3 || MainViewModel.UserSettings.Claimed3">Claim Reward (3/3)</MudButton>
                         }
                     </MudStack>
                 }
@@ -106,7 +109,7 @@
         </MudTooltip>
     </MudContainer>
 
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
+        <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
     <DataLoaderProgress DataLoader="BindingContext.BalanceDataList.DataLoader" Title="Balances" />
 
     <MudStack Class="mb-12">
@@ -175,7 +178,7 @@
                     <MudTimeline TimelinePosition="TimelinePosition.Left">
                         @foreach (var transfer in BindingContext.TokenTransferList.Data)
                         {
-                            <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedAddress" />
+                            <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedWallet?.Wallet.Address" />
                         }
                     </MudTimeline>
                 }
@@ -228,33 +231,29 @@
 
     private void Receive(BalanceDataViewModel? balanceDataVM)
     {
-        BindingContext.SelectedBalanceDataVM = balanceDataVM;
+        var parameters = new DialogParameters<ReceiveTokenDialog> { { x => x.SelectedBalanceDataVM, balanceDataVM } };
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ReceiveTokenDialog>("Receive Token", options);
+        DialogService.Show<ReceiveTokenDialog>("Receive Token", parameters, options);
     }
 
     private void Send(BalanceDataViewModel? balanceDataVM)
     {
-        BindingContext.SelectedBalanceDataVM = balanceDataVM;
+        var parameters = new DialogParameters<SendTokenDialog> { 
+            { x => x.SelectedBalanceDataVM, balanceDataVM },
+            { x => x.SelectedWallet, BindingContext.SelectedWallet }
+        };
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<SendTokenDialog>("Transfer Token", options);
+        DialogService.Show<SendTokenDialog>("Transfer Token", parameters, options);
     }
 
     private async Task RefreshBalances()
     {
-        if (BindingContext.SelectedAddress != null)
-            await BindingContext.LoadBalanceDataList(BindingContext.SelectedAddress);
+        await BindingContext.RefreshBalanceDataList();
     }
 
     private async Task RefreshTransactions()
     {
-        if (BindingContext.SelectedAddress != null)
-            await BindingContext.LoadTokenTransferList(BindingContext.SelectedAddress);
-    }
-
-    private async Task AddWalletAsReadonly()
-    {
-        await BindingContext.AddWalletAsReadonly();
+        await BindingContext.RefreshTokenTransferList();
     }
 
     private async Task Claim1()
