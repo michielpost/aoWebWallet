@@ -9,11 +9,14 @@ namespace aoWebWallet.Pages
             base.OnInitialized();
         }
 
-        protected override async Task LoadDataAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await dataService.LoadTokenList();
+            if (firstRender)
+            {
+                await dataService.LoadTokenList();
+            }
 
-            await base.LoadDataAsync();
+            await base.OnAfterRenderAsync(firstRender);
         }
 
     }
