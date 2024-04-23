@@ -7,7 +7,8 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
-            //WatchDataLoaderVM(dataService.TokenList);
+            WatchCollection(dataService.TokenList);
+            WatchDataLoaderVM(BindingContext.Token);
             WatchDataLoaderVM(BindingContext.TokenTransferList);
 
             base.OnInitialized();
@@ -28,7 +29,7 @@ namespace aoWebWallet.Pages
 
         protected override async Task LoadDataAsync()
         {
-            await dataService.LoadTokenList();
+            //await dataService.LoadTokenList();
 
             await base.LoadDataAsync();
 

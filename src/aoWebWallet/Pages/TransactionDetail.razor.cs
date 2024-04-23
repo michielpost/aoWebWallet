@@ -13,6 +13,7 @@ namespace aoWebWallet.Pages
 
         protected override void OnInitialized()
         {
+            WatchCollection(dataService.TokenList);
             WatchDataLoaderVM(BindingContext.TokenTransferList);
             WatchDataLoaderVM(BindingContext.SelectedTransaction);
 
@@ -34,7 +35,7 @@ namespace aoWebWallet.Pages
 
         protected override async Task LoadDataAsync()
         {
-            await dataService.LoadTokenList();
+            //await dataService.LoadTokenList();
 
             //if (!string.IsNullOrEmpty(Address))
             //{

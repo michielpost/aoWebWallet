@@ -110,46 +110,45 @@
     </MudContainer>
 
         <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
-    <DataLoaderProgress DataLoader="BindingContext.BalanceDataList.DataLoader" Title="Balances" />
 
     <MudStack Class="mb-12">
-        @if (BindingContext.BalanceDataList.Data != null)
+        @if (BindingContext.BalanceDataList != null)
         {
-            @foreach (var balance in BindingContext.BalanceDataList.Data)
+            @foreach (var balance in BindingContext.BalanceDataList)
             {
-                if (balance.Data?.Token?.TokenData == null)
+                if (balance.Token?.TokenData == null)
                     continue;
 
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
 
                         <div style="width:222px; display:flex; flex-direction: row; align-items:center; max-height: 50px;">
-                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Data?.Token?.TokenData?.Logo)" Size="Size.Medium" title="@balance.Data?.Token?.TokenId" />
+                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Token?.TokenData?.Logo)" Size="Size.Medium" title="@balance.Token?.TokenId" />
                             <MudStack Class="ml-4" Justify="Justify.Center" Spacing="0">
-                                <MudText style="font-weight: 500;" Typo="Typo.body1">@balance.Data?.Token?.TokenData?.Name</MudText>
-                                <MudText Typo="Typo.body2">@balance.Data?.Token?.TokenData?.Ticker</MudText>
+                                <MudText style="font-weight: 500;" Typo="Typo.body1">@balance.Token?.TokenData?.Name</MudText>
+                                <MudText Typo="Typo.body2">@balance.Token?.TokenData?.Ticker</MudText>
                             </MudStack>
                         </div>
 
                         <MudStack Justify="Justify.Center" Spacing="0">
-                            <DataLoaderProgress DataLoader="balance.DataLoader" Title="balance" />
-                            @if (balance.Data?.BalanceData != null)
+                            <DataLoaderProgress DataLoader="balance.BalanceDataLoader.DataLoader" Title="balance" />
+                            @if (balance.BalanceDataLoader.Data != null)
                             {
-                                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>
+                                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(balance.BalanceDataLoader.Data?.Balance, balance.Token?.TokenData?.Denomination ?? 0)</MudText>
                             }
                         </MudStack>
                         <MudSpacer />
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
                             <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Left">
-                                <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
+                                <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance);}"></MudIconButton>
                             </MudTooltip>
 
                             @if ((BindingContext.SelectedWallet?.CanSend ?? false))
                             {
-                                var hasBalance = balance.Data?.BalanceData?.Balance ?? 0;
+                                var hasBalance = balance.BalanceDataLoader.Data?.Balance ?? 0;
                                 <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Left">
-                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance);}"></MudIconButton>
                                 </MudTooltip>
                             }
                         </MudStack>

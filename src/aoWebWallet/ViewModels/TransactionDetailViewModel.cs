@@ -43,7 +43,7 @@ namespace aoWebWallet.ViewModels
                 dataService.TryAddTokenIds(new List<string?>() { result.TokenId });
 
             return result;
-        });
+        }, (x) => SelectedTransaction.Data = x);
 
     }
 }

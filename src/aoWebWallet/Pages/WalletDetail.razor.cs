@@ -9,13 +9,22 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
+            //WatchObject(dataService.TokenList);
+            WatchObject(BindingContext.BalanceDataList);
             WatchCollection(dataService.TokenList);
+            WatchCollection(BindingContext.BalanceDataList);
             WatchDataLoaderVM(MainViewModel.WalletList);
-            WatchDataLoaderVM(BindingContext.BalanceDataList);
             WatchDataLoaderVM(BindingContext.TokenTransferList);
             WatchDataLoaderVM(BindingContext.SelectedProcessData);
 
+            dataService.TokenList.CollectionChanged += TokenList_CollectionChanged;
+
             base.OnInitialized();
+        }
+
+        private void TokenList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            BindingContext.TokenAddedRefresh();
         }
 
         protected override async Task OnParametersSetAsync()
@@ -28,7 +37,7 @@ namespace aoWebWallet.Pages
             if (Address != null)
                 await BindingContext.Initialize(Address);
 
-            base.OnParametersSetAsync();
+            await base.OnParametersSetAsync();
         }
 
         protected override async Task LoadDataAsync()
@@ -47,6 +56,13 @@ namespace aoWebWallet.Pages
         {
             await MainViewModel.DownloadWallet(wallet);
             StateHasChanged();
+        }
+
+        public override void Dispose()
+        {
+            dataService.TokenList.CollectionChanged -= TokenList_CollectionChanged;
+
+            base.Dispose();
         }
 
     }

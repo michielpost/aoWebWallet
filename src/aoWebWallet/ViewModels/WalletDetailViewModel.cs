@@ -3,6 +3,8 @@ using aoWebWallet.Services;
 using ArweaveAO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MudBlazor;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Net;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
@@ -38,7 +40,7 @@ namespace aoWebWallet.ViewModels
 
         public DataLoaderViewModel<WalletProcessDataViewModel> SelectedProcessData { get; set; } = new();
 
-        public DataLoaderViewModel<List<DataLoaderViewModel<BalanceDataViewModel>>> BalanceDataList { get; set; } = new();
+        public ObservableCollection<BalanceDataViewModel> BalanceDataList { get; } = new();
 
         public DataLoaderViewModel<List<TokenTransfer>> TokenTransferList { get; set; } = new();
 
@@ -99,6 +101,14 @@ namespace aoWebWallet.ViewModels
             {
                 await LoadTokenTransferList(selectedAddress);
                 await LoadBalanceDataList(selectedAddress);
+            }
+        }
+
+        public async Task TokenAddedRefresh()
+        {
+            if (selectedAddress != null)
+            {
+                await LoadBalanceDataList(selectedAddress, onlyNew: true);
             }
         }
 
@@ -171,31 +181,37 @@ namespace aoWebWallet.ViewModels
 
 
 
-        public Task LoadBalanceDataList(string address) => BalanceDataList.DataLoader.LoadAsync(async () =>
+        public async Task LoadBalanceDataList(string address, bool onlyNew = false)
         {
             //First clear
-            BalanceDataList.Data = null;
+            if (!onlyNew)
+                BalanceDataList.Clear();
 
-            var result = new List<DataLoaderViewModel<BalanceDataViewModel>>();
+            var result = new List<BalanceDataViewModel>();
 
             foreach (var token in dataService.TokenList.Where(x => x.IsVisible))
             {
-                var balanceData = new DataLoaderViewModel<BalanceDataViewModel>();
-                balanceData.Data = new BalanceDataViewModel { Token = token };
+                if (onlyNew)
+                {
+                    if (BalanceDataList.Where(x => x.Token?.TokenId == token.TokenId).Any())
+                        continue;
 
-                balanceData.DataLoader.LoadAsync(async () =>
+                }
+                var balanceData = new BalanceDataViewModel { Token = token };
+
+                balanceData.BalanceDataLoader.DataLoader.LoadAsync(async () =>
                 {
                     var balanceData = await tokenClient.GetBalance(token.TokenId, address);
-                    return new BalanceDataViewModel() { BalanceData = balanceData, Token = token };
-                }, (x) => { balanceData.Data = x; BalanceDataList.ForcePropertyChanged(); });
-                result.Add(balanceData);
+                    return balanceData;
+                }, (x) =>
+                {
+                    balanceData.BalanceDataLoader.Data = x;
+                    TokenTransferList.ForcePropertyChanged();
+                });
+
+                BalanceDataList.Add(balanceData);
             }
-
-            BalanceDataList.Data = result;
-
-            return result;
-
-        });
+        }
 
         public async Task LoadSelectedWalletProcessData(string address)
         {
@@ -271,7 +287,6 @@ namespace aoWebWallet.ViewModels
             CanClaim2 = CanClaim1 && sendTransactionActivity.Count > 1 && (mainViewModel.WalletList.Data?.Count() > 1 || dataService.TokenList.Count() > 6);
             CanClaim3 = CanClaim2 && sendTransactionActivity.Count > 1 && mainViewModel.WalletList.Data?.Count() > 2 && viewTokenActivity.Count > 0 && viewAddressActivity.Count > 2 && viewTransactionctivity.Count > 1;
 
-            Console.WriteLine("1:" + CanClaim1);
         }
 
         public async Task Claim1()
@@ -342,5 +357,6 @@ namespace aoWebWallet.ViewModels
             }
         }
 
+        
     }
 }

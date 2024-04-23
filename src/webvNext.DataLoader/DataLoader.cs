@@ -57,36 +57,38 @@ namespace webvNext.DataLoader
             //await semaphoreSlim.WaitAsync();
             //try
             //{
-                //Set loading state
-                LoadingState = LoadingState.Loading;
+            //Set loading state
+            LoadingState = LoadingState.Loading;
 
-                T? result = default;
+            T? result = default;
 
-                try
+            try
+            {
+                result = await loadingMethod();
+
+                //Set finished state
+                LoadingState = LoadingState.Finished;
+                LoadedDateTime = DateTimeOffset.UtcNow;
+
+                if (resultCallback != null)
                 {
-                    result = await loadingMethod();
-
-                    //Set finished state
-                    LoadingState = LoadingState.Finished;
-                    LoadedDateTime = DateTimeOffset.UtcNow;
-                    
-                    if (resultCallback != null)
-                        resultCallback(result);
-
-                }
-                catch (Exception e)
-                {
-                    //Set error state
-                    LoadingState = LoadingState.Error;
-
-                    if (errorCallback != null)
-                        errorCallback(e);
-                    else if (!_swallowExceptions) //swallow exception if _swallowExceptions is true
-                        throw; //throw error if no callback is defined
-
+                    resultCallback(result);
                 }
 
-                return result;
+            }
+            catch (Exception e)
+            {
+                //Set error state
+                LoadingState = LoadingState.Error;
+
+                if (errorCallback != null)
+                    errorCallback(e);
+                else if (!_swallowExceptions) //swallow exception if _swallowExceptions is true
+                    throw; //throw error if no callback is defined
+
+            }
+
+            return result;
             //}
             //finally
             //{

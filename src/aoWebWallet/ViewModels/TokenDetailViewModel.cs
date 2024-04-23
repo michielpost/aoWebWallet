@@ -26,7 +26,7 @@ namespace aoWebWallet.ViewModels
 
         public async Task Initialize(string tokenId)
         {
-            this.LoadTokenData(tokenId);
+            await this.LoadTokenData(tokenId);
 
             this.LoadTokenTransferListForToken(tokenId);
 
@@ -37,11 +37,11 @@ namespace aoWebWallet.ViewModels
         {
             Token.Data = null;
 
-            await dataService.LoadTokenList();
+            var result = await dataService.LoadTokenAsync(tokenId);
 
-            return dataService.TokenList;
+            return result;
 
-        });
+        }, (x) => Token.Data = x);
 
         public Task LoadTokenTransferListForToken(string tokenId) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {

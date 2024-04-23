@@ -12,25 +12,23 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h5">Token Explorer</MudText>
 
-    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="BindingContext.Token.DataLoader" Title="tokens" />
 
     <MudStack>
-        @if (dataService.TokenList != null)
+        @if (BindingContext.Token.Data != null)
         {
-            var token = dataService.TokenList.Where(x => x.TokenId == TokenId).FirstOrDefault();
-            if (token != null)
-            {
-                <MudPaper Class="pa-4 mb-14 mt-4">
-                    <MudStack Row="true">
-                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
-                            <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                            <MudText Class="KodeMono" Typo="Typo.subtitle1">@token.TokenId</MudText>
-                        </MudStack>
+            var token = BindingContext.Token.Data;
+
+            <MudPaper Class="pa-4 mb-14 mt-4">
+                <MudStack Row="true">
+                    <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
+                    <MudStack Justify="Justify.Center" Spacing="0">
+                        <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
+                        <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
+                        <MudText Class="KodeMono" Typo="Typo.subtitle1">@token.TokenId</MudText>
                     </MudStack>
-                </MudPaper>
-            }
+                </MudStack>
+            </MudPaper>
         }
 
     </MudStack>
@@ -43,10 +41,10 @@
             <MudText Typo="Typo.h5">Transactions</MudText>
 
             <MudTimeline TimelinePosition="TimelinePosition.Left">
-            @foreach (var transfer in BindingContext.TokenTransferList.Data)
-            {
-               <TransactionComponent transfer="transfer" />
-            }
+                @foreach (var transfer in BindingContext.TokenTransferList.Data)
+                {
+                    <TransactionComponent transfer="transfer" />
+                }
             </MudTimeline>
         }
 

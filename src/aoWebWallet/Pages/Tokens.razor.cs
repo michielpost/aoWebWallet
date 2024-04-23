@@ -6,6 +6,8 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
+            WatchCollection(dataService.TokenList);
+
             base.OnInitialized();
         }
 

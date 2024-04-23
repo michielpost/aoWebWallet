@@ -21,11 +21,9 @@ namespace aoWebWallet.ViewModels
         private const string CLAIM_PROCESS_ID = "5Mv1TBYZvKjNlWUpH78hWORIhqj1uqn_wdkJrA7emfU";
 
         private readonly TokenDataService dataService;
-        private readonly TokenClient tokenClient;
         private readonly StorageService storageService;
         private readonly ArweaveService arweaveService;
         private readonly GraphqlClient graphqlClient;
-        private readonly ISnackbar snackbar;
         private readonly MemoryDataCache memoryDataCache;
 
         [ObservableProperty]
@@ -54,19 +52,15 @@ namespace aoWebWallet.ViewModels
         /// Gets the <see cref="IAsyncRelayCommand{T}"/> responsible for loading the source markdown docs.
         /// </summary>
         public MainViewModel(TokenDataService dataService,
-            TokenClient tokenClient,
             StorageService storageService,
             ArweaveService arweaveService,
             GraphqlClient graphqlClient,
-            ISnackbar snackbar,
             MemoryDataCache memoryDataCache) : base()
         {
             this.dataService = dataService;
-            this.tokenClient = tokenClient;
             this.storageService = storageService;
             this.arweaveService = arweaveService;
             this.graphqlClient = graphqlClient;
-            this.snackbar = snackbar;
             this.memoryDataCache = memoryDataCache;
         }
 
@@ -179,11 +173,6 @@ namespace aoWebWallet.ViewModels
         }
 
         
-
-
-      
-       
-
         partial void OnComputeUnitUrlChanged(string? value)
         {
             //ClearUserData();
@@ -213,9 +202,6 @@ namespace aoWebWallet.ViewModels
                 IsDarkMode = UserSettings.IsDarkMode ?? true;
             }
         }
-
-       
-
       
 
         public async Task DisconnectArWallet()
@@ -243,8 +229,6 @@ namespace aoWebWallet.ViewModels
                 //}
             }
         }
-
-     
 
         public Task<Transaction?> SendToken(Wallet wallet, string tokenId, string address, long amount)
         {

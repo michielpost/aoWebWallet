@@ -36,7 +36,8 @@
         Progress = "Checking metadata...";
         try
         {
-            var data = await dataService.LoadTokenDataAsync(TokenId);
+            var token = await dataService.LoadTokenAsync(TokenId);
+            var data = token.TokenData;
             if (data != null)
             {
                 await dataService.AddToken(TokenId, data, isUserAdded: true);

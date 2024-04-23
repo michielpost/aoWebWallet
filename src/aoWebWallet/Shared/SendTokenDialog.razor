@@ -14,7 +14,7 @@
                 <MudText Typo="Typo.body2">@SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
             </MudStack>
         </MudStack>
-        <MudText style="width:100%; margin-left:auto; text-align:right;" Class="mt-2" Typo="Typo.body1">Available balance<br/> <strong>@BalanceHelper.FormatBalance(SelectedBalanceDataVM?.BalanceData?.Balance, SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0)</strong></MudText>
+        <MudText style="width:100%; margin-left:auto; text-align:right;" Class="mt-2" Typo="Typo.body1">Available balance<br /> <strong>@BalanceHelper.FormatBalance(SelectedBalanceDataVM?.BalanceDataLoader.Data?.Balance, SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0)</strong></MudText>
 
         @if (!isConfirm)
         {
@@ -115,7 +115,7 @@
             return;
         }
 
-        if (string.IsNullOrEmpty(SelectedBalanceDataVM?.BalanceData?.TokenId)
+        if (string.IsNullOrEmpty(SelectedBalanceDataVM?.BalanceDataLoader.Data?.TokenId)
         || SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
         || !SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
             return;
@@ -127,7 +127,7 @@
             StateHasChanged();
             return;
         }
-        if (amountLong > SelectedBalanceDataVM?.BalanceData?.Balance)
+        if (amountLong > SelectedBalanceDataVM?.BalanceDataLoader.Data?.Balance)
         {
             Progress = "Not enough balance available.";
             StateHasChanged();
@@ -148,7 +148,7 @@
             return;
         }
 
-        if (string.IsNullOrEmpty(SelectedBalanceDataVM?.BalanceData?.TokenId)
+        if (string.IsNullOrEmpty(SelectedBalanceDataVM?.BalanceDataLoader.Data?.TokenId)
         || SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
         || !SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
             return;
