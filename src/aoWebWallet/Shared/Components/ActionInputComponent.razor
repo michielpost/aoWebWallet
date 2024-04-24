@@ -54,9 +54,20 @@ else
 
     protected override void OnAfterRender(bool firstRender)
     {
-        mudTextField?.SetText(ActionParam.Value);
-        mudProcessField?.SetText(ActionParam.Value);
-        mudIntField?.SetText(ActionParam.Value);
+        if (!(mudTextField?.ValidationErrors.Any() ?? false))
+        {
+            mudTextField?.SetText(ActionParam.Value);
+        }
+
+        if (!(mudProcessField?.ValidationErrors.Any() ?? false))
+        {
+            mudProcessField?.SetText(ActionParam.Value);
+        }
+
+        if (!(mudIntField?.ValidationErrors.Any() ?? false))
+        {
+            mudIntField?.SetText(ActionParam.Value);
+        }
 
         base.OnAfterRender(firstRender);
     }

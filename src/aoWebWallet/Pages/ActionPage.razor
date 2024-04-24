@@ -23,7 +23,7 @@
             }
             else
             {
-                <MudSelect @bind-Value="@selectedWallet" Label="Select a wallet" Variant="Variant.Outlined" MaxHeight="250">
+                <MudSelect @bind-Value="@selectedWallet" Label="Select a wallet" Variant="Variant.Outlined" MaxHeight="250" ReadOnly="@readOnly">
                     @foreach (var wallet in BindingContext.WalletList.Data ?? new())
                     {
                         <MudSelectItem Value="@wallet.Address">

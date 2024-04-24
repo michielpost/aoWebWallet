@@ -63,7 +63,10 @@ else
 
     protected override void OnAfterRender(bool firstRender)
     {
-        mudTextField?.SetText(ActionParam.Value);
+        if (!(mudTextField?.ValidationErrors.Any() ?? false))
+        {
+            mudTextField?.SetText(ActionParam.Value);
+        }
 
         base.OnAfterRender(firstRender);
     }
@@ -84,10 +87,10 @@ else
 
     public IEnumerable<string> ValidateBalance(decimal e)
     {
-        // if (e == null)
-        // {
-        //     yield return "Please enter a value.";
-        // }
+        if (e < 0)
+        {
+            yield return "Must be greater or equal than 0.";
+        }
 
         if(e > 0)
         {
