@@ -1,4 +1,4 @@
-﻿namespace aoWebWallet.ViewModels
+﻿namespace aoWebWallet.Models
 {
     public class Transaction
     {

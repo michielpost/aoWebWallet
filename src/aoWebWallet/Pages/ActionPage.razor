@@ -83,9 +83,20 @@
         readOnly = false;
     }
 
-    private void Submit()
+    private async Task Submit()
     {
-        readOnly = false;
+        if (BindingContext.WalletList.Data == null)
+            return;
+
+        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == selectedWallet).FirstOrDefault();
+
+        if (wallet == null)
+            return;
+
+        //Do we need the owner wallet?
+        Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+
+        await transactionService.SendAction(wallet, ownerWallet, AoAction);
     }
 
     private void OpenDialog()

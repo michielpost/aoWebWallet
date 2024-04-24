@@ -8,7 +8,14 @@ namespace aoWebWallet.Pages
 {
     public partial class ActionPage : MvvmComponentBase<MainViewModel>
     {
+        private readonly TransactionService transactionService;
+
         public AoAction AoAction { get; set; } = new();
+
+        public ActionPage(TransactionService transactionService)
+        {
+            this.transactionService = transactionService;
+        }
 
         protected override void OnInitialized()
         {

@@ -91,6 +91,7 @@ namespace aoWebWallet
             services.AddScoped<TokenDataService>();
             services.AddScoped<StorageService>();
             services.AddScoped<ClipboardService>();
+            services.AddScoped<TransactionService>();
 
             services.AddSingleton<MemoryDataCache>();
 
