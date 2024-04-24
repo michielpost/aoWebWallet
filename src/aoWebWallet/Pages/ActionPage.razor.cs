@@ -73,6 +73,8 @@ namespace aoWebWallet.Pages
                         actionParamType = ActionParamType.Target;
                     if (key.Equals("X-Quantity", StringComparison.InvariantCultureIgnoreCase))
                         actionParamType = ActionParamType.Quantity;
+                    if (key.Equals("X-Balance", StringComparison.InvariantCultureIgnoreCase))
+                        actionParamType = ActionParamType.Balance;
                     else if (key.Equals("X-Process", StringComparison.InvariantCultureIgnoreCase))
                         actionParamType = ActionParamType.Process;
                     else if (key.Equals("X-Int", StringComparison.InvariantCultureIgnoreCase))

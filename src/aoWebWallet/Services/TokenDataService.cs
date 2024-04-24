@@ -72,10 +72,13 @@ namespace aoWebWallet.Services
                     return data;
                 });
 
-                token.TokenData = data;
+                if (data != null)
+                {
 
-                await storageService.SaveTokenList(tokens);
+                    token.TokenData = data;
 
+                    await storageService.SaveTokenList(tokens);
+                }
                
             }
 

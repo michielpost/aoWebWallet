@@ -1,17 +1,24 @@
 ﻿@using aoWebWallet.Models
 <p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p>
 
-@if (ActionParam.ParamType == ActionParamType.Input)
+@if(ReadOnly)
 {
-    <MudTextField @ref="mudTextField" T="string" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateStringValue"></MudTextField>
+    <p>@ActionParam.Key = @ActionParam.Value</p>
 }
-else if (ActionParam.ParamType == ActionParamType.Process)
+else
 {
-    <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" />
-}
-else if (ActionParam.ParamType == ActionParamType.Integer)
-{
-    <MudTextField @ref="mudIntField" T="int" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateIntValue"></MudTextField>
+    if (ActionParam.ParamType == ActionParamType.Input)
+    {
+        <MudTextField @ref="mudTextField" T="string" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateStringValue"></MudTextField>
+    }
+    else if (ActionParam.ParamType == ActionParamType.Process)
+    {
+        <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" />
+    }
+    else if (ActionParam.ParamType == ActionParamType.Integer)
+    {
+        <MudTextField @ref="mudIntField" T="int" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateIntValue"></MudTextField>
+    }
 }
 
 
@@ -20,9 +27,39 @@ else if (ActionParam.ParamType == ActionParamType.Integer)
     [Parameter]
     public required ActionParam ActionParam { get; set; }
 
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    private string? textValue;
+
     MudTextField<string>? mudTextField;
     MudTextField<string>? mudProcessField;
     MudTextField<int>? mudIntField;
+
+    // protected override void OnParametersSet()
+    // {
+    //     mudTextField?.SetText("TESTAAA");
+    //     Console.WriteLine("Param Set");
+
+    //     base.OnParametersSet();
+    // }
+
+    // protected override void OnInitialized()
+    // {
+    //     mudTextField?.SetText("TESTAAA");
+    //     Console.WriteLine("Init");
+
+    //     base.OnInitialized();
+    // }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        mudTextField?.SetText(ActionParam.Value);
+        mudProcessField?.SetText(ActionParam.Value);
+        mudIntField?.SetText(ActionParam.Value);
+
+        base.OnAfterRender(firstRender);
+    }
 
     public async void UpdateStringValue(string? e)
     {

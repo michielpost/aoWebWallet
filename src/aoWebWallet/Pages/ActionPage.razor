@@ -49,52 +49,22 @@
 
     </MudStack>
 
-    <MudStack>
-        Target: @AoAction.Target?.Value
-    </MudStack>
+    @if(readOnly)
+    {
+        <MudText>Please review your transaction:</MudText>
+    }
 
-    <MudStack>
-        @foreach (var value in AoAction.Filled)
-        {
-            <p>@value.Key = @value.Value | @value.ParamType</p>
-            @foreach (var arg in value.Args)
-            {
-                <b>@arg</b>
-            }
-        }
+    <ActionEditor AoAction="@AoAction" ReadOnly="@readOnly" Address="@selectedWallet" />
 
-    </MudStack>
-
-    <MudStack>
-        @foreach (var param in AoAction.AllInputs)
-        {
-            if (param.ParamType == ActionParamType.Input
-            || param.ParamType == ActionParamType.Integer
-            || param.ParamType == ActionParamType.Process
-            )
-            {
-                <ActionInputComponent ActionParam="param" />
-            }
-            else if (param.ParamType == ActionParamType.Quantity || param.ParamType == ActionParamType.Balance)
-            {
-                var tokenId = param.Args.FirstOrDefault();
-                var token = dataService.TokenList.Where(x => x.TokenId == tokenId && x.TokenData != null).FirstOrDefault();
-
-                if(token != null)
-                {
-                    //TODO: Quantity, with token and denomination and enough balance check
-                    <ActionQuantityComponent ActionParam="param" Token="token" />
-                }
-                else {
-                   <MudText>Loading Token Data...</MudText>
-                }
-
-                
-
-            }
-        }
-
-    </MudStack>
+    @if (!readOnly)
+    {
+        <MudButton OnClick="Preview">Preview</MudButton>
+    }
+    else
+    {
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton OnClick="Submit">Submit</MudButton>
+    }
 
 
 </MudContainer>
@@ -102,6 +72,21 @@
 @code
 {
     private string? selectedWallet;
+    private bool readOnly = false;
+
+    private void Preview()
+    {
+        readOnly = true;
+    }
+    private void Cancel()
+    {
+        readOnly = false;
+    }
+
+    private void Submit()
+    {
+        readOnly = false;
+    }
 
     private void OpenDialog()
     {

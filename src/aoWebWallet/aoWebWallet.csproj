@@ -27,10 +27,4 @@
 	  <ProjectReference Include="..\webvNext.DataLoader\webvNext.DataLoader.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Content Update="Shared\Components\ActionQuantityComponent.razor">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	  </Content>
-	</ItemGroup>
-
 </Project>
