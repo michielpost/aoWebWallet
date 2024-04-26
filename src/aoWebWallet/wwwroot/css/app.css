@@ -203,4 +203,8 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
     object-fit: contain;
 }
 
+.d-min-h-vh-100 {
+    min-height: 100vh;
+}
+
 
