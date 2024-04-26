@@ -1,13 +1,18 @@
 ﻿using aoWebWallet.Extensions;
 using aoWebWallet.Models;
 using ArweaveBlazor;
+using CommunityToolkit.Mvvm.ComponentModel;
 using webvNext.DataLoader;
 
 namespace aoWebWallet.Services
 {
-    public class TransactionService(ArweaveService arweaveService)
+    public class TransactionService(ArweaveService arweaveService) : ObservableObject
     {
-        public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();
+        public void Reset()
+        {
+            LastTransaction.Data = null;
+        }
+        public DataLoaderViewModel<Transaction> LastTransaction { get; set; } = new();
 
         public async Task<string?> GetActiveArConnectAddress()
         {
@@ -24,48 +29,58 @@ namespace aoWebWallet.Services
             return null;
         }
 
-        public async Task<Transaction?> SendAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
+        public async Task SendAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
         {
             if (wallet.Source == WalletTypes.ArConnect)
             {
                 var activeAddress = await GetActiveArConnectAddress();
                 if(activeAddress == wallet.Address)
-                    return await SendActionWithArConnect(action);
+                    await SendActionWithArConnect(action);
             }
 
             if (ownerWallet?.Source == WalletTypes.ArConnect)
             {
                 var activeAddress = await GetActiveArConnectAddress();
                 if (activeAddress == ownerWallet.Address)
-                    return await SendActionWithEvalWithArConnect(wallet.Address, action);
+                    await SendActionWithEvalWithArConnect(wallet.Address, action);
             }
 
             if (!string.IsNullOrEmpty(wallet.OwnerAddress) && ownerWallet?.Address == wallet.Address
                 && !string.IsNullOrEmpty(ownerWallet?.Jwk))
             {
-                return await SendActionWithEval(ownerWallet.Jwk, wallet.Address, action);
+                Console.WriteLine("eval");
+
+                await SendActionWithEval(ownerWallet.Jwk, wallet.Address, action);
 
             }
 
             if (!string.IsNullOrEmpty(wallet.Jwk))
-                return await SendActionWithJwk(wallet.Jwk, action);
+                await SendActionWithJwk(wallet.Jwk, action);
 
-            return null;
-
+            Console.WriteLine("nothing");
+            return;
         }
 
-        private Task<Transaction?> SendActionWithEvalWithArConnect(string processId, AoAction action)
-          => LastTransactionId.DataLoader.LoadAsync(async () =>
-          {
-              var activeAddress = await GetActiveArConnectAddress();
-              if (string.IsNullOrEmpty(activeAddress))
-                  return null;
+        private async Task SendActionWithEvalWithArConnect(string processId, AoAction action)
+        {
+            var activeAddress = await GetActiveArConnectAddress();
+            if (string.IsNullOrEmpty(activeAddress))
+                return;
 
-              return await SendActionWithEval(null, processId, action);
-          });
+            await SendActionWithEval(null, processId, action);
+        }
+
+        private async Task SendActionWithArConnect(AoAction action)
+        {
+            var activeAddress = await GetActiveArConnectAddress();
+            if (string.IsNullOrEmpty(activeAddress))
+                return;
+
+            await SendActionWithJwk(null, action);
+        }
 
         private Task<Transaction?> SendActionWithEval(string? jwk, string processId, AoAction action)
-         => LastTransactionId.DataLoader.LoadAsync(async () =>
+         => LastTransaction.DataLoader.LoadAsync(async () =>
          {
 
              var transferTags = action.ToEvalTags();
@@ -81,20 +96,10 @@ namespace aoWebWallet.Services
              var idResult = await arweaveService.SendAsync(jwk, processId, null, data, evalTags);
 
              return new Transaction { Id = idResult };
-         });
-
-        private Task<Transaction?> SendActionWithArConnect(AoAction action)
-           => LastTransactionId.DataLoader.LoadAsync(async () =>
-           {
-               var activeAddress = await GetActiveArConnectAddress();
-               if (string.IsNullOrEmpty(activeAddress))
-                   return null;
-
-               return await SendActionWithJwk(null, action);
-           });
+         }, x => LastTransaction.Data = x);
 
         private Task<Transaction?> SendActionWithJwk(string? jwk, AoAction action)
-           => LastTransactionId.DataLoader.LoadAsync(async () =>
+           => LastTransaction.DataLoader.LoadAsync(async () =>
            {
                if (action.Target?.Value == null)
                    return null;
@@ -105,7 +110,7 @@ namespace aoWebWallet.Services
                var idResult = await arweaveService.SendAsync(jwk, action.Target.Value, null, null, transferTags);
 
                return new Transaction { Id = idResult };
-           });
+           }, x => LastTransaction.Data = x);
 
        
 

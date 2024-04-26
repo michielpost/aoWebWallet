@@ -10,9 +10,12 @@ namespace aoWebWallet.Pages
 
         protected override void OnInitialized()
         {
+            transactionService.Reset();
+
             GetQueryStringValues();
             //WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
+            WatchDataLoaderVM(transactionService.LastTransaction);
 
             //Auto select wallet
             if(!string.IsNullOrEmpty(WalletDetailViewModel.SelectedWallet?.Wallet.Address))

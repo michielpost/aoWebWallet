@@ -37,9 +37,6 @@ namespace webvNext.DataLoader
         private bool _swallowExceptions;
 
         [ObservableProperty]
-        private bool isLoading;
-
-        [ObservableProperty]
         private LoadingState loadingState;
 
         public DateTimeOffset? LoadedDateTime { get; set; }

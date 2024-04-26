@@ -57,7 +57,7 @@ namespace aoWebWallet.Pages
         internal void ObjWatch_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             this.StateHasChanged();
-            Console.WriteLine("Obj State changed");
+            //Console.WriteLine("Obj State changed: " + sender?.ToString());
         }
         private void Obj_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {

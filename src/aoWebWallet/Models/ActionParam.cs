@@ -115,8 +115,6 @@ namespace aoWebWallet.Models
                         actionValue = null;
                     }
 
-                    Console.WriteLine($"Val: {actionValue} args: {args.Count()}");
-
                     action.Params.Add(new ActionParam
                     {
                         Key = actionKey,
