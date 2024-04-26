@@ -1,17 +1,15 @@
 ﻿@using aoWebWallet.Models
 
-<MudStack>
-    Target: @AoAction.Target?.Value
-</MudStack>
+<MudItem>
+    <MudChip>Target</MudChip> <MudChip Color="Color.Primary">@AoAction.Target?.Value</MudChip>
+</MudItem>
 
 <MudStack>
-    @foreach (var value in AoAction.Filled)
+    @foreach (var ActionParam in AoAction.Filled)
     {
-        <p>@value.Key = @value.Value | @value.ParamType</p>
-        @foreach (var arg in value.Args)
-        {
-            <b>@arg</b>
-        }
+        <MudItem>
+            <MudChip>@ActionParam.Key</MudChip> <MudChip Color="Color.Primary">@ActionParam.Value</MudChip>
+        </MudItem>
     }
 
 </MudStack>

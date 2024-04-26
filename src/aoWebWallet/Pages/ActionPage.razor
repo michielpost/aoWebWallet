@@ -5,16 +5,16 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject TokenDataService dataService
+@inject TransactionService transactionService;
+@inject WalletDetailViewModel WalletDetailViewModel
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h5">Action Page</MudText>
+    <MudText Typo="Typo.h5">New transaction</MudText>
 
     <MudStack>
-        TODO: Select a wallet, or create a new wallet
-
         @if (BindingContext.WalletList.Data != null)
         {
             if (!BindingContext.WalletList.Data.Any())
@@ -59,6 +59,7 @@
     @if (!readOnly)
     {
         <MudButton OnClick="Preview">Preview</MudButton>
+        <MudText Color="Color.Error">@validation</MudText>
     }
     else
     {
@@ -71,12 +72,14 @@
 
 @code
 {
+    private string? validation;
     private string? selectedWallet;
     private bool readOnly = false;
 
     private void Preview()
     {
-        readOnly = true;
+        validation = AoAction.IsValid();
+        readOnly = string.IsNullOrEmpty(validation);
     }
     private void Cancel()
     {

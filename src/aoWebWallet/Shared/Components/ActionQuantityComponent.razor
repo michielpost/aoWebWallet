@@ -2,11 +2,13 @@
 @using aoWebWallet.Models
 @inject TokenDataService tokenDataService
 @inject TokenClient tokenClient
-<p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p>
+@* <p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p> *@
 
+<MudItem>
 @if(Token == null)
 {
     <MudText>Loading token data...</MudText>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
     return;
 }
 @if (ActionParam.ParamType == ActionParamType.Balance && string.IsNullOrEmpty(Address))
@@ -17,27 +19,33 @@
 @if (ActionParam.ParamType == ActionParamType.Balance && BalanceData == null)
 {
     <MudText>Loading balance...</MudText>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
     return;
 }
 
 @if (ReadOnly)
 {
-    <p>@ActionParam.Key = @BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token?.TokenData?.Denomination ?? 0)</p>
-}
-else
-{
-    if (ActionParam.ParamType == ActionParamType.Quantity
-|| ActionParam.ParamType == ActionParamType.Balance)
+        <MudChip>@ActionParam.Key</MudChip> <MudChip Color="Color.Secondary"> @BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token?.TokenData?.Denomination ?? 0) @Token?.TokenData?.Ticker</MudChip>
+    }
+    else
     {
-        <MudTextField @ref="mudTextField" T="decimal" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateDecimalValue" Format="@DenominationFormat" Validation="@(new Func<decimal, IEnumerable<string>>(ValidateBalance))"></MudTextField>
+        if (ActionParam.ParamType == ActionParamType.Quantity
+    || ActionParam.ParamType == ActionParamType.Balance)
+        {
+            var label = $"{ActionParam.Key} ({Token?.TokenData?.Ticker})";
+
+            <MudStack Row="true">
+                <MudTextField @ref="mudTextField" T="decimal" Label="@label" Variant="Variant.Text" ValueChanged="UpdateDecimalValue" Format="@DenominationFormat" Validation="@(new Func<decimal, IEnumerable<string>>(ValidateBalance))"></MudTextField>
+                <MudText>@Token?.TokenData?.Ticker</MudText>
+        </MudStack>
 
         if (ActionParam.ParamType == ActionParamType.Balance)
         {
-            <MudText>Balance available: @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) </MudText>
+                <MudChip Color="Color.Info">Balance available: @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
         }
     }
 }
-
+</MudItem>
 
 @code {
 
@@ -63,9 +71,9 @@ else
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if (!(mudTextField?.ValidationErrors.Any() ?? false))
+        if (!(mudTextField?.ValidationErrors.Any() ?? false) && Token?.TokenData?.Denomination != null)
         {
-            mudTextField?.SetText(ActionParam.Value);
+            mudTextField?.SetText(@BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token.TokenData.Denomination.Value));
         }
 
         base.OnAfterRender(firstRender);

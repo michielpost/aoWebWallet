@@ -1,9 +1,10 @@
 ﻿@using aoWebWallet.Models
-<p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p>
+@* <p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p> *@
 
+<MudItem>
 @if(ReadOnly)
 {
-    <p>@ActionParam.Key = @ActionParam.Value</p>
+    <MudChip>@ActionParam.Key</MudChip> <MudChip Color="Color.Primary">@ActionParam.Value</MudChip>
 }
 else
 {
@@ -20,7 +21,7 @@ else
         <MudTextField @ref="mudIntField" T="int" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateIntValue"></MudTextField>
     }
 }
-
+</MudItem>
 
 @code {
 

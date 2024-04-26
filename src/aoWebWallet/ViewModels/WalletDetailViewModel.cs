@@ -1,6 +1,7 @@
 ﻿using aoWebWallet.Models;
 using aoWebWallet.Services;
 using ArweaveAO;
+using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MudBlazor;
 using System.Collections.ObjectModel;
@@ -19,6 +20,7 @@ namespace aoWebWallet.ViewModels
         private readonly TokenDataService dataService;
         private readonly TokenClient tokenClient;
         private readonly StorageService storageService;
+        private readonly ArweaveService arweaveService;
         private readonly ISnackbar snackbar;
         private readonly MemoryDataCache memoryDataCache;
 
@@ -31,6 +33,12 @@ namespace aoWebWallet.ViewModels
         private bool canClaim2;
         [ObservableProperty]
         private bool canClaim3;
+
+        [ObservableProperty]
+        public string? activeArConnectAddress;
+
+        [ObservableProperty]
+        public bool? hasArConnectExtension;
 
         public int? SelectedWalletIndex { get; set; }
 
@@ -50,6 +58,7 @@ namespace aoWebWallet.ViewModels
             TokenDataService dataService,
             TokenClient tokenClient,
             StorageService storageService,
+            ArweaveService arweaveService,
             ISnackbar snackbar,
             MemoryDataCache memoryDataCache)
         {
@@ -58,6 +67,7 @@ namespace aoWebWallet.ViewModels
             this.dataService = dataService;
             this.tokenClient = tokenClient;
             this.storageService = storageService;
+            this.arweaveService = arweaveService;
             this.snackbar = snackbar;
             this.memoryDataCache = memoryDataCache;
         }
@@ -72,11 +82,30 @@ namespace aoWebWallet.ViewModels
             await LoadSelectedWalletProcessData(address);
             await LoadSelectedWalletOwnerData(address);
 
-            mainViewModel.CheckHasArConnectExtension();
+            CheckHasArConnectExtension();
 
             SetClaims();
 
             mainViewModel.AddToLog(ActivityLogType.ViewAddress, address);
+        }
+
+        public async Task CheckHasArConnectExtension()
+        {
+            HasArConnectExtension = await arweaveService.HasArConnectAsync();
+            await GetActiveArConnectAddress();
+        }
+
+        public async Task GetActiveArConnectAddress()
+        {
+            if (HasArConnectExtension.HasValue && HasArConnectExtension.Value)
+            {
+                ActiveArConnectAddress = await arweaveService.GetActiveAddress();
+
+                if (this.SelectedWallet != null)
+                {
+                    this.SelectedWallet.IsConnected = SelectedWallet.Wallet.Address == ActiveArConnectAddress;
+                }
+            }
         }
 
         public async Task RefreshTokenTransferList()
@@ -152,6 +181,11 @@ namespace aoWebWallet.ViewModels
 
                 this.LoadBalanceDataList(address);
                 this.LoadTokenTransferList(address);
+
+                if (this.SelectedWallet != null)
+                {
+                    this.SelectedWallet.IsConnected = SelectedWallet.Wallet.Address == ActiveArConnectAddress;
+                }
 
             }
             else
