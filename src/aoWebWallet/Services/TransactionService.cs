@@ -45,19 +45,16 @@ namespace aoWebWallet.Services
                     await SendActionWithEvalWithArConnect(wallet.Address, action);
             }
 
-            if (!string.IsNullOrEmpty(wallet.OwnerAddress) && ownerWallet?.Address == wallet.Address
+            if (!string.IsNullOrEmpty(wallet.OwnerAddress) && ownerWallet?.Address == wallet.OwnerAddress
                 && !string.IsNullOrEmpty(ownerWallet?.Jwk))
             {
-                Console.WriteLine("eval");
-
                 await SendActionWithEval(ownerWallet.Jwk, wallet.Address, action);
-
             }
 
             if (!string.IsNullOrEmpty(wallet.Jwk))
                 await SendActionWithJwk(wallet.Jwk, action);
 
-            Console.WriteLine("nothing");
+            Console.WriteLine("No Wallet to send");
             return;
         }
 

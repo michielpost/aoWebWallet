@@ -18,8 +18,12 @@ namespace aoWebWallet.Pages
             WatchDataLoaderVM(transactionService.LastTransaction);
 
             //Auto select wallet
-            if(!string.IsNullOrEmpty(WalletDetailViewModel.SelectedWallet?.Wallet.Address))
-                selectedWallet = WalletDetailViewModel.SelectedWallet?.Wallet.Address;
+            if (!string.IsNullOrEmpty(WalletDetailViewModel.SelectedWallet?.Wallet.Address))
+            {
+                selectedWalletObj = WalletDetailViewModel.SelectedWallet?.Wallet;
+                selectedWallet = selectedWalletObj?.Address;
+
+            }
 
             NavigationManager.LocationChanged += NavigationManager_LocationChanged;
 
