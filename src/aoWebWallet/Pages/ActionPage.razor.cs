@@ -37,7 +37,7 @@ namespace aoWebWallet.Pages
                 await BindingContext.CheckHasArConnectExtension();
 
                 await BindingContext.LoadWalletList();
-                await dataService.LoadTokenList();
+                //await dataService.LoadTokenList();
             }
 
             await base.OnAfterRenderAsync(firstRender);

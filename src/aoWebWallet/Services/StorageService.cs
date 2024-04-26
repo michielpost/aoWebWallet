@@ -3,6 +3,7 @@ using aoWebWallet.Pages;
 using ArweaveAO.Models.Token;
 using Blazored.LocalStorage;
 using System.Reflection.Metadata;
+using static MudBlazor.CategoryTypes;
 
 namespace aoWebWallet.Services
 {
@@ -94,7 +95,9 @@ namespace aoWebWallet.Services
 
         public ValueTask SaveTokenList(List<Token> list)
         {
-            return localStorage.SetItemAsync(TOKEN_LIST_KEY, list);
+            var uniqueItems = list.GroupBy(i => i.TokenId).Select(g => g.First());
+
+            return localStorage.SetItemAsync(TOKEN_LIST_KEY, uniqueItems);
         }
 
         public async ValueTask<List<Wallet>> GetWallets()

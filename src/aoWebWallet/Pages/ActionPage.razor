@@ -56,7 +56,7 @@
 
     <ActionEditor AoAction="@AoAction" ReadOnly="@readOnly" Address="@selectedWallet" />
 
-    @if (!readOnly)
+    @if (!readOnly && !string.IsNullOrEmpty(selectedWallet))
     {
         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview">Preview</MudButton>
         <MudText Color="Color.Error">@validation</MudText>

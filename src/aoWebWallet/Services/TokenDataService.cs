@@ -46,7 +46,7 @@ namespace aoWebWallet.Services
                 }
             }
 
-            LoadTokenList();
+            await LoadTokenList();
         }
 
         public async Task<Token> LoadTokenAsync(string tokenId)
@@ -89,7 +89,6 @@ namespace aoWebWallet.Services
         {
             if (!TokenList.Any() || force)
             {
-
                 TokenList.Clear();
                 await foreach (var item in LoadTokenDataAsync())
                 {
