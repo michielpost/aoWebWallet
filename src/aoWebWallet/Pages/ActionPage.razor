@@ -95,12 +95,33 @@
     private bool readOnly = false;
     private bool started = false;
 
-    private void Preview()
+    private async void Preview()
     {
         //transactionService.LastTransaction.Data = new Transaction() { Id = "test" };
 
         validation = AoAction.IsValid();
         readOnly = string.IsNullOrEmpty(validation);
+
+        if (BindingContext.WalletList.Data == null)
+            return;
+
+        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == selectedWallet).FirstOrDefault();
+        if (wallet == null)
+        {
+            if (selectedWalletObj?.Address == selectedWallet)
+            {
+                wallet = selectedWalletObj;
+            }
+        }
+
+        if (wallet == null)
+            return;
+
+        //Do we need the owner wallet?
+        Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+
+        //await transactionService.DryRunAction(wallet, ownerWallet, AoAction);
+
     }
     private void Cancel()
     {
@@ -133,7 +154,6 @@
         Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
 
         started = true;
-        await transactionService.DryRunAction(wallet, ownerWallet, AoAction);
         await transactionService.SendAction(wallet, ownerWallet, AoAction);
     }
 

@@ -99,6 +99,7 @@ namespace aoWebWallet
             services.AddScoped<GraphqlClient>();
 
             services.AddArweaveBlazor();
+            services.AddScoped<AODataClient>();
 
 
             //Register ViewModels

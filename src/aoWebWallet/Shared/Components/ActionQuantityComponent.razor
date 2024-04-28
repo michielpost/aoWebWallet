@@ -16,7 +16,7 @@
     <MudText>Please select a wallet...</MudText>
     return;
 }
-@if (ActionParam.ParamType == ActionParamType.Balance && BalanceData == null)
+@if (ActionParam.ParamType == ActionParamType.Balance && BalanceData == null && !ReadOnly)
 {
     <MudText>Loading balance...</MudText>
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
@@ -86,7 +86,9 @@
         if (token.TokenData?.Denomination != null)
             Token = token;
 
-        if (ActionParam.ParamType == ActionParamType.Balance && !string.IsNullOrEmpty(Address))
+        if (ActionParam.ParamType == ActionParamType.Balance 
+            && !string.IsNullOrEmpty(Address)
+            && !ReadOnly)
         {
             BalanceData = await tokenClient.GetBalance(token.TokenId, Address);
         }
