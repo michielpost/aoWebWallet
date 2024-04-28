@@ -38,30 +38,29 @@ namespace aoWebWallet.Services
                 {
                     var data = await tokenClient.GetTokenMetaData(tokenId);
                     return data;
+                }, async data =>
+                {
+                    if (data != null)
+                    {
+                        await storageService.AddToken(tokenId, data, isUserAdded: false, null);
+
+                        await LoadTokenList();
+                    }
                 });
 
-                if (data != null)
-                {
-                    await storageService.AddToken(tokenId, data, isUserAdded: false);
-                }
+                
             }
-
-            await LoadTokenList();
         }
 
         public async Task<Token> LoadTokenAsync(string tokenId)
         {
-            var tokens = await storageService.GetTokenIds();
-
-            var token = tokens.Where(x => x.TokenId.Equals(tokenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var token = TokenList.Where(x => x.TokenId.Equals(tokenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if(token == null)
             {
                 token = new Token()
                 { 
                     TokenId  = tokenId,
                 };
-
-                tokens.Add(token);
             }
 
             if (token.TokenData == null)
@@ -77,7 +76,9 @@ namespace aoWebWallet.Services
 
                     token.TokenData = data;
 
-                    await storageService.SaveTokenList(tokens);
+                    TokenList.Add(token);
+
+                    await storageService.AddToken(tokenId, data, false, null);
                 }
                
             }
@@ -92,12 +93,15 @@ namespace aoWebWallet.Services
                 TokenList.Clear();
                 await foreach (var item in LoadTokenDataAsync())
                 {
-                    TokenList.Add(item);
+                    var existing = TokenList.Where(x => x.TokenId == item.TokenId).Any();
+
+                    if(!existing)
+                        TokenList.Add(item);
                 }
             }
         }
 
-        public async IAsyncEnumerable<Token> LoadTokenDataAsync()
+        private async IAsyncEnumerable<Token> LoadTokenDataAsync()
         {
             var tokens = await storageService.GetTokenIds();
             foreach (var token in tokens)
@@ -141,20 +145,6 @@ namespace aoWebWallet.Services
                 token.IsVisible = !token.IsVisible;
                 await storageService.SaveTokenList(all.ToList());
                 await this.LoadTokenList(force: true);
-            }
-        }
-
-        public async Task AddToken(string tokenId, TokenData data, bool isUserAdded)
-        {
-            var newToken = await storageService.AddToken(tokenId, data, isUserAdded);
-            var existing = TokenList.Where(x => x.TokenId == newToken.TokenId).FirstOrDefault();
-            if (existing == null)
-            {
-                TokenList.Add(newToken);
-            }
-            else
-            {
-                existing = newToken;
             }
         }
 

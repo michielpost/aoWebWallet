@@ -133,6 +133,7 @@
         Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
 
         started = true;
+        await transactionService.DryRunAction(wallet, ownerWallet, AoAction);
         await transactionService.SendAction(wallet, ownerWallet, AoAction);
     }
 

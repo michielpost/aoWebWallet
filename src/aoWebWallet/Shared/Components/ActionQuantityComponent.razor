@@ -81,6 +81,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        BalanceData = null;
         var token = await tokenDataService.LoadTokenAsync(TokenId);
         if (token.TokenData?.Denomination != null)
             Token = token;

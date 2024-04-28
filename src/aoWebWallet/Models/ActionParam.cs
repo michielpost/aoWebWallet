@@ -38,6 +38,11 @@ namespace aoWebWallet.Models
             return AllWithoutTarget.Select(x => new ArweaveBlazor.Models.Tag { Name = x.Key, Value = x.Value ?? string.Empty }).ToList();
         }
 
+        public List<ArweaveAO.Models.Tag> ToDryRunTags()
+        {
+            return AllWithoutTarget.Select(x => new ArweaveAO.Models.Tag { Name = x.Key, Value = x.Value ?? string.Empty }).ToList();
+        }
+
 
         public string ToQueryString()
         {

@@ -40,8 +40,6 @@
             var data = token.TokenData;
             if (data != null)
             {
-                await dataService.AddToken(TokenId, data, isUserAdded: true);
-
                 Snackbar.Add($"Token added ({data.Name})", Severity.Info);
 
                 MudDialog.Close(DialogResult.Ok(true));

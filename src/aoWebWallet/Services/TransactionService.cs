@@ -1,12 +1,13 @@
 ﻿using aoWebWallet.Extensions;
 using aoWebWallet.Models;
+using ArweaveAO.Requests;
 using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
 using webvNext.DataLoader;
 
 namespace aoWebWallet.Services
 {
-    public class TransactionService(ArweaveService arweaveService) : ObservableObject
+    public class TransactionService(ArweaveService arweaveService, ArweaveAO.AODataClient aODataClient) : ObservableObject
     {
         public void Reset()
         {
@@ -27,6 +28,19 @@ namespace aoWebWallet.Services
             }
 
             return null;
+        }
+
+        public async Task DryRunAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
+        {
+            var target = action.Target?.Value ?? string.Empty;
+            var druRunRequest = new DryRunRequest()
+            {
+                Target = target,
+                Tags = action.ToDryRunTags()
+            };
+
+            var result = aODataClient.DryRun(target, druRunRequest);
+
         }
 
         public async Task SendAction(Wallet wallet, Wallet? ownerWallet, AoAction action)

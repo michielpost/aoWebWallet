@@ -11,6 +11,7 @@ namespace aoWebWallet.Pages
         {
             //WatchObject(dataService.TokenList);
             WatchObject(BindingContext.BalanceDataList);
+            WatchObject(dataService.TokenDataLoader);
             WatchCollection(dataService.TokenList);
             WatchCollection(BindingContext.BalanceDataList);
             WatchDataLoaderVM(MainViewModel.WalletList);
