@@ -20,7 +20,7 @@
 
     <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
 
-    <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-3">
+    <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-3 d-max-w-100">
             @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
                 {
                     <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
@@ -43,23 +43,23 @@
                         <MudStack Row="true">
                             <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" />
 
-                            <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
-                                <div style="display:flex; white-space: nowrap;">
-                                    <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
+                            <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
+                                <div Class="d-custom-2">
+                                    <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
                                         @wallet.Address
                                     </MudLink>
                                     <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(wallet.Address); }" />
                                 </div>
-                                <div style="display:flex; flex-direction:row;">
+                                <div Class="d-flex flex-row">
                                     @if (wallet.IsReadOnly)
                                     {
                                         <MudText Typo="Typo.body2">read-only &nbsp;</MudText>
                                     }
                                     <MudText Typo="Typo.body2">@wallet.Name</MudText>
-                                   
+
                                     @if (wallet.NeedsBackup)
                                     {
-                                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                                        <MudIcon Class="d-icon-wallet" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
                                         <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
                                     }
                                 </div>
