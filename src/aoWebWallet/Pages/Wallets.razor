@@ -85,11 +85,21 @@
             else
             {
                 <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
-                    <MudItem lg="6" xs="12">
-                        <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
-                        <AddUploadWalletComponent IsExpanded="true"></AddUploadWalletComponent>
-                        <AddGenerateWalletComponent IsExpanded="true"></AddGenerateWalletComponent>
-                        <AddWalletComponent IsExpanded="true"></AddWalletComponent>
+                    <MudItem sm="12" xs="12">
+                        <MudTabs Class="mud-width-full" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                            <MudTabPanel Text="Create new">
+                                <AddGenerateWalletComponent IsExpanded="true"></AddGenerateWalletComponent>
+                            </MudTabPanel>
+                            <MudTabPanel Text="ArConnect">
+                                <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
+                            </MudTabPanel>
+                            <MudTabPanel Text="Load .json">
+                                <AddUploadWalletComponent IsExpanded="true"></AddUploadWalletComponent>
+                            </MudTabPanel>
+                            <MudTabPanel Text="Read-only" >
+                                <AddWalletComponent IsExpanded="true"></AddWalletComponent>
+                            </MudTabPanel>
+                        </MudTabs>
                     </MudItem>
                 </MudGrid>
 

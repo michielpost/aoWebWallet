@@ -5,19 +5,15 @@
 
 <MudPaper Class="pa-8">
     <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Add read-only wallet" : "Add read-only wallet")</MudButton>
-        <MudDivider />
-        <MudCollapse Expanded="IsExpanded">
-            <MudTextField @bind-Value="Address" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
-            <MudTextField @bind-Value="Name" Label="Name (optional)" Variant="Variant.Text"></MudTextField>
-            <MudText Color="Color.Secondary">@Progress</MudText>
-            @if (!HideAddButton)
-            {
-                <div style="width:100%;">
-                    <MudButton style="margin-top:10px; display:flex; margin-left:auto;" Color="Color.Primary" OnClick="Submit">Add</MudButton>
-                </div>
-            }
-        </MudCollapse>
+        <MudTextField @bind-Value="Address" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
+        <MudText Color="Color.Secondary">@Progress</MudText>
+
+        <div Class="d-w-100 d-flex justify-end mt-2">
+            <MudButton OnClick="Submit"  Color="Color.Primary" Variant="Variant.Filled">
+                Add Custom Wallet
+            </MudButton>
+        </div>
     </MudStack>
 </MudPaper>
 

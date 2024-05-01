@@ -6,11 +6,9 @@
 
 <MudPaper Class="pa-8">
     <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Load .json wallet" : "Load .json wallet")</MudButton>
-        <MudDivider />
-        <MudCollapse Expanded="IsExpanded">
-           
-            <MudStack Style="width: 100%">
+        @* <MudText Class="d-flex justify-center" Typo="Typo.button">Load .json wallet</MudText>
+            <MudDivider /> *@
+            <MudStack Class="d-w-100">
                 <MudFileUpload T="IReadOnlyList<IBrowserFile>"
                                Accept=".json"
                                OnFilesChanged="OnInputFileChanged"
@@ -25,7 +23,7 @@
                                   Outlined="true"
                                   Class="@_dragClass">
                             <MudText Typo="Typo.h6">
-                                Drag and drop wallet file or click here. 
+                                Drag and drop wallet file or click here.
                             </MudText>
                             <MudText Typo="Typo.subtitle1">
                                 Your files won't be uploaded and are only read by the local app.
@@ -59,8 +57,6 @@
                     </ButtonTemplate>
                 </MudFileUpload>
             </MudStack>
-
-        </MudCollapse>
     </MudStack>
 </MudPaper>
 
