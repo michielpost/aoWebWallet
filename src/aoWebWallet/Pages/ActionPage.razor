@@ -95,13 +95,14 @@
         {
             <MudStack>
                 <MudText Typo="Typo.h5">Transfer success!</MudText>
-                <MudText>TransactionId</MudText>
+                <MudText>Message Id</MudText>
                 <MudText Class="KodeMono" Typo="Typo.caption">
                     @transactionService.LastTransaction.Data?.Id
                 </MudText>
             </MudStack>
 
-            <MudButton Color="Color.Primary" OnClick="ReturnToWallet">Return to wallet</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ReturnToWallet">Return to wallet</MudButton>
+            @* <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ViewTransaction">View Transaction</MudButton> *@
         }
     }
    
@@ -152,9 +153,9 @@
             return;
 
         //Do we need the owner wallet?
-        Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+        //Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
 
-        transactionService.DryRunAction(wallet, ownerWallet, AoAction);
+        transactionService.DryRunAction(wallet, AoAction);
 
     }
     private void Cancel()
@@ -165,6 +166,15 @@
     private void ReturnToWallet()
     {
         NavigationManager.NavigateTo($"/wallet/{selectedWallet}");
+    }
+
+    private void ViewTransaction()
+    {
+        if (!string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
+            NavigationManager.NavigateTo($"/transaction/{transactionService.LastTransaction.Data?.Id}");
+        else
+            ReturnToWallet();
+
     }
 
     private async Task Submit()

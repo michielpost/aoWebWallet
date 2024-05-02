@@ -33,14 +33,14 @@ namespace aoWebWallet.Services
             return null;
         }
 
-        public Task<MessageResult?> DryRunAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
+        public Task<MessageResult?> DryRunAction(Wallet wallet, AoAction action)
              => DryRunResult.DataLoader.LoadAsync(async () =>
              {
                  var target = action.Target?.Value ?? string.Empty;
                  var druRunRequest = new DryRunRequest()
                  {
                      Target = target,
-                     Owner = ownerWallet?.Address ?? wallet.Address,
+                     Owner = wallet.Address,
                      Tags = action.ToDryRunTags()
                  };
 
