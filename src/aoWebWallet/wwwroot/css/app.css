@@ -203,4 +203,68 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
     object-fit: contain;
 }
 
+.d-min-h-vh-100 {
+    min-height: 100vh;
+}
 
+.d-max-w-100 {
+    max-width: 100%;
+}
+
+.d-w-100 {
+    width: 100%;
+}
+
+.d-icon-wallet {
+    margin-left:2px;
+    width:20px;
+    padding-bottom:4px;
+}
+
+.d-font-weight-500 {
+    font-weight: 500 !important;
+}
+
+.d-overflow-hidden {
+    overflow: hidden;
+}
+
+.d-custom-1 {
+    width:222px;
+    display:flex;
+    flex-direction: row;
+    align-items:center;
+    max-height: 50px;
+}
+
+.d-custom-2 {
+    display:flex;
+    white-space: nowrap;
+}
+
+.d-custom-3 {
+    margin-top:10px;
+    display:flex;
+    margin-left:auto;
+}
+
+.d-custom-4 {
+    width:100%;
+    margin-left:5px;
+    display: flex;
+    align-items:center;
+    padding:8px;
+}
+
+.d-custom-5 {
+    width:31px;
+    height:31px;
+}
+
+.d-custom-6 {
+    border-radius:22px;
+    width:100%;
+    margin-top:5px;
+    display: flex;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
+}

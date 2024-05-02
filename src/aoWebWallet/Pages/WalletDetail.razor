@@ -22,7 +22,7 @@
                 <MudStack Row="true">
                     @if (BindingContext.SelectedWallet?.IsConnected ?? false)
                     {
-                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                        <MudIcon Class="d-icon-wallet" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
                     }
                     <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Wallet.Name</MudText>
                     @if (BindingContext.SelectedWallet?.Wallet.OwnerAddress != null)
@@ -33,7 +33,7 @@
                 @if (BindingContext.SelectedWallet?.Wallet.NeedsBackup ?? false)
                 {
                     <MudStack Row="true">
-                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                        <MudIcon Class="d-icon-wallet" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
                         <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
                     </MudStack>
                 }
@@ -61,7 +61,7 @@
     @if (BindingContext.SelectedWallet?.IsConnected ?? false)
     {
         <MudPaper>
-            <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex mb-4 pr-4">
+            <MudContainer Width="100%" Class="d-flex mb-4 pr-4 d-max-w-100">
                 @if (MainViewModel.UserSettings != null)
                 {
                     <MudStack Row=true Justify="Justify.Center">
@@ -100,7 +100,7 @@
 
     }
 
-    <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-2">
+    <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-2 d-max-w-100">
         @*         <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
         <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
         </MudTooltip> *@
@@ -121,12 +121,11 @@
 
                 <MudPaper Class="pa-4">
                     <MudStack Row="true">
-
-                        <div style="width:222px; display:flex; flex-direction: row; align-items:center; max-height: 50px;">
-                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Token?.TokenData?.Logo)" Size="Size.Medium" title="@balance.Token?.TokenId" />
+                        <div Class="d-custom-1">
+                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Token.TokenData?.Logo)" Size="Size.Medium" title="@balance.Token.TokenId" />
                             <MudStack Class="ml-4" Justify="Justify.Center" Spacing="0">
-                                <MudText style="font-weight: 500;" Typo="Typo.body1">@balance.Token?.TokenData?.Name</MudText>
-                                <MudText Typo="Typo.body2">@balance.Token?.TokenData?.Ticker</MudText>
+                                <MudText Class="d-font-weight-500" Typo="Typo.body1">@balance.Token.TokenData?.Name</MudText>
+                                <MudText Typo="Typo.body2">@balance.Token.TokenData?.Ticker</MudText>
                             </MudStack>
                         </div>
 
