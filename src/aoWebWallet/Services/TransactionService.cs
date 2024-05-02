@@ -13,8 +13,10 @@ namespace aoWebWallet.Services
         public void Reset()
         {
             LastTransaction.Data = null;
+            DryRunResult.Data = null;
         }
         public DataLoaderViewModel<Transaction> LastTransaction { get; set; } = new();
+        public DataLoaderViewModel<MessageResult> DryRunResult { get; set; } = new();
 
         public async Task<string?> GetActiveArConnectAddress()
         {
@@ -31,20 +33,21 @@ namespace aoWebWallet.Services
             return null;
         }
 
-        public async Task<MessageResult?> DryRunAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
-        {
-            var target = action.Target?.Value ?? string.Empty;
-            var druRunRequest = new DryRunRequest()
-            {
-                Target = target,
-                Owner = ownerWallet?.Address ?? wallet.Address,
-                Tags = action.ToDryRunTags()
-            };
+        public Task<MessageResult?> DryRunAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
+             => DryRunResult.DataLoader.LoadAsync(async () =>
+             {
+                 var target = action.Target?.Value ?? string.Empty;
+                 var druRunRequest = new DryRunRequest()
+                 {
+                     Target = target,
+                     Owner = ownerWallet?.Address ?? wallet.Address,
+                     Tags = action.ToDryRunTags()
+                 };
 
-            var result = await aODataClient.DryRun(target, druRunRequest);
+                 var result = await aODataClient.DryRun(target, druRunRequest);
 
-            return result;
-        }
+                 return result;
+             }, x => DryRunResult.Data = x);
 
         public async Task SendAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
         {

@@ -16,6 +16,7 @@ namespace aoWebWallet.Pages
             //WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
             WatchDataLoaderVM(transactionService.LastTransaction);
+            WatchDataLoaderVM(transactionService.DryRunResult);
 
             //Auto select wallet
             if (!string.IsNullOrEmpty(WalletDetailViewModel.SelectedWallet?.Wallet.Address))
