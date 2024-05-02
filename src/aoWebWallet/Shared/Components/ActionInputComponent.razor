@@ -14,7 +14,7 @@ else
     }
     else if (ActionParam.ParamType == ActionParamType.Process)
     {
-        <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" />
+        <MudTextField @ref="mudProcessField" T="string" Mask="@(new RegexMask("[a-zA-Z0-9_\\-]"))" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" />
     }
     else if (ActionParam.ParamType == ActionParamType.Integer)
     {

@@ -18,7 +18,7 @@
         @if (!isConfirm)
         {
             <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
-                <MudTextField Class="mb-4" @bind-Value="Address" MaxLength=43 Label="Wallet address" Variant="Variant.Text"></MudTextField>
+                <MudTextField Class="mb-4" @bind-Value="Address" Mask="@(new RegexMask("[a-zA-Z0-9_\\-]"))" MaxLength=43 Label="Wallet address" Variant="Variant.Text"></MudTextField>
                 <MudTextField @bind-Value="Amount" Label="Amount" Variant="Variant.Text" Format="@DenominationFormat"></MudTextField>
             </MudFocusTrap>
             <MudText Color="Color.Secondary">@Progress</MudText>

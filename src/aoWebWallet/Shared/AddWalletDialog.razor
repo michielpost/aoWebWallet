@@ -15,32 +15,15 @@
             <MudTabPanel Text="Load .json">
                 <AddUploadWalletComponent></AddUploadWalletComponent>
             </MudTabPanel>
-            <MudTabPanel Text="Read-only" >
-                <AddWalletComponent @ref="addWalletRef" HideAddButton="true"></AddWalletComponent>
-            </MudTabPanel>
         </MudTabs>
     </DialogContent>
 </MudDialog>
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    private AddWalletComponent? addWalletRef;
-
     public async Task Submit()
     {
-        // Call a function in AddWalletComponent
-        if (addWalletRef != null)
-        {
-            var result = await addWalletRef.Submit();
-            if(result)
-            {
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-        }
-        else
-        {
-            MudDialog.Close(DialogResult.Ok(true));
-        }
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
     //void Submit() => MudDialog.Close(DialogResult.Ok(true));

@@ -2,7 +2,7 @@
 
 namespace aoWebWallet.Pages
 {
-    public partial class Wallets : MvvmComponentBase<MainViewModel>
+    public partial class AddressBook : MvvmComponentBase<MainViewModel>
     {
         protected override void OnInitialized()
         {
@@ -17,10 +17,7 @@ namespace aoWebWallet.Pages
         {
             if (firstRender)
             {
-                await BindingContext.CheckHasArConnectExtension();
-
                 await BindingContext.LoadWalletList();
-                await dataService.LoadTokenList();
             }
 
             await base.OnAfterRenderAsync(firstRender);
