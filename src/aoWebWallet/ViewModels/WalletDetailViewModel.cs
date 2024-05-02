@@ -291,10 +291,14 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-        public async Task AddWalletAsReadonly()
+        public async Task SaveExplorerWallet()
         {
-            if (SelectedWallet != null)
+            if (SelectedWallet?.Wallet != null)
             {
+                var existing = mainViewModel.WalletList.Data?.Where(x => x.Address == SelectedWallet.Wallet.Address).Any() ?? false;
+                if (existing)
+                    return;
+
                 SelectedWallet.Wallet.Source = WalletTypes.Manual;
                 SelectedWallet.Wallet.IsReadOnly = true;
 
