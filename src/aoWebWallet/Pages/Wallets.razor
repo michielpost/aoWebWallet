@@ -71,6 +71,7 @@
                             {
                                 <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>
                             }
+                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }"></MudIconButton>
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
                         </MudStack>
                     </MudPaper>
@@ -117,6 +118,16 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddWalletDialog>("Add Wallet", options);
+    }
+
+    private async void EditWallet(Wallet wallet)
+    {
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+
+        StateHasChanged();
     }
 
     private async void DeleteWallet(Wallet wallet)

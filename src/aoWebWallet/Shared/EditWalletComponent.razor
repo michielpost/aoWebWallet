@@ -4,13 +4,13 @@
 
 <MudPaper Class="pa-8">
     <MudStack Spacing="2">
-        <MudTextField @bind-Value="Address" Required RequiredError="Input a wallet address" Mask="@(new RegexMask("[a-zA-Z0-9_\\-]"))" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
-        <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Wallet.Address" Required="true" RequiredError="Input a wallet address" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Wallet.Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
         <MudText Color="Color.Secondary">@Progress</MudText>
 
         <div Class="d-w-100 d-flex justify-end mt-2">
             <MudButton OnClick="Submit"  Color="Color.Primary" Variant="Variant.Filled">
-                Add Contact
+                Save
             </MudButton>
         </div>
     </MudStack>
@@ -20,16 +20,20 @@
 
 @code {
     [Parameter]
-    public bool HideAddButton { get; set; }
+    public Wallet Wallet { get; set; } = new() { Address = string.Empty };
 
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    public string? Name { get; set; }
-    public string? Address { get; set; }
     public string? Progress { get; set; }
 
     [Parameter]
     public bool IsExpanded { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
 
     private void OnExpandCollapseClick()
     {
@@ -45,25 +49,16 @@
         //     return false;
         // }
 
-        if (string.IsNullOrWhiteSpace(Address) || Address.Length != 43)
+        if (string.IsNullOrWhiteSpace(Wallet.Address) || Wallet.Address.Length != 43)
         {
             Progress = "Length must be 43 characters.";
             StateHasChanged();
             return false;
         }
 
-        var wallet = new Wallet
-            {
-                Address = Address,
-                Name = Name,
-                Source = WalletTypes.Manual,
-                IsReadOnly = true,
-                AddedDate = DateTimeOffset.UtcNow
-            };
+        await BindingContext.SaveWallet(Wallet);
 
-        await BindingContext.SaveWallet(wallet);
-
-        Snackbar.Add($"Contact added ({Address})", Severity.Info);
+        Snackbar.Add($"Address saved ({Wallet.Address})", Severity.Info);
 
         MudDialog?.Close(true);
 

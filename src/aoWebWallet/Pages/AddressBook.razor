@@ -52,7 +52,8 @@
                             {
                                 <MudChip>AOS</MudChip>
                             }
-                            
+
+                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }"></MudIconButton>
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
                         </MudStack>
                     </MudPaper>
@@ -87,8 +88,28 @@
 {
     private void OpenDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddContactComponent>("Add Contact", options);
+        var tempWallet = new Wallet()
+            {
+                Address = string.Empty,
+                IsReadOnly = true,
+                AddedDate = DateTimeOffset.UtcNow,
+                Source = WalletTypes.Manual
+            };
+
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, tempWallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Add Contact", parameters, options);
+    }
+
+    private async void EditWallet(Wallet wallet)
+    {
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Edit Contact", parameters, options);
+
+        StateHasChanged();
     }
 
     private async void DeleteWallet(Wallet wallet)
