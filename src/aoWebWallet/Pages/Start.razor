@@ -4,11 +4,11 @@
 <PageTitle>Start - @Program.PageTitlePostFix</PageTitle>
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudStack>
+    <MudGrid>
         <MudItem xs="12" md="6">
             <MudPaper Elevation="2" Class="pa-4 border-radius-25 first-wallet">
                 <MudText Align="Align.Left">Create AOWW Wallet</MudText>
-                <MudImage Src="images/ww.svg" Alt="Mony the dog" Elevation="25" Class="rounded-lg ww-image-start"/>
+                <MudImage Src="images/ww.svg" Alt="Mony the dog" Elevation="25" Class="ww-image-start"/>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" md="6">
@@ -21,7 +21,7 @@
                 <MudText Align="Align.Left">Load wallet from .json</MudText>
             </MudPaper>
         </MudItem>
-    </MudStack>
+    </MudGrid>
 </MudContainer>
 
     @code {
