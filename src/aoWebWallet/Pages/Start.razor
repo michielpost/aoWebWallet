@@ -1,0 +1,29 @@
+﻿@page "/start"
+@inherits MvvmComponentBase<MainViewModel>
+
+<PageTitle>Start - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudStack>
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Align="Align.Left">Create AOWW Wallet</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Align="Align.Left">Connect to ArConnect</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Align="Align.Left">Load wallet from .json</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudStack>
+</MudContainer>
+
+    @code {
+
+
+}
