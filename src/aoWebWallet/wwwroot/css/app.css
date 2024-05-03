@@ -280,6 +280,8 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
 .mud-paper.first-wallet {
     background: rgb(48,20,82);
     background: linear-gradient(180deg, rgba(48,20,82,1) 0%, rgba(69,20,84,1) 100%);
+    height: 555px;
+
 }
 
 .mud-navmenu {
@@ -294,4 +296,8 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
 body {
     background: rgb(56,18,74);
     background: linear-gradient(90deg, rgba(56,18,74,1) 0%, rgba(24,17,69,1) 100%, rgba(0,212,255,1) 100%);
+}
+
+.ww-image-start {
+    width: 150px;
 }
