@@ -1,5 +1,7 @@
 ﻿@page "/start"
 @inherits MvvmComponentBase<MainViewModel>
+@using aoWebWallet.Models
+@using aoWebWallet.Shared
 
 <PageTitle>Start - @Program.PageTitlePostFix</PageTitle>
 
@@ -7,8 +9,8 @@
     <MudGrid>
         <MudItem xs="12" md="6">
             <MudPaper Elevation="2" Class="pa-4 border-radius-25 first-wallet">
-                <MudText Align="Align.Left">Create AOWW Wallet</MudText>
-                <MudImage Src="images/ww.svg" Alt="Mony the dog" Elevation="25" Class="ww-image-start"/>
+                <MudImage Src="images/ths.svg" Alt="Mony the dog" Elevation="25" Class="ww-image-start"/>
+                <AddGenerateWalletComponent></AddGenerateWalletComponent>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" md="6">
