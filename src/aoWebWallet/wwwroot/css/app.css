@@ -308,6 +308,10 @@ body {
     background-color: rgba(222,222,222,0);
 }
 
+.trigger-transparency {
+    background-color: rgba(222,222,222,0) !important;
+}
+
 .background-x {
     background-image: url("../images/origin-icon-base.png");
     width: 100px;
@@ -329,9 +333,4 @@ body {
 @keyframes spin-clockwise{
     from{transform:rotate(360deg)}
     to{transform:rotate(0deg)}
-}
-
-.button-dark {
-    background-color: #170d35 !important;
-    text-transform: none !important;
 }
