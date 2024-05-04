@@ -299,6 +299,15 @@ body {
 }
 
 .ww-image-start {
-    width: 120px;
+    width: 100px;
     border-radius: 333px !important;
+    margin: 0 auto;
+}
+
+.wallet-list.mud-paper {
+    background-color: rgba(222,222,222,0);
+}
+
+.trigger-transparency.mud-paper {
+    background-color: rgba(222,222,222,0);
 }
