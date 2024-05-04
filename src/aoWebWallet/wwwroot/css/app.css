@@ -298,11 +298,7 @@ body {
     background: linear-gradient(90deg, rgba(56,18,74,1) 0%, rgba(24,17,69,1) 100%, rgba(0,212,255,1) 100%);
 }
 
-.ww-image-start {
-    width: 100px;
-    border-radius: 333px !important;
-    margin: 0 auto;
-}
+
 
 .wallet-list.mud-paper {
     background-color: rgba(222,222,222,0);
@@ -310,4 +306,32 @@ body {
 
 .trigger-transparency.mud-paper {
     background-color: rgba(222,222,222,0);
+}
+
+.background-x {
+    background-image: url("../images/origin-icon-base.png");
+    width: 100px;
+    background-size: 100px;
+    animation:spin 111s linear infinite;
+}
+
+.ww-image-start {
+    width: 100px;
+    border-radius: 333px !important;
+    animation:spin-clockwise 111s linear infinite;
+}
+
+@keyframes spin{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+@keyframes spin-clockwise{
+    from{transform:rotate(360deg)}
+    to{transform:rotate(0deg)}
+}
+
+.button-dark {
+    background-color: #170d35 !important;
+    text-transform: none !important;
 }
