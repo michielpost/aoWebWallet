@@ -1,4 +1,5 @@
 ﻿@using aoWebWallet.Models
+@inject MainViewModel MainViewModel
 @* <p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p> *@
 
 <MudItem>
@@ -14,7 +15,29 @@ else
     }
     else if (ActionParam.ParamType == ActionParamType.Process)
     {
-        <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" />
+            <MudAutocomplete T="Wallet" @ref="mudProcessField" Label="@ActionParam.Key"
+                             Validation="@(new Func<Wallet, IEnumerable<string>>(ValidateProcess))"
+                            SearchFunc="@WalletSearch"
+                             ValueChanged="UpdateWalletValue"
+                             ToStringFunc="@(e=> e==null?null : e.ToAutocompleteDisplay())"
+                             ResetValueOnEmptyText="true"
+                             CoerceText="true" CoerceValue="true"
+                             AdornmentIcon="@Icons.Material.Filled.Search" 
+                             AdornmentColor="Color.Primary">
+                <ItemTemplate Context="e">
+                    <MudText>
+                      @e.ToAutocompleteDisplay()
+                    </MudText>
+                </ItemTemplate>
+                <ItemSelectedTemplate Context="e">
+                    <MudText>
+                        @e.ToAutocompleteDisplay()
+                    </MudText>
+                </ItemSelectedTemplate>
+                             </MudAutocomplete>
+            <MudChip Color="Color.Primary">@(ActionParam.Value ?? "Not selected")</MudChip>
+
+        @* <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" /> *@
     }
     else if (ActionParam.ParamType == ActionParamType.Integer)
     {
@@ -34,7 +57,8 @@ else
     private string? textValue;
 
     MudTextField<string>? mudTextField;
-    MudTextField<string>? mudProcessField;
+    //MudTextField<string>? mudProcessField;
+    MudAutocomplete<Wallet>? mudProcessField;
     MudTextField<int>? mudIntField;
 
     // protected override void OnParametersSet()
@@ -62,7 +86,13 @@ else
 
         if (!(mudProcessField?.ValidationErrors.Any() ?? false))
         {
-            mudProcessField?.SetText(ActionParam.Value);
+            // if (ActionParam.Value != null && mudProcessField != null)
+            //     mudProcessField.Text = ActionParam.Value;
+
+            //mudProcessField?.ForceUpdate();
+
+            // if(mudProcessField != null)
+            //     mudProcessField.Value = ActionParam.Value;
         }
 
         if (!(mudIntField?.ValidationErrors.Any() ?? false))
@@ -91,9 +121,24 @@ else
         StateHasChanged();
     }
 
-    public IEnumerable<string> ValidateProcess(string? input)
+    public async void UpdateWalletValue(Wallet? e)
     {
-        if (input == null || input.Length != 43)
+        if (mudProcessField != null)
+            await mudProcessField.Validate();
+
+        if (!(mudProcessField?.ValidationErrors.Any() ?? false))
+        {
+            ActionParam.Value = e?.Address;
+        }
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+    public IEnumerable<string> ValidateProcess(Wallet? input)
+    {
+        if (input == null || input.Address.Length != 43)
         {
             yield return "Address must have length of 43 characters.";
         }
@@ -110,6 +155,26 @@ else
             ActionParam.Value = null;
 
         StateHasChanged();
+    }
+
+    private async Task<IEnumerable<Wallet>> WalletSearch(string value)
+    {
+        // if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+            return new Wallet[0];
+
+        var contacts = MainViewModel.WalletList.Data?.Where(x =>
+            x.Address.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            || x.ToAutocompleteDisplay().Equals(value, StringComparison.InvariantCultureIgnoreCase)
+            || (x.Name?.Contains(value, StringComparison.InvariantCultureIgnoreCase) ?? false)
+        ).Select(x => x).ToList() ?? new();
+
+        if (contacts.Any())
+            return contacts;
+        else if(value.Length == 43)
+            return new Wallet[1] { new Wallet() { Address = value } };
+        else
+            return new Wallet[0];
     }
 
 }
