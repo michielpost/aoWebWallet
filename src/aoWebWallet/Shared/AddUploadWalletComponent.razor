@@ -13,7 +13,7 @@
                                Accept=".json"
                                OnFilesChanged="OnInputFileChanged"
                                Hidden="@false"
-                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20"
+                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20 trigger-transparency cursor-pointer"
                                InputStyle="opacity:0"
                                @ondragenter="@SetDragClass"
                                @ondragleave="@ClearDragClass"
@@ -26,7 +26,7 @@
                                 Drag and drop wallet file or click here.
                             </MudText>
                             <MudText Typo="Typo.subtitle1">
-                                Your files won't be uploaded and are only read by the local app.
+                                Your .JSON files won't be uploaded and are only read by the local app.
                             </MudText>
                             @foreach (var file in _fileNames)
                             {
@@ -34,13 +34,14 @@
                             }
                         </MudPaper>
                         <MudToolBar DisableGutters="true"
-                                    Class="relative d-flex justify-end gap-4 z-30">
-                            <MudButton HtmlTag="label"
-                                       Color="Color.Primary"
-                                       for="@context.Id"
-                                       Variant="Variant.Filled">
-                                Open file picker
-                            </MudButton>
+                                    Class="relative d-flex justify-center gap-4 z-30">
+                                <MudButton HtmlTag="label"
+                                           Class="text-transform-none"
+                                           Color="Color.Primary"
+                                           for="@context.Id"
+                                           Variant="Variant.Filled">
+                                    Load .json wallet
+                                </MudButton>
                             @*  <MudButton OnClick="@AddWallets"
                                        Color="Color.Primary"
                                        Disabled="@(!_fileNames.Any())"
