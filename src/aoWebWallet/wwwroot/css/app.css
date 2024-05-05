@@ -385,3 +385,19 @@ body {
 .text-transform-none {
     text-transform: none !important;
 }
+
+.twitter-image {
+    margin-top: 10px;
+    margin-left: 10px;
+    object-fit: fill !important;
+}
+
+.discord-image {
+    padding: 5px;
+    object-fit: fill !important;
+}
+
+.mud-chip.mud-chip-size-medium .mud-avatar.custom-avatar-size {
+    width: 24px !important;
+    height: 24px !important;
+}

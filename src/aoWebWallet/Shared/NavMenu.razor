@@ -35,8 +35,8 @@
             <MudNavLink Href="settings" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
             <MudNavLink style="margin-bottom:5px;" Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Info">About</MudNavLink>
         </div>
-        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin-left:10px; padding:5px;">
-            @if (BindingContext.UserSettings?.IsDarkMode ?? true)
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left:10px; padding:5px;">
+            @* @if (BindingContext.UserSettings?.IsDarkMode ?? true)
             {
                 <MudIcon Icon="@icons[1]" Color="Color.Primary" />
             }
@@ -44,7 +44,29 @@
             {
                 <MudIcon Icon="@icons[0]" Color="Color.Primary" />
             }
-            <MudButton Variant="Variant.Filled" OnClick="ToggleTheme" DisableElevation="true" Size="Size.Small">Theme</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="ToggleTheme" DisableElevation="true" Size="Size.Small">Theme</MudButton> *@
+
+            <MudLink Href="https://twitter.com/aoWebWallet">
+                <MudChip Class="cursor-pointer">
+                    <AvatarContent >
+                        <MudAvatar Class="custom-avatar-size">
+                            <MudImage Class="twitter-image" Src="images/twitter.svg"></MudImage>
+                        </MudAvatar>
+                    </AvatarContent>
+                    <ChildContent>Twitter</ChildContent>
+                </MudChip>
+            </MudLink>
+
+            <MudLink Href="https://discord.gg/bahdqzpNYW">
+                <MudChip Class="cursor-pointer">
+                    <AvatarContent >
+                        <MudAvatar Class="custom-avatar-size">
+                            <MudImage Class="discord-image" Src="images/discord.svg"></MudImage>
+                        </MudAvatar>
+                    </AvatarContent>
+                    <ChildContent>Discord</ChildContent>
+                </MudChip>
+            </MudLink>
         </div>
 
     </div>
