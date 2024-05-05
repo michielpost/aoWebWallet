@@ -111,9 +111,10 @@ a, .btn-link {
     justify-content: center;
 }
 .loading-progress-text {
-    position: absolute;
+    position: relative;
     text-align: center;
     font-weight: bold;
+    color: white;
 
 }
 
@@ -325,6 +326,26 @@ body {
     animation:spin-clockwise 111s linear infinite;
 }
 
+.background-xs {
+    background-image: url("../images/origin-icon-base.png");
+    width: 333px;
+    background-size: 333px;
+    animation:spin 111s linear infinite;
+}
+
+.ww-image-start-xs {
+    width: 333px;
+    border-radius: 333px !important;
+    animation:spin-clockwise 111s linear infinite;
+}
+
+.ar-image-start {
+    width: 55px;
+    border-radius: 333px !important;
+    opacity: 0.55;
+    padding: 1.72rem 0;
+}
+
 @keyframes spin{
     from{transform:rotate(0deg)}
     to{transform:rotate(360deg)}
@@ -333,4 +354,8 @@ body {
 @keyframes spin-clockwise{
     from{transform:rotate(360deg)}
     to{transform:rotate(0deg)}
+}
+
+.text-transform-none {
+    text-transform: none !important;
 }

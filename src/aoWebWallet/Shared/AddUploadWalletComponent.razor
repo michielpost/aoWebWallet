@@ -4,7 +4,7 @@
 @inject ArweaveService ArweaveService
 @inject ISnackbar Snackbar
 
-<MudPaper Class="pa-8">
+<MudPaper Class="pa-8 trigger-transparency">
     <MudStack Spacing="2">
         @* <MudText Class="d-flex justify-center" Typo="Typo.button">Load .json wallet</MudText>
             <MudDivider /> *@
@@ -19,7 +19,7 @@
                                @ondragleave="@ClearDragClass"
                                @ondragend="@ClearDragClass">
                     <ButtonTemplate>
-                        <MudPaper Height="300px"
+                        <MudPaper Height="150px"
                                   Outlined="true"
                                   Class="@_dragClass">
                             <MudText Typo="Typo.h6">
