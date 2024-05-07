@@ -14,7 +14,7 @@
      <MudText Typo="Typo.h5">Address Book</MudText>
 
     <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-3 d-max-w-100">
-            @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
+            @if (BindingContext.WalletList.Data != null)
                 {
                     <MudTooltip Text="Add contact" Arrow="true" Placement="Placement.Left">
                         <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add contact" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
@@ -67,7 +67,8 @@
             {
                 <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
                     <MudItem sm="12" xs="12">
-                        <AddWalletComponent IsExpanded="true"></AddWalletComponent>
+                        <MudText>Your Address Book is currently empty.</MudText>
+                        <MudButton OnClick="OpenDialog">Add your first contact</MudButton>
                     </MudItem>
                 </MudGrid>
 
