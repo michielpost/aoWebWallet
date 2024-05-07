@@ -32,13 +32,13 @@
 
     <MudNavLink Href="token-explorer" Match="NavLinkMatch.Prefix" Class="aoww-main-nav-text" Icon="@Icons.Material.Filled.Explore">Token Explorer</MudNavLink>
 
-    <div style="margin-top: auto; display:flex; flex-direction: row;">
+    <div style="margin-top: auto; display:flex; flex-direction: row; margin-bottom:20px">
         <div style="border-right: 1px solid gray;">
             <MudNavLink Href="settings" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
             <MudNavLink style="margin-bottom:5px;" Href="about" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Info">About</MudNavLink>
         </div>
-        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin-left:10px; padding:5px;">
-            @if (BindingContext.UserSettings?.IsDarkMode ?? true)
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left:4px; padding:5px;">
+            @* @if (BindingContext.UserSettings?.IsDarkMode ?? true)
             {
                 <MudIcon Icon="@icons[1]" Color="Color.Primary" />
             }
@@ -46,16 +46,33 @@
             {
                 <MudIcon Icon="@icons[0]" Color="Color.Primary" />
             }
-            <MudButton Variant="Variant.Filled" OnClick="ToggleTheme" DisableElevation="true" Size="Size.Small">Theme</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="ToggleTheme" DisableElevation="true" Size="Size.Small">Theme</MudButton> *@
+
+            <MudLink Href="https://twitter.com/aoWebWallet">
+                <MudChip Class="cursor-pointer">
+                    <AvatarContent >
+                        <MudAvatar Class="custom-avatar-size">
+                            <MudImage Class="twitter-image" Src="images/twitter.svg"></MudImage>
+                        </MudAvatar>
+                    </AvatarContent>
+                    <ChildContent>Twitter</ChildContent>
+                </MudChip>
+            </MudLink>
+
+            <MudLink Href="https://discord.gg/bahdqzpNYW">
+                <MudChip Class="cursor-pointer">
+                    <AvatarContent >
+                        <MudAvatar Class="custom-avatar-size">
+                            <MudImage Class="discord-image" Src="images/discord.svg"></MudImage>
+                        </MudAvatar>
+                    </AvatarContent>
+                    <ChildContent>Discord</ChildContent>
+                </MudChip>
+            </MudLink>
         </div>
 
     </div>
-    <div style="display:flex; flex-direction: column; justify-content:center; padding:3px 0 11px 0; margin-top:8px; align-items: center; width:100%">
-        <MudDivider DividerType="DividerType.FullWidth" Class="mb-8" />
-        <MudImage style="opacity: 0.55" Src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzExLjU4IDI0MC45MiI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogI2ZmZjsKICAgICAgICBmaWxsLXJ1bGU6IGV2ZW5vZGQ7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xLTIiIGRhdGEtbmFtZT0iTGF5ZXIgMSI+CiAgICA8Zz4KICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjAgMjQwLjQ1IDgwLjIgMjQwLjQ1IDk2LjU3IDE5Ni4xOSA1OS43NCAxMjAuNzkgMCAyNDAuNDUiLz4KICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjEyMy41NyAxLjEyIDk2LjU3IDYyLjYgMTgwLjg2IDI0MC40NSAyNDEuNTggMjQwLjQ1IDIxMi43NyAxODAuNjIgMTIzLjU3IDEuMTIiLz4KICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9Ijc4NS4wMSA0Ni44NSA4MjEuODQgMTIyLjI2IDg4MS41OCAyLjU5IDgwMS4zOCAyLjU5IDc4NS4wMSA0Ni44NSIvPgogICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iNDcyIDEuMTIgNTAwLjggNjAuOTYgNTkwIDI0MC40NSA2MTcuMDEgMTc4Ljk4IDUzMi43MiAxLjEyIDQ3MiAxLjEyIi8+CiAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSI3MTMuMzQgMS41OSA3MTMuNTggMS4xMiA2MzMuMzggMS4xMiA2MTcuMDEgNDUuMzggNjUzLjg0IDEyMC43OSA2ODIuNjQgNjMuMSA3NzEgMjQwLjkyIDc5OC4wMSAxNzkuNDUgNzEzLjcyIDEuNTkgNzEzLjM0IDEuNTkiLz4KICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjEyMzEuMzggMi41OSAxMjE1LjAxIDQ2Ljg1IDEyNTEuODQgMTIyLjI2IDEzMTEuNTggMi41OSAxMjMxLjM4IDIuNTkiLz4KICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjkwMiAxLjEyIDkzMC44IDYwLjk2IDEwMjAgMjQwLjQ1IDEwNDcuMDEgMTc4Ljk4IDk2Mi43MiAxLjEyIDkwMiAxLjEyIi8+CiAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIxMTQzLjM0IDEuNTkgMTE0My41OCAxLjEyIDEwNjMuMzggMS4xMiAxMDQ3LjAxIDQ1LjM4IDEwODMuODQgMTIwLjc5IDExMTIuNjQgNjMuMSAxMjAxIDI0MC45MiAxMjI4LjAxIDE3OS40NSAxMTQzLjcyIDEuNTkgMTE0My4zNCAxLjU5Ii8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0ibTM2MS44LDBjLTY2LjQsMC0xMjAuMjMsNTMuODMtMTIwLjIzLDEyMC4yM3M1My44MywxMjAuMjMsMTIwLjIzLDEyMC4yMywxMjAuMjMtNTMuODMsMTIwLjIzLTEyMC4yM1M0MjguMiwwLDM2MS44LDBabTAsMTkzLjI2Yy00MC4zNCwwLTczLjAzLTMyLjctNzMuMDMtNzMuMDNzMzIuNy03My4wMyw3My4wMy03My4wMyw3My4wMywzMi43LDczLjAzLDczLjAzLTMyLjcsNzMuMDMtNzMuMDMsNzMuMDNaIi8+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4="
-                  Width="66" Class="pt-2" Alt="AOWW Logotype" />
-        <MudText Typo="Typo.caption">Copyright @DateTimeOffset.UtcNow.Year</MudText>
-    </div>
+
 </MudNavMenu>
 
 @code {

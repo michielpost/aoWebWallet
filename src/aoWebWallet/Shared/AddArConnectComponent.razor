@@ -3,10 +3,8 @@
 @inject ISnackbar Snackbar
 @inject ArweaveService ArweaveService
 
-<MudPaper Class="pa-8 mb-4">
+<MudPaper Class="pa-8 mb-4 trigger-transparency">
     <MudStack Spacing="2">
-        <MudText Typo="Typo.button">Connect Wallet</MudText>
-        <MudDivider />
         <MudStack>
 
             @if (!BindingContext.HasArConnectExtension.HasValue)

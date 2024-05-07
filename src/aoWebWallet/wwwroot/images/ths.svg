@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96.52 94.48">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: .6;
+      }
+
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-2 {
+        opacity: .88;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+
+        @-webkit-keyframes animate-svg-fill-1 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-1 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-1 {
+        -webkit-animation: animate-svg-fill-1 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 0.8s both;
+        animation: animate-svg-fill-1 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 0.8s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-2 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-2 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-2 {
+        -webkit-animation: animate-svg-fill-2 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 0.9s both;
+        animation: animate-svg-fill-2 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 0.9s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-3 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-3 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-3 {
+        -webkit-animation: animate-svg-fill-3 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1s both;
+        animation: animate-svg-fill-3 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-4 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-4 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-4 {
+        -webkit-animation: animate-svg-fill-4 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.1s both;
+        animation: animate-svg-fill-4 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.1s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-5 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-5 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-5 {
+        -webkit-animation: animate-svg-fill-5 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.2000000000000002s both;
+        animation: animate-svg-fill-5 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.2000000000000002s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-6 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-6 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-6 {
+        -webkit-animation: animate-svg-fill-6 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.3s both;
+        animation: animate-svg-fill-6 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.3s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-7 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-7 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-7 {
+        -webkit-animation: animate-svg-fill-7 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.4000000000000001s both;
+        animation: animate-svg-fill-7 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.4000000000000001s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-8 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-8 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-8 {
+        -webkit-animation: animate-svg-fill-8 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.5s both;
+        animation: animate-svg-fill-8 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.5s both;
+        }
+
+        @-webkit-keyframes animate-svg-fill-9 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        @keyframes animate-svg-fill-9 {
+        0% {
+        fill: transparent;
+        }
+
+        100% {
+        fill: rgb(255, 255, 255);
+        }
+        }
+
+        .svg-elem-9 {
+        -webkit-animation: animate-svg-fill-9 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.6s both;
+        animation: animate-svg-fill-9 0.7s cubic-bezier(0.47, 0, 0.745, 0.715) 1.6s both;
+        }
+
+
+        @-webkit-keyframes rotating /* Safari and Chrome */ {
+        from {
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+        }
+        to {
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+        }
+        }
+        @keyframes rotating {
+        from {
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+        }
+        to {
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+        }
+        }
+        .rotating {
+        -webkit-animation: rotating 122s ease infinite;
+        -moz-animation: rotating 122s ease infinite;
+        -ms-animation: rotating 122s ease infinite;
+        -o-animation: rotating 122s ease infinite;
+        animation: rotating 122s ease infinite;
+        -webkit-transform-origin: 50% 50%;
+        -moz-transform-origin: 50% 50%;
+        -o-transform-origin: 50% 50%;
+        transform-origin: 50% 50%;
+        }
+
+    </style>
+  </defs>
+
+  <g id="Layer_12" data-name="Layer 12">
+    <g class="cls-2">
+      <polygon class="cls-3 svg-elem-1" points="27.38 50.27 29.96 50.27 30.49 48.85 29.3 46.42 27.38 50.27"/>
+      <polygon class="cls-3 svg-elem-2" points="31.36 42.57 30.49 44.55 33.2 50.27 35.15 50.27 34.23 48.35 31.36 42.57"/>
+      <polygon class="cls-3 svg-elem-3" points="52.64 44.04 53.82 46.47 55.74 42.62 53.16 42.62 52.64 44.04"/>
+      <polygon class="cls-3 svg-elem-4" points="42.57 42.57 43.49 44.5 46.36 50.27 47.23 48.29 44.52 42.57 42.57 42.57"/>
+      <polygon class="cls-3 svg-elem-5" points="50.33 42.59 50.34 42.57 47.76 42.57 47.23 43.99 48.42 46.42 49.34 44.56 52.19 50.29 53.05 48.31 50.34 42.59 50.33 42.59"/>
+      <polygon class="cls-3 svg-elem-6" points="67 42.62 66.47 44.04 67.65 46.47 69.58 42.62 67 42.62"/>
+      <polygon class="cls-3 svg-elem-7" points="56.4 42.57 57.33 44.5 60.2 50.27 61.06 48.29 58.35 42.57 56.4 42.57"/>
+      <polygon class="cls-3 svg-elem-8" points="64.16 42.59 64.17 42.57 61.59 42.57 61.06 43.99 62.25 46.42 63.18 44.56 66.02 50.29 66.89 48.31 64.18 42.59 64.16 42.59"/>
+      <path class="cls-3 svg-elem-9" d="m39.02,42.53c-2.14,0-3.87,1.73-3.87,3.87s1.73,3.87,3.87,3.87,3.87-1.73,3.87-3.87-1.73-3.87-3.87-3.87Zm0,6.22c-1.3,0-2.35-1.05-2.35-2.35s1.05-2.35,2.35-2.35,2.35,1.05,2.35,2.35-1.05,2.35-2.35,2.35Z"/>
+    </g>
+  </g>
+</svg>
