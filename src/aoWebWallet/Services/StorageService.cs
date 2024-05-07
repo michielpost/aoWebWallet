@@ -107,11 +107,12 @@ namespace aoWebWallet.Services
             return result ?? new();
         }
 
+
         public async ValueTask SaveWallet (Wallet wallet)
         {
             var list = await GetWallets();
 
-            var existing = list.Where(x => x.Address == wallet.Address).FirstOrDefault();
+            var existing = list.Where(x => x.Address == wallet.Address && x.IsReadOnly == wallet.IsReadOnly).FirstOrDefault();
             if(existing != null)
                list.Remove(existing);
 

@@ -291,13 +291,28 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-        public async Task AddWalletAsReadonly()
+        public async Task SaveExplorerWallet()
         {
-            if (SelectedWallet != null)
+            if (SelectedWallet?.Wallet != null)
             {
+                var existing = mainViewModel.WalletList.Data?.Where(x => x.Address == SelectedWallet.Wallet.Address).Any() ?? false;
+                if (existing)
+                    return;
+
                 SelectedWallet.Wallet.Source = WalletTypes.Manual;
-                if (SelectedWallet.Wallet.OwnerAddress != null)
-                    SelectedWallet.Wallet.Source = WalletTypes.AoProcess;
+                SelectedWallet.Wallet.IsReadOnly = true;
+
+                var ownerAddress = SelectedWallet.Wallet.OwnerAddress;
+                if (ownerAddress != null)
+                {
+                    var ownerWallet = mainViewModel.WalletList.Data?.Where(x => !x.IsReadOnly && x.Address == ownerAddress).FirstOrDefault();
+
+                    if (ownerWallet != null)
+                    {
+                        SelectedWallet.Wallet.Source = WalletTypes.AoProcess;
+                        SelectedWallet.Wallet.IsReadOnly = false;
+                    }
+                }
 
                 await storageService.SaveWallet(SelectedWallet.Wallet);
                 await mainViewModel.LoadWalletList(force: true);

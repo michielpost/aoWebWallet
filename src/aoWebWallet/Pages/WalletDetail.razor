@@ -51,8 +51,14 @@
             </MudTooltip>
             @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
             {
-                <MudTooltip Text="Add as readonly wallet" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="BindingContext.AddWalletAsReadonly"></MudIconButton>
+                <MudTooltip Text="Save wallet" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudIconButton>
+                </MudTooltip>
+            }
+            else if(BindingContext.SelectedWallet?.Wallet != null)
+            {
+                <MudTooltip Text="Edit" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudIconButton>
                 </MudTooltip>
             }
         </MudStack>
@@ -225,6 +231,16 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<AddTokenDialog>("Add Token", options);
+    }
+
+    private async void EditWallet(Wallet wallet)
+    {
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+
+        StateHasChanged();
     }
 
     private void Receive(BalanceDataViewModel? balanceDataVM)
