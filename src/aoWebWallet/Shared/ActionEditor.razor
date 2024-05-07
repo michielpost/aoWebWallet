@@ -1,0 +1,52 @@
+﻿@using aoWebWallet.Models
+
+<MudItem>
+    <MudChip>Target</MudChip> <MudChip Color="Color.Primary">@AoAction.Target?.Value</MudChip>
+</MudItem>
+
+<MudStack>
+    @foreach (var ActionParam in AoAction.Filled)
+    {
+        <MudItem>
+            <MudChip>@ActionParam.Key</MudChip> <MudChip Color="Color.Primary">@ActionParam.Value</MudChip>
+        </MudItem>
+    }
+
+</MudStack>
+
+<MudStack>
+    @foreach (var param in AoAction.AllInputs)
+    {
+        if (param.ParamType == ActionParamType.Input
+        || param.ParamType == ActionParamType.Integer
+        || param.ParamType == ActionParamType.Process
+        )
+        {
+            <ActionInputComponent ActionParam="param" ReadOnly="@ReadOnly" />
+        }
+        else if (param.ParamType == ActionParamType.Quantity || param.ParamType == ActionParamType.Balance)
+        {
+            var tokenId = param.Args.FirstOrDefault();
+            if (tokenId != null)
+            {
+                <ActionQuantityComponent ActionParam="param" TokenId="@tokenId" Address="@Address" ReadOnly="@ReadOnly" />
+            }
+
+
+
+        }
+    }
+
+</MudStack>
+
+
+@code {
+    [Parameter]
+    public required AoAction AoAction { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public string? Address { get; set; }
+}

@@ -2,14 +2,14 @@
 
 <MudNavMenu Class="aoww-main-menu">
 
-    @if ((BindingContext.WalletList.Data ?? new()).Any())
+    @if (BindingContext.WalletList.Data?.Where(x => !x.IsReadOnly).Any() ?? false)
     {
         <MudNavLink Href="" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavGroup Class="mt-2 mb-2" Title="Wallets" Icon="@Icons.Material.Filled.Wallet" Expanded="true">
             @{
                 int logoCount = 1;
             }
-            @foreach (var wallet in BindingContext.WalletList.Data ?? new())
+            @foreach (var wallet in BindingContext.WalletList.Data?.Where(x => !x.IsReadOnly).ToList() ?? new())
             {
                 string logoUrl = $"images/account--{logoCount}.svg";
                 string detailUrl = $"wallet/{wallet.Address}";
@@ -27,6 +27,8 @@
     {
         <MudNavLink Href="" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Wallet">Wallets</MudNavLink>
     }
+
+    <MudNavLink Href="/address-book" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Contacts">Address Book</MudNavLink>
 
     <MudNavLink Href="token-explorer" Match="NavLinkMatch.Prefix" Class="aoww-main-nav-text" Icon="@Icons.Material.Filled.Explore">Token Explorer</MudNavLink>
 

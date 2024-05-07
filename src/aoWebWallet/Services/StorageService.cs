@@ -3,6 +3,7 @@ using aoWebWallet.Pages;
 using ArweaveAO.Models.Token;
 using Blazored.LocalStorage;
 using System.Reflection.Metadata;
+using static MudBlazor.CategoryTypes;
 
 namespace aoWebWallet.Services
 {
@@ -35,26 +36,45 @@ namespace aoWebWallet.Services
         {
             var existing = list.Where(x => x.TokenId == tokenId).FirstOrDefault();
             if (existing != null)
-                return;
+               existing.IsSystemToken = true;
             else
                 list.Add(new Token { TokenId = tokenId, IsSystemToken = true });
         }
 
-        public async ValueTask<Token> AddToken(string tokenId, TokenData data, bool isUserAdded)
+        public async Task AddTokenId(string tokenId, bool isUserAdded = true, bool isVisible = false)
+        {
+            if(tokenId.Length != 43) 
+                return;
+
+            var list = await GetTokenIds();
+
+            var existing = list.Where(x => x.TokenId == tokenId).FirstOrDefault();
+            if (existing != null)
+                return;
+            
+            
+            existing = new Token { TokenId = tokenId, IsUserAdded = isUserAdded, IsVisible = isVisible };
+            list.Add(existing);
+
+            await SaveTokenList(list);
+        }
+
+        public async ValueTask<Token> AddToken(string tokenId, TokenData data, bool isUserAdded, bool? isVisible)
         {
             var list = await GetTokenIds();
 
             var existing = list.Where(x => x.TokenId == tokenId).FirstOrDefault();
             if (existing != null)
             {
-                existing.IsVisible = true;
+                if(isVisible.HasValue)
+                    existing.IsVisible = isVisible.Value;
 
                 if(!existing.IsSystemToken)
                     existing.IsUserAdded = true;
             }
             else
             {
-                existing = new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded };
+                existing = new Token { TokenId = tokenId, TokenData = data, IsUserAdded = isUserAdded, IsVisible = isVisible ?? true };
                 list.Add(existing);
             }
 
@@ -76,7 +96,9 @@ namespace aoWebWallet.Services
 
         public ValueTask SaveTokenList(List<Token> list)
         {
-            return localStorage.SetItemAsync(TOKEN_LIST_KEY, list);
+            var uniqueItems = list.GroupBy(i => i.TokenId).Select(g => g.First());
+
+            return localStorage.SetItemAsync(TOKEN_LIST_KEY, uniqueItems);
         }
 
         public async ValueTask<List<Wallet>> GetWallets()
@@ -85,11 +107,12 @@ namespace aoWebWallet.Services
             return result ?? new();
         }
 
+
         public async ValueTask SaveWallet (Wallet wallet)
         {
             var list = await GetWallets();
 
-            var existing = list.Where(x => x.Address == wallet.Address).FirstOrDefault();
+            var existing = list.Where(x => x.Address == wallet.Address && x.IsReadOnly == wallet.IsReadOnly).FirstOrDefault();
             if(existing != null)
                list.Remove(existing);
 

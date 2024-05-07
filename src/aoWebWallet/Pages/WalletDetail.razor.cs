@@ -5,37 +5,45 @@ using MudBlazor;
 
 namespace aoWebWallet.Pages
 {
-    public partial class WalletDetail : MvvmComponentBase<MainViewModel>
+    public partial class WalletDetail : MvvmComponentBase<WalletDetailViewModel>
     {
         protected override void OnInitialized()
         {
-            WatchDataLoaderVM(BindingContext.TokenList);
-            WatchDataLoaderVM(BindingContext.WalletList);
-            WatchDataLoaderVM(BindingContext.BalanceDataList);
+            //WatchObject(dataService.TokenList);
+            WatchObject(BindingContext.BalanceDataList);
+            WatchObject(dataService.TokenDataLoader);
+            WatchCollection(dataService.TokenList);
+            WatchCollection(BindingContext.BalanceDataList);
+            WatchDataLoaderVM(MainViewModel.WalletList);
             WatchDataLoaderVM(BindingContext.TokenTransferList);
             WatchDataLoaderVM(BindingContext.SelectedProcessData);
+
+            dataService.TokenList.CollectionChanged += TokenList_CollectionChanged;
 
             base.OnInitialized();
         }
 
-        protected override void OnParametersSet()
+        private void TokenList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            BindingContext.SelectedWallet = null;
-            //BindingContext.SelectedAddress = null;
+            BindingContext.TokenAddedRefresh();
+        }
 
-            if(Address != null && Address.Length != 43)
+        protected override async Task OnParametersSetAsync()
+        {
+            if (Address != null && Address.Length != 43)
             {
                 NavigationManager.NavigateTo("");
             }
 
-            BindingContext.SelectedAddress = Address;
+            if (Address != null)
+                await BindingContext.Initialize(Address);
 
-            base.OnParametersSet();
+            await base.OnParametersSetAsync();
         }
 
         protected override async Task LoadDataAsync()
         {
-            BindingContext.LoadTokenList();
+            dataService.LoadTokenList();
 
             //if (!string.IsNullOrEmpty(Address))
             //{
@@ -47,8 +55,15 @@ namespace aoWebWallet.Pages
 
         private async void DownloadWallet(Wallet wallet)
         {
-            await BindingContext.DownloadWallet(wallet);
+            await MainViewModel.DownloadWallet(wallet);
             StateHasChanged();
+        }
+
+        public override void Dispose()
+        {
+            dataService.TokenList.CollectionChanged -= TokenList_CollectionChanged;
+
+            base.Dispose();
         }
 
     }

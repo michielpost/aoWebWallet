@@ -88,8 +88,10 @@ namespace aoWebWallet
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 
             //Services
-            services.AddScoped<DataService>();
+            services.AddScoped<TokenDataService>();
             services.AddScoped<StorageService>();
+            services.AddScoped<ClipboardService>();
+            services.AddScoped<TransactionService>();
 
             services.AddSingleton<MemoryDataCache>();
 
@@ -97,10 +99,14 @@ namespace aoWebWallet
             services.AddScoped<GraphqlClient>();
 
             services.AddArweaveBlazor();
+            services.AddScoped<AODataClient>();
 
 
             //Register ViewModels
             services.AddScoped<MainViewModel>();
+            services.AddScoped<TokenDetailViewModel>();
+            services.AddScoped<TransactionDetailViewModel>();
+            services.AddScoped<WalletDetailViewModel>();
 
             services.AddBlazoredLocalStorage();
 

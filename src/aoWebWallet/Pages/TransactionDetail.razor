@@ -1,7 +1,8 @@
 ﻿@page "/transaction/{txid}"
 @using aoWebWallet.Models
-@inherits MvvmComponentBase<MainViewModel>
+@inherits MvvmComponentBase<TransactionDetailViewModel>
 @inject NavigationManager NavigationManager;
+@inject TokenDataService dataService
 
 <PageTitle>@TxId - @Program.PageTitlePostFix</PageTitle>
 
@@ -9,7 +10,6 @@
 <MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
 
     <MudStack>
-        <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
         <DataLoaderProgress DataLoader="BindingContext.SelectedTransaction.DataLoader" Title="transaction" />
 
         @if (BindingContext.SelectedTransaction.Data != null)
@@ -21,7 +21,7 @@
                 @transfer.Id
             </MudText>
 
-            var tokenData = BindingContext.TokenList.Data?.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
+            var tokenData = dataService.TokenList.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
 
             <MudPaper Class="pa-4">
                 <MudStack Row=true>

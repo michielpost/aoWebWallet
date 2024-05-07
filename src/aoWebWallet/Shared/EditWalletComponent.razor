@@ -1,0 +1,67 @@
+﻿@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject ISnackbar Snackbar
+
+<MudPaper Class="pa-8">
+    <MudStack Spacing="2">
+        <MudTextField @bind-Value="Wallet.Address" Required="true" RequiredError="Input a wallet address" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Wallet.Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
+        <MudText Color="Color.Secondary">@Progress</MudText>
+
+        <div Class="d-w-100 d-flex justify-end mt-2">
+            <MudButton OnClick="Submit"  Color="Color.Primary" Variant="Variant.Filled">
+                Save
+            </MudButton>
+        </div>
+    </MudStack>
+</MudPaper>
+
+
+
+@code {
+    [Parameter]
+    public Wallet Wallet { get; set; } = new() { Address = string.Empty };
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    public string? Progress { get; set; }
+
+    [Parameter]
+    public bool IsExpanded { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    private void OnExpandCollapseClick()
+    {
+        IsExpanded = !IsExpanded;
+    }
+
+    public async Task<bool> Submit()
+    {
+        // if(string.IsNullOrWhiteSpace(Address))
+        // {
+        //     Progress = "Input a wallet address.";
+        //     StateHasChanged();
+        //     return false;
+        // }
+
+        if (string.IsNullOrWhiteSpace(Wallet.Address) || Wallet.Address.Length != 43)
+        {
+            Progress = "Length must be 43 characters.";
+            StateHasChanged();
+            return false;
+        }
+
+        await BindingContext.SaveWallet(Wallet);
+
+        Snackbar.Add($"Address saved ({Wallet.Address})", Severity.Info);
+
+        MudDialog?.Close(true);
+
+        return true;
+    }
+}

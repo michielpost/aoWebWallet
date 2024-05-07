@@ -1,0 +1,180 @@
+﻿@using aoWebWallet.Models
+@inject MainViewModel MainViewModel
+@* <p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p> *@
+
+<MudItem>
+@if(ReadOnly)
+{
+    <MudChip>@ActionParam.Key</MudChip> <MudChip Color="Color.Primary">@ActionParam.Value</MudChip>
+}
+else
+{
+    if (ActionParam.ParamType == ActionParamType.Input)
+    {
+        <MudTextField @ref="mudTextField" T="string" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateStringValue"></MudTextField>
+    }
+    else if (ActionParam.ParamType == ActionParamType.Process)
+    {
+            <MudAutocomplete T="Wallet" @ref="mudProcessField" Label="@ActionParam.Key"
+                             Validation="@(new Func<Wallet, IEnumerable<string>>(ValidateProcess))"
+                            SearchFunc="@WalletSearch"
+                             ValueChanged="UpdateWalletValue"
+                             ToStringFunc="@(e=> e==null?null : e.ToAutocompleteDisplay())"
+                             ResetValueOnEmptyText="true"
+                             CoerceText="true" CoerceValue="true"
+                             AdornmentIcon="@Icons.Material.Filled.Search" 
+                             AdornmentColor="Color.Primary">
+                <ItemTemplate Context="e">
+                    <MudText>
+                      @e.ToAutocompleteDisplay()
+                    </MudText>
+                </ItemTemplate>
+                <ItemSelectedTemplate Context="e">
+                    <MudText>
+                        @e.ToAutocompleteDisplay()
+                    </MudText>
+                </ItemSelectedTemplate>
+                             </MudAutocomplete>
+            <MudChip Color="Color.Primary">@(ActionParam.Value ?? "Not selected")</MudChip>
+
+        @* <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" /> *@
+    }
+    else if (ActionParam.ParamType == ActionParamType.Integer)
+    {
+        <MudTextField @ref="mudIntField" T="int" Label="@ActionParam.Key" Variant="Variant.Text" ValueChanged="UpdateIntValue"></MudTextField>
+    }
+}
+</MudItem>
+
+@code {
+
+    [Parameter]
+    public required ActionParam ActionParam { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    private string? textValue;
+
+    MudTextField<string>? mudTextField;
+    //MudTextField<string>? mudProcessField;
+    MudAutocomplete<Wallet>? mudProcessField;
+    MudTextField<int>? mudIntField;
+
+    // protected override void OnParametersSet()
+    // {
+    //     mudTextField?.SetText("TESTAAA");
+    //     Console.WriteLine("Param Set");
+
+    //     base.OnParametersSet();
+    // }
+
+    // protected override void OnInitialized()
+    // {
+    //     mudTextField?.SetText("TESTAAA");
+    //     Console.WriteLine("Init");
+
+    //     base.OnInitialized();
+    // }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!(mudTextField?.ValidationErrors.Any() ?? false))
+        {
+            mudTextField?.SetText(ActionParam.Value);
+        }
+
+        if (!(mudProcessField?.ValidationErrors.Any() ?? false))
+        {
+            // if (ActionParam.Value != null && mudProcessField != null)
+            //     mudProcessField.Text = ActionParam.Value;
+
+            //mudProcessField?.ForceUpdate();
+
+            // if(mudProcessField != null)
+            //     mudProcessField.Value = ActionParam.Value;
+        }
+
+        if (!(mudIntField?.ValidationErrors.Any() ?? false))
+        {
+            mudIntField?.SetText(ActionParam.Value);
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+
+    public async void UpdateStringValue(string? e)
+    {
+        if (mudTextField != null)
+            await mudTextField.Validate();
+        if(mudProcessField != null)
+            await mudProcessField.Validate();
+
+        if (!(mudTextField?.ValidationErrors.Any() ?? false)
+            && !(mudProcessField?.ValidationErrors.Any() ?? false))
+        {
+            ActionParam.Value = e;
+        }
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+    public async void UpdateWalletValue(Wallet? e)
+    {
+        if (mudProcessField != null)
+            await mudProcessField.Validate();
+
+        if (!(mudProcessField?.ValidationErrors.Any() ?? false))
+        {
+            ActionParam.Value = e?.Address;
+        }
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+    public IEnumerable<string> ValidateProcess(Wallet? input)
+    {
+        if (input == null || input.Address.Length != 43)
+        {
+            yield return "Address must have length of 43 characters.";
+        }
+    }
+
+    public async void UpdateIntValue(int e)
+    {
+        if (mudIntField != null)
+            await mudIntField.Validate();
+
+        if (!(mudIntField?.ValidationErrors.Any() ?? false))
+            ActionParam.Value = e.ToString();
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+    private async Task<IEnumerable<Wallet>> WalletSearch(string value)
+    {
+        // if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+            return new Wallet[0];
+
+        var contacts = MainViewModel.WalletList.Data?.Where(x =>
+            x.Address.Contains(value, StringComparison.InvariantCultureIgnoreCase)
+            || x.ToAutocompleteDisplay().Equals(value, StringComparison.InvariantCultureIgnoreCase)
+            || (x.Name?.Contains(value, StringComparison.InvariantCultureIgnoreCase) ?? false)
+        ).Select(x => x).ToList() ?? new();
+
+        if (contacts.Any())
+            return contacts;
+        else if(value.Length == 43)
+            return new Wallet[1] { new Wallet() { Address = value } };
+        else
+            return new Wallet[0];
+    }
+
+}

@@ -1,24 +1,24 @@
 ﻿@using aoWebWallet.Models
 @using aoWebWallet.Shared
-@inherits MvvmComponentBase<MainViewModel>
 @inject TokenClient TokenClient
-@inject ISnackbar Snackbar
+@inject MainViewModel MainViewModel
+@inject WalletDetailViewModel WalletDetailViewModel
 
 <MudDialog style="width:444px;">
     <DialogContent>
         <MudStack Row=true>
-            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.SelectedBalanceDataVM?.Token?.TokenId" />
+            <MudAvatar Image="@UrlHelper.GetArweaveUrl(SelectedBalanceDataVM?.Token?.TokenData?.Logo)" Size="Size.Large" title="@SelectedBalanceDataVM?.Token?.TokenId" />
             <MudStack Justify="Justify.Center" Spacing="0">
-                <MudText Typo="Typo.body1">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Name</MudText>
-                <MudText Typo="Typo.body2">@BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
+                <MudText Typo="Typo.body1">@SelectedBalanceDataVM?.Token?.TokenData?.Name</MudText>
+                <MudText Typo="Typo.body2">@SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
             </MudStack>
         </MudStack>
-        <MudText style="width:100%; margin-left:auto; text-align:right;" Class="mt-2" Typo="Typo.body1">Available balance<br/> <strong>@BalanceHelper.FormatBalance(BindingContext.SelectedBalanceDataVM?.BalanceData?.Balance, BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0)</strong></MudText>
+        <MudText style="width:100%; margin-left:auto; text-align:right;" Class="mt-2" Typo="Typo.body1">Available balance<br /> <strong>@BalanceHelper.FormatBalance(SelectedBalanceDataVM?.BalanceDataLoader.Data?.Balance, SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0)</strong></MudText>
 
         @if (!isConfirm)
         {
             <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
-                <MudTextField Class="mb-4" @bind-Value="Address" MaxLength=43 Label="Wallet address" Variant="Variant.Text"></MudTextField>
+                <MudTextField Class="mb-4" @bind-Value="Address" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" MaxLength=43 Label="Wallet address" Variant="Variant.Text"></MudTextField>
                 <MudTextField @bind-Value="Amount" Label="Amount" Variant="Variant.Text" Format="@DenominationFormat"></MudTextField>
             </MudFocusTrap>
             <MudText Color="Color.Secondary">@Progress</MudText>
@@ -34,14 +34,14 @@
                 </MudStack>
             }
             <MudStack>
-                <MudText>Amount: @Amount @BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
+                <MudText>Amount: @Amount @SelectedBalanceDataVM?.Token?.TokenData?.Ticker</MudText>
                 <MudText>Receiver:</MudText>
                 <MudText Class="KodeMono" Typo="Typo.caption">
                         @Address
                 </MudText>
             </MudStack>
 
-            <SendTransactionProgress DataLoader="BindingContext.LastTransactionId.DataLoader" Title="Sending transaction..." />
+            <SendTransactionProgress DataLoader="MainViewModel.LastTransactionId.DataLoader" Title="Sending transaction..." />
 
             if (!string.IsNullOrEmpty(TransactionId))
             {
@@ -65,10 +65,7 @@
         {
             if (string.IsNullOrEmpty(TransactionId))
             {
-                if (!BindingContext.LastTransactionId.DataLoader.IsLoading)
-                {
-                    <MudButton Color="Color.Primary" @ref="confButtonRef" OnClick="Confirm">Confirm</MudButton>
-                }
+                <MudButton Color="Color.Primary" @ref="confButtonRef" OnClick="Confirm">Confirm</MudButton>
             }
             else
             {
@@ -80,6 +77,12 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
+    [Parameter]
+    public BalanceDataViewModel? SelectedBalanceDataVM { get; set; }
+
+    [Parameter]
+    public WalletDetailsViewModel? SelectedWallet { get; set; }
+
     public string? Progress { get; set; }
     public string? Address { get; set; }
     public decimal Amount { get; set; }
@@ -90,8 +93,8 @@
 
     public MudButton? confButtonRef;
 
-    public int Denomination => BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0;
-    public string DenominationFormat => "F" + (BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 1).ToString();
+    //public int Denomination => BindingContext.SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 0;
+    public string DenominationFormat => "F" + (SelectedBalanceDataVM?.Token?.TokenData?.Denomination ?? 1).ToString();
 
     public async Task Submit()
     {
@@ -108,19 +111,19 @@
             return;
         }
 
-        if (string.IsNullOrEmpty(BindingContext.SelectedBalanceDataVM?.BalanceData?.TokenId)
-        || BindingContext.SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
-        || !BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
+        if (string.IsNullOrEmpty(SelectedBalanceDataVM?.BalanceDataLoader.Data?.TokenId)
+        || SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
+        || !SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
             return;
 
-        long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
+        long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
         if (amountLong <= 0)
         {
             Progress = "Amount has to be higher than 0.";
             StateHasChanged();
             return;
         }
-        if (amountLong > BindingContext.SelectedBalanceDataVM?.BalanceData?.Balance)
+        if (amountLong > SelectedBalanceDataVM?.BalanceDataLoader.Data?.Balance)
         {
             Progress = "Not enough balance available.";
             StateHasChanged();
@@ -141,9 +144,9 @@
             return;
         }
 
-        if (string.IsNullOrEmpty(BindingContext.SelectedBalanceDataVM?.BalanceData?.TokenId)
-        || BindingContext.SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
-        || !BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
+        if (string.IsNullOrEmpty(SelectedBalanceDataVM?.BalanceDataLoader.Data?.TokenId)
+        || SelectedBalanceDataVM.Token?.TokenData?.Denomination == null
+        || !SelectedBalanceDataVM.Token.TokenData.Denomination.HasValue)
             return;
 
         if (confButtonRef != null)
@@ -151,24 +154,20 @@
 
         this.StateHasChanged();
 
-        if (BindingContext.SelectedWallet == null)
+        if (SelectedWallet == null)
         {
             throw new Exception("SelectedWallet is null");   
         }
 
-        long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
-        var result = await BindingContext.SendToken(BindingContext.SelectedWallet.Wallet, BindingContext.SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
+        long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
+        var result = await MainViewModel.SendToken(SelectedWallet.Wallet, SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
         TransactionId = result?.Id;
 
-        if (!string.IsNullOrEmpty(BindingContext.SelectedAddress))
-        {
-            await BindingContext.LoadBalanceDataList(BindingContext.SelectedAddress);
-            await BindingContext.LoadTokenTransferList(BindingContext.SelectedAddress);
-        }
+        await WalletDetailViewModel.RefreshBalance();
 
         if (TransactionId != null)
         {
-            await BindingContext.AddToLog(ActivityLogType.SendTransaction, TransactionId);
+            await MainViewModel.AddToLog(ActivityLogType.SendTransaction, TransactionId);
         }
     }
 

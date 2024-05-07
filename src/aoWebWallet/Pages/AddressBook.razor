@@ -1,32 +1,23 @@
-﻿@page "/"
+﻿@page "/address-book"
 @using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject TokenDataService dataService
 @inject ClipboardService ClipboardService
 
-<PageTitle>@Program.PageTitlePostFix</PageTitle>
+<PageTitle>Address Book - @Program.PageTitlePostFix</PageTitle>
 
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
 
-    @if (BindingContext.WalletList.Data == null || BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).Count() > 1)
-    {
-        <MudText Typo="Typo.h5">Wallets</MudText>
-    }
-    else
-    {
-        <MudText Typo="Typo.h5">Wallet</MudText>
-    }
-
-        <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
+  
+     <MudText Typo="Typo.h5">Address Book</MudText>
 
     <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-3 d-max-w-100">
             @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
                 {
-                    <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
-                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
+                    <MudTooltip Text="Add contact" Arrow="true" Placement="Placement.Left">
+                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add contact" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
                     </MudTooltip>
                 }
     </MudContainer>
@@ -34,10 +25,10 @@
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
         {
-            if (BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).Any())
+            if(BindingContext.WalletList.Data.Where(x => x.IsReadOnly).Any())
             {
                 int logoCount = 1;
-                foreach (var wallet in BindingContext.WalletList.Data.Where(x => !x.IsReadOnly))
+                foreach (var wallet in BindingContext.WalletList.Data.Where(x => x.IsReadOnly))
                 {
                     string logoUrl = $"images/account--{logoCount}.svg";
                     string detailUrl = $"wallet/{wallet.Address}";
@@ -54,12 +45,6 @@
                                 </div>
                                 <div Class="d-flex flex-row">
                                     <MudText Typo="Typo.body2">@wallet.Name</MudText>
-
-                                    @if (wallet.NeedsBackup)
-                                    {
-                                        <MudIcon Class="d-icon-wallet" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
-                                        <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
-                                    }
                                 </div>
                             </MudStack>
                             <MudSpacer />
@@ -67,10 +52,7 @@
                             {
                                 <MudChip>AOS</MudChip>
                             }
-                            @if(!string.IsNullOrEmpty(wallet.Jwk))
-                            {
-                                <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>
-                            }
+
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }"></MudIconButton>
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
                         </MudStack>
@@ -85,17 +67,7 @@
             {
                 <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
                     <MudItem sm="12" xs="12">
-                        <MudTabs Class="mud-width-full" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                            <MudTabPanel Text="Create new">
-                                <AddGenerateWalletComponent IsExpanded="true"></AddGenerateWalletComponent>
-                            </MudTabPanel>
-                            <MudTabPanel Text="ArConnect">
-                                <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
-                            </MudTabPanel>
-                            <MudTabPanel Text="Load .json">
-                                <AddUploadWalletComponent IsExpanded="true"></AddUploadWalletComponent>
-                            </MudTabPanel>
-                        </MudTabs>
+                        <AddWalletComponent IsExpanded="true"></AddWalletComponent>
                     </MudItem>
                 </MudGrid>
 
@@ -103,7 +75,7 @@
         }
         else
         {
-            <MudText Typo="Typo.h6">Loading wallets...</MudText>
+            <MudText Typo="Typo.h6">Loading address book...</MudText>
 
             <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="wallets" />
         }
@@ -116,8 +88,18 @@
 {
     private void OpenDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddWalletDialog>("Add Wallet", options);
+        var tempWallet = new Wallet()
+            {
+                Address = string.Empty,
+                IsReadOnly = true,
+                AddedDate = DateTimeOffset.UtcNow,
+                Source = WalletTypes.Manual
+            };
+
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, tempWallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Add Contact", parameters, options);
     }
 
     private async void EditWallet(Wallet wallet)
@@ -125,7 +107,7 @@
         var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
 
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+        DialogService.Show<EditWalletComponent>("Edit Contact", parameters, options);
 
         StateHasChanged();
     }
@@ -134,21 +116,17 @@
     {
         bool? result = await DialogService.ShowMessageBox(
             "Warning",
-            $"Are you sure you want to delete this wallet? {wallet.Address}?",
+            $"Are you sure you want to delete this contact? {wallet.Address}?",
             yesText: "Delete!", cancelText: "Cancel");
 
         if (result != null)
         {
             await BindingContext.DeleteWallet(wallet);
 
-            Snackbar.Add($"Wallet deleted ({wallet.Address})", Severity.Info);
+            Snackbar.Add($"Contact deleted ({wallet.Address})", Severity.Info);
         }
         StateHasChanged();
     }
 
-    private async void DownloadWallet(Wallet wallet)
-    {
-        await BindingContext.DownloadWallet(wallet);
-        StateHasChanged();
-    }
+   
 }

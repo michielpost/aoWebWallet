@@ -2,6 +2,7 @@
 @using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
+@inject TokenDataService dataService
 @inject ISnackbar Snackbar
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
@@ -10,20 +11,20 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h5">Token Explorer</MudText>
 
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-4 d-max-w-100">
         <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
     </MudContainer>
 
     <MudStack>
-        @if (BindingContext.TokenList.Data != null)
+        @if (dataService.TokenList != null)
         {
-            var autoAddedTokens = BindingContext.TokenList.Data.Where(x => !x.IsVisible);
+            var autoAddedTokens = dataService.TokenList.Where(x => !x.IsVisible);
 
             <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
                 <MudTabPanel Text="My Tokens">
-                    @foreach (var token in BindingContext.TokenList.Data.Where(x => x.IsVisible))
+                    @foreach (var token in dataService.TokenList.Where(x => x.IsVisible))
                     {
                         <TokenListComponent token="token" DeleteToken="DeleteToken" ToggleVisibility="ToggleVisibility"></TokenListComponent>
                     }
@@ -35,17 +36,6 @@
                     }
                 </MudTabPanel>
             </MudTabs>
-            @* else
-        {
-        foreach (var token in BindingContext.TokenList.Data)
-        {
-        <TokenListComponent token="token" DeleteToken="DeleteToken"></TokenListComponent>
-        }
-        } *@
-
-
-
-
         }
     </MudStack>
 </MudContainer>
@@ -61,8 +51,7 @@
 
     private async void ToggleVisibility(Token token)
     {
-
-        await BindingContext.TokenToggleVisibility(token.TokenId);
+        await dataService.TokenToggleVisibility(token.TokenId);
 
         StateHasChanged();
     }
@@ -76,7 +65,7 @@
 
         if (result != null)
         {
-            await BindingContext.DeleteToken(token.TokenId);
+            await dataService.DeleteToken(token.TokenId);
 
             Snackbar.Add($"Token {token.TokenData?.Name} deleted ({token.TokenId})", Severity.Info);
         }

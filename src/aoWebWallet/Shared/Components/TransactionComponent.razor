@@ -1,9 +1,10 @@
 ﻿@using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
+@inject TokenDataService dataService
 
 @if (transfer != null)
 {
-    var tokenData = BindingContext.TokenList.Data?.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
+    var tokenData = dataService.TokenList.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
     var isSend = SelectedAddress == transfer.From;
     var isReceive = SelectedAddress == transfer.To;
     string txUrl = $"transaction/{transfer.Id}";
