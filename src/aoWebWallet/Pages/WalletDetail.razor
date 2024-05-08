@@ -145,15 +145,15 @@
                         <MudSpacer />
                         <MudSpacer />
                         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
-                            <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Left">
-                                <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance);}"></MudIconButton>
+                            <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Top">
+                                <MudButton Variant="Variant.Filled" Size="Size.Small"  Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDownward" aria-label="Receive" OnClick="()=>{Receive(balance);}">Receive</MudButton>
                             </MudTooltip>
 
                             @if ((BindingContext.SelectedWallet?.CanSend ?? false))
                             {
                                 var hasBalance = balance.BalanceDataLoader.Data?.Balance ?? 0;
-                                <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Left">
-                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance);}"></MudIconButton>
+                                <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Bottom">
+                                    <MudButton Class="ml-1" Variant="Variant.Filled" Size="Size.Small"  Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowUpward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance);}">Send</MudButton>
                                 </MudTooltip>
                             }
                         </MudStack>
@@ -259,7 +259,7 @@
 
         NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
 
-        // var parameters = new DialogParameters<SendTokenDialog> { 
+        // var parameters = new DialogParameters<SendTokenDialog> {
         //     { x => x.SelectedBalanceDataVM, balanceDataVM },
         //     { x => x.SelectedWallet, BindingContext.SelectedWallet }
         // };
