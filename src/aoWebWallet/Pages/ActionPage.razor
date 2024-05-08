@@ -87,7 +87,7 @@
         <MudButton Color="Color.Default" Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
     }
-    
+
     @if (transactionService.LastTransaction.DataLoader != null)
     {
         <SendTransactionProgress DataLoader="transactionService.LastTransaction.DataLoader" Title="Sending transaction..." />
@@ -105,7 +105,7 @@
             @* <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ViewTransaction">View Transaction</MudButton> *@
         }
     }
-   
+
 
 </MudContainer>
 

@@ -5,6 +5,7 @@
 @inject ISnackbar Snackbar
 @inject TokenDataService dataService
 @inject ClipboardService ClipboardService
+@inject NavigationManager Navigation
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
@@ -26,7 +27,7 @@
             @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
                 {
                     <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
-                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
+                        <MudIconButton Href="/start" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
                     </MudTooltip>
                 }
     </MudContainer>
@@ -83,22 +84,7 @@
             }
             else
             {
-                <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
-                    <MudItem sm="12" xs="12">
-                        <MudTabs Class="mud-width-full" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                            <MudTabPanel Text="Create new">
-                                <AddGenerateWalletComponent IsExpanded="true"></AddGenerateWalletComponent>
-                            </MudTabPanel>
-                            <MudTabPanel Text="ArConnect">
-                                <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
-                            </MudTabPanel>
-                            <MudTabPanel Text="Load .json">
-                                <AddUploadWalletComponent IsExpanded="true"></AddUploadWalletComponent>
-                            </MudTabPanel>
-                        </MudTabs>
-                    </MudItem>
-                </MudGrid>
-
+                Navigation.NavigateTo("/start");
             }
         }
         else
