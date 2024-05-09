@@ -11,6 +11,7 @@ using ArweaveAO;
 using ArweaveBlazor;
 using System.Globalization;
 using ClipLazor.Extention;
+using aoww.Services;
 
 namespace aoWebWallet
 {

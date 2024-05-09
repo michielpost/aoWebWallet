@@ -1,4 +1,4 @@
-﻿using aoWebWallet.Models;
+﻿using aoww.Services.Models;
 using ArweaveAO.Models.Token;
 
 namespace aoWebWallet.ViewModels

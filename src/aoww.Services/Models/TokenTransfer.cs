@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using aoww.Services.Enums;
 
-namespace aoWebWallet.Models
+namespace aoww.Services.Models
 {
     public class TokenTransfer
     {
@@ -15,5 +16,7 @@ namespace aoWebWallet.Models
         public required string From { get; set; }
         public string? To { get; set; }
         public long Quantity { get; set; }
+
+        public TokenTransferType TokenTransferType { get; set; }
     }
 }

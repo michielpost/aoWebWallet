@@ -1,9 +1,6 @@
-﻿using ArweaveAO.Models;
-using MudBlazor;
-using System.Text.Json.Serialization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Text.Json.Serialization;
 
-namespace aoWebWallet.Models
+namespace aoww.Services.Models
 {
     public class GraphqlResponse
     {

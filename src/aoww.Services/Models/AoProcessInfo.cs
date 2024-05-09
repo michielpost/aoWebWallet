@@ -1,4 +1,4 @@
-﻿namespace aoWebWallet.Models
+﻿namespace aoww.Services.Models
 {
     public class AoProcessInfo
     {

@@ -1,5 +1,7 @@
 ﻿using aoWebWallet.Models;
 using aoWebWallet.Services;
+using aoww.Services;
+using aoww.Services.Models;
 using ArweaveAO;
 using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
