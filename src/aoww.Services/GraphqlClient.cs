@@ -1,16 +1,11 @@
-﻿using aoWebWallet.Models;
-using ArweaveAO.Models.Token;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using aoww.Services.Models;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
-namespace aoWebWallet.Services
+namespace aoww.Services
 {
+    /// <summary>
+    /// https://arweave.net/graphql
+    /// </summary>
     public class GraphqlClient
     {
         private readonly HttpClient httpClient;
@@ -22,7 +17,38 @@ namespace aoWebWallet.Services
 
         public async Task<List<TokenTransfer>> GetTransactionsIn(string adddress, string? fromTxId = null)
         {
-            string query = "query {\r\n  transactions(\r\n    first: 100\r\n sort: HEIGHT_DESC\r\n    tags: [\r\n      { name: \"Data-Protocol\", values: [\"ao\"] }\r\n      { name: \"Action\", values: [\"Transfer\"] }\r\n      { name: \"Recipient\", values: [\"" + adddress + "\"] }\r\n    ]\r\n  ) {\r\n    edges {\r\n      node {\r\n        id\r\n        recipient\r\n        owner {\r\n          address\r\n        }\r\n        block {\r\n          timestamp\r\n          height\r\n        }\r\n        tags {\r\n          name\r\n          value\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n";
+            string query = $$"""
+                                query {
+                                  transactions(
+                                    first: 100
+                                    sort: HEIGHT_DESC
+                                    tags: [
+                                      { name: "Data-Protocol", values: ["ao"] }
+                                      { name: "Action", values: ["Transfer", "Mint-Token"] }
+                                      { name: "Recipient", values: ["{{adddress}}"] }
+                                    ]
+                                  ) {
+                                    edges {
+                                      node {
+                                        id
+                                        recipient
+                                        owner {
+                                          address
+                                        }
+                                        block {
+                                          timestamp
+                                          height
+                                        }
+                                        tags {
+                                          name
+                                          value
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                                
+                                """;
             var queryResult = await PostQueryAsync(query);
 
             var result = new List<TokenTransfer>();
@@ -31,7 +57,7 @@ namespace aoWebWallet.Services
             {
                 TokenTransfer? transaction = GetTransaction(edge);
 
-                if(transaction != null)
+                if (transaction != null)
                     result.Add(transaction);
             }
 
@@ -44,14 +70,20 @@ namespace aoWebWallet.Services
                 return null;
 
             var isTransfer = edge.Node.Tags.Where(x => x.Name == "Action" && x.Value == "Transfer").Any();
-            if (!isTransfer)
+            var isMint = edge.Node.Tags.Where(x => x.Name == "Action" && x.Value == "Mint-Token").Any();
+            if (!isTransfer && !isMint)
                 return null;
 
             var transaction = new TokenTransfer()
             {
                 Id = edge.Node.Id,
-                From = edge.Node.Owner?.Address ?? string.Empty
+                From = edge.Node.Owner?.Address ?? string.Empty,
+                TokenTransferType = Enums.TokenTransferType.Transfer
             };
+
+            if (isMint)
+                transaction.TokenTransferType = Enums.TokenTransferType.Mint;
+
 
             if (edge.Node.Block != null)
             {
@@ -65,9 +97,13 @@ namespace aoWebWallet.Services
             if (!string.IsNullOrEmpty(fromProcess))
                 transaction.From = fromProcess;
 
-            transaction.TokenId = edge.Node.Recipient;
+            if (isMint)
+                transaction.TokenId = edge.Node.Tags.Where(x => x.Name == "TokenId").Select(x => x.Value).FirstOrDefault();
+            else
+                transaction.TokenId = edge.Node.Recipient;
+
             transaction.To = edge.Node.Tags.Where(x => x.Name == "Recipient").Select(x => x.Value).FirstOrDefault();
-            
+
             string? quantity = edge.Node.Tags.Where(x => x.Name == "Quantity").Select(x => x.Value).FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(quantity) && long.TryParse(quantity, out long quantityLong))
                 transaction.Quantity = quantityLong;
@@ -376,7 +412,7 @@ namespace aoWebWallet.Services
 
         protected async Task<GraphqlResponse?> PostQueryAsync(string query)
         {
-            var request = new GraphqlRequest { Query = query};
+            var request = new GraphqlRequest { Query = query };
 
             HttpResponseMessage res = await httpClient.PostAsJsonAsync("https://arweave.net/graphql", request);
             if (res.IsSuccessStatusCode)

@@ -1,7 +1,6 @@
 ﻿
 using aoWebWallet.Models;
 using ArweaveAO;
-using ArweaveAO.Models.Token;
 
 namespace aoWebWallet.Services
 {

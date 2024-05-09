@@ -2,6 +2,8 @@
 using aoWebWallet.Models;
 using aoWebWallet.Pages;
 using aoWebWallet.Services;
+using aoww.Services;
+using aoww.Services.Models;
 using ArweaveAO;
 using ArweaveAO.Models.Token;
 using ArweaveBlazor;
@@ -434,6 +436,7 @@ namespace aoWebWallet.ViewModels
         {
             foreach (var tokenId in allTokenIds)
             {
+                Console.WriteLine("TryAddTokenIds: " + tokenId);
                 if (string.IsNullOrEmpty(tokenId))
                     continue;
 

@@ -24,6 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\aoww.Services\aoww.Services.csproj" />
 	  <ProjectReference Include="..\webvNext.DataLoader\webvNext.DataLoader.csproj" />
 	</ItemGroup>
 
