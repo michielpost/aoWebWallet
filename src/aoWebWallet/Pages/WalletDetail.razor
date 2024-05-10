@@ -265,13 +265,6 @@
         var aoAction = AoAction.CreateForTokenTransaction(balanceDataVM.Token.TokenId);
 
         NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
-
-        // var parameters = new DialogParameters<SendTokenDialog> {
-        //     { x => x.SelectedBalanceDataVM, balanceDataVM },
-        //     { x => x.SelectedWallet, BindingContext.SelectedWallet }
-        // };
-        // var options = new DialogOptions { CloseOnEscapeKey = true };
-        // DialogService.Show<SendTokenDialog>("Transfer Token", parameters, options);
     }
 
     private async Task RefreshBalances()

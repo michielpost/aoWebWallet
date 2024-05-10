@@ -29,9 +29,6 @@ namespace aoWebWallet.ViewModels
         private readonly MemoryDataCache memoryDataCache;
 
         [ObservableProperty]
-        private bool isDarkMode = true;
-
-        [ObservableProperty]
         public bool? hasArConnectExtension;
 
         [ObservableProperty]
@@ -192,7 +189,7 @@ namespace aoWebWallet.ViewModels
             UserSettings = await storageService.GetUserSettings();
             if (UserSettings != null)
             {
-                IsDarkMode = UserSettings.IsDarkMode ?? true;
+                
             }
         }
 
@@ -201,7 +198,6 @@ namespace aoWebWallet.ViewModels
             if (UserSettings != null)
             {
                 await storageService.SaveUserSettings(UserSettings);
-                IsDarkMode = UserSettings.IsDarkMode ?? true;
             }
         }
       
@@ -318,15 +314,6 @@ namespace aoWebWallet.ViewModels
 
                 return new Transaction { Id = idResult };
             });
-
-        public async Task SetIsDarkMode(bool isDarkMode)
-        {
-            if (UserSettings != null)
-            {
-                UserSettings.IsDarkMode = isDarkMode;
-                await SaveUserSettings();
-            }
-        }
 
     }
 }

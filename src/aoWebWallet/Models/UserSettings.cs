@@ -2,7 +2,7 @@
 {
     public class UserSettings
     {
-        public bool? IsDarkMode { get; set; } = true;
+        //public bool? IsDarkMode { get; set; } = true;
         public string? ComputeUnitUrl { get; set; }
         public string? GraphqlApiUrl { get; set; }
 
