@@ -434,6 +434,8 @@ namespace aoWebWallet.ViewModels
 
         private async Task TryAddTokenIds(List<string?> allTokenIds)
         {
+            allTokenIds = allTokenIds.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
             foreach (var tokenId in allTokenIds)
             {
                 Console.WriteLine("TryAddTokenIds: " + tokenId);
