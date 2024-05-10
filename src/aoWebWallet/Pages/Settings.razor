@@ -42,14 +42,15 @@
 </MudContainer>
 
 @code {
-    private string? newUrl { get; set; }
-    private string? customUrl { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await BindingContext.LoadUserSettings();
+        //if (firstRender)
+        //{
+            await BindingContext.LoadUserSettings();
+        //}
 
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     async void Submit()
