@@ -36,6 +36,8 @@ namespace aoWebWallet.Services
         public Task<MessageResult?> DryRunAction(Wallet wallet, AoAction action)
              => DryRunResult.DataLoader.LoadAsync(async () =>
              {
+                 DryRunResult.Data = null;
+
                  var target = action.Target?.Value ?? string.Empty;
                  var druRunRequest = new DryRunRequest()
                  {
@@ -74,7 +76,7 @@ namespace aoWebWallet.Services
             if (!string.IsNullOrEmpty(wallet.Jwk))
                 await SendActionWithJwk(wallet.Jwk, action);
 
-            Console.WriteLine("No Wallet to send");
+            //Console.WriteLine("No Wallet to send");
             return;
         }
 

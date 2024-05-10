@@ -25,6 +25,8 @@ namespace aoWebWallet.Services
 
         public async Task TryAddTokenIds(List<string?> allTokenIds)
         {
+            allTokenIds = allTokenIds.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
             foreach (var tokenId in allTokenIds)
             {
                 if (string.IsNullOrEmpty(tokenId) || tokenId.Length != 43)
@@ -76,7 +78,9 @@ namespace aoWebWallet.Services
 
                     token.TokenData = data;
 
-                    TokenList.Add(token);
+                    var existing = TokenList.Where(x => x.TokenId.Equals(tokenId, StringComparison.OrdinalIgnoreCase)).Any();
+                    if(!existing)
+                        TokenList.Add(token);
 
                     await storageService.AddToken(tokenId, data, false, null);
                 }
@@ -127,7 +131,6 @@ namespace aoWebWallet.Services
             }
 
             await storageService.SaveTokenList(tokens);
-
         }
 
         public async Task DeleteToken(string tokenId)

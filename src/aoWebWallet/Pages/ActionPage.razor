@@ -17,14 +17,15 @@
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
         {
-            if (!BindingContext.WalletList.Data.Any())
+            var sendWallets = BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).ToList();
+            if (!sendWallets.Any())
             {
                 <MudButton aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog">Add Wallet</MudButton>
             }
             else
             {
                 <MudSelect @bind-Value="@selectedWallet" Label="Select a wallet" Variant="Variant.Outlined" MaxHeight="250" ReadOnly="@readOnly">
-                    @foreach (var wallet in BindingContext.WalletList.Data ?? new())
+                    @foreach (var wallet in sendWallets ?? new())
                     {
                         <MudSelectItem Value="@wallet.Address">
                             <MudStack Row="true">
