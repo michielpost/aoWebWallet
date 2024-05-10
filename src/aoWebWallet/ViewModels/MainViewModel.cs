@@ -38,7 +38,7 @@ namespace aoWebWallet.ViewModels
         public string? activeArConnectAddress;
 
         [ObservableProperty]
-        private UserSettings? userSettings;
+        private UserSettings userSettings = new();
 
 
         public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();

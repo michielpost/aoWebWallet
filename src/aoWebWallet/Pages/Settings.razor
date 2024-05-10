@@ -43,16 +43,6 @@
 
 @code {
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await BindingContext.LoadUserSettings();
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
     async void Submit()
     {
         await BindingContext.SaveUserSettings();
