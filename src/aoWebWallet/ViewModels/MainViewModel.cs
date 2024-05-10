@@ -11,6 +11,7 @@ using ClipLazor.Components;
 using ClipLazor.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Options;
 using MudBlazor;
 using System.Text.Json;
 using webvNext.DataLoader;
@@ -27,16 +28,14 @@ namespace aoWebWallet.ViewModels
         private readonly ArweaveService arweaveService;
         private readonly GraphqlClient graphqlClient;
         private readonly MemoryDataCache memoryDataCache;
+        private readonly GatewayConfig gatewayConfig;
+        private readonly GraphqlConfig graphqlConfig;
 
         [ObservableProperty]
         public bool? hasArConnectExtension;
 
         [ObservableProperty]
         public string? activeArConnectAddress;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedRecipients]
-        private string? computeUnitUrl;
 
         [ObservableProperty]
         private UserSettings? userSettings;
@@ -54,13 +53,17 @@ namespace aoWebWallet.ViewModels
             StorageService storageService,
             ArweaveService arweaveService,
             GraphqlClient graphqlClient,
-            MemoryDataCache memoryDataCache) : base()
+            MemoryDataCache memoryDataCache,
+            IOptions<GraphqlConfig> graphqlConfig,
+            IOptions<GatewayConfig> gatewayConfig) : base()
         {
             this.dataService = dataService;
             this.storageService = storageService;
             this.arweaveService = arweaveService;
             this.graphqlClient = graphqlClient;
             this.memoryDataCache = memoryDataCache;
+            this.gatewayConfig = gatewayConfig.Value;
+            this.graphqlConfig = graphqlConfig.Value;
         }
 
         public async Task AddToLog(ActivityLogType type, string id)
@@ -170,26 +173,13 @@ namespace aoWebWallet.ViewModels
             WalletList = new();
             //BalanceDataList.Data = null;
         }
-
         
-        partial void OnComputeUnitUrlChanged(string? value)
-        {
-            //ClearUserData();
-
-            if (!string.IsNullOrEmpty(value))
-            {
-                //storageService.SetApiUrl(value);
-
-            }
-
-        }
-
         public async Task LoadUserSettings()
         {
             UserSettings = await storageService.GetUserSettings();
             if (UserSettings != null)
             {
-                
+                UpdateUserSettings(UserSettings);
             }
         }
 
@@ -198,9 +188,16 @@ namespace aoWebWallet.ViewModels
             if (UserSettings != null)
             {
                 await storageService.SaveUserSettings(UserSettings);
+
+                UpdateUserSettings(UserSettings);
             }
         }
-      
+
+        private void UpdateUserSettings(UserSettings userSettings)
+        {
+            graphqlConfig.ApiUrl = userSettings.GraphqlUrl;
+            gatewayConfig.GatewayUrl = userSettings.GatewayUrl;
+        }
 
         public async Task DisconnectArWallet()
         {

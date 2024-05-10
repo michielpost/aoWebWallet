@@ -18,8 +18,6 @@ namespace aoWebWallet.Pages
 
         protected  override void OnInitialized()
         {
-            BindingContext.PropertyChanged += BindingContext_PropertyChanged;
-
             foreach(var obj in ObjWatch)
             {
                 obj.PropertyChanged += ObjWatch_PropertyChanged;
@@ -44,15 +42,6 @@ namespace aoWebWallet.Pages
         //    await LoadDataAsync();
         //    await base.OnParametersSetAsync();
         //}
-
-        internal async void BindingContext_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MainViewModel.ComputeUnitUrl))
-            {
-                await LoadDataAsync();
-                this.StateHasChanged();
-            }
-        }
 
         internal void ObjWatch_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -87,8 +76,6 @@ namespace aoWebWallet.Pages
 
         public virtual void Dispose()
         {
-            BindingContext.PropertyChanged -= BindingContext_PropertyChanged;
-
             foreach (var obj in ObjWatch)
             {
                 obj.PropertyChanged -= ObjWatch_PropertyChanged;

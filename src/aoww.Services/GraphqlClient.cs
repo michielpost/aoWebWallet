@@ -1,4 +1,5 @@
 ﻿using aoww.Services.Models;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 
 namespace aoww.Services
@@ -9,10 +10,12 @@ namespace aoww.Services
     public class GraphqlClient
     {
         private readonly HttpClient httpClient;
+        private readonly GraphqlConfig config;
 
-        public GraphqlClient(HttpClient httpClient)
+        public GraphqlClient(HttpClient httpClient, IOptions<GraphqlConfig> config)
         {
             this.httpClient = httpClient;
+            this.config = config.Value;
         }
 
         public async Task<List<TokenTransfer>> GetTransactionsIn(string adddress, string? cursor = null)
@@ -421,7 +424,7 @@ namespace aoww.Services
         {
             var request = new GraphqlRequest { Query = query };
 
-            HttpResponseMessage res = await httpClient.PostAsJsonAsync("https://arweave.net/graphql", request);
+            HttpResponseMessage res = await httpClient.PostAsJsonAsync(config.ApiUrl, request);
             if (res.IsSuccessStatusCode)
             {
                 return await res.Content.ReadFromJsonAsync<GraphqlResponse>();

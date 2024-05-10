@@ -12,6 +12,8 @@ using ArweaveBlazor;
 using System.Globalization;
 using ClipLazor.Extention;
 using aoww.Services;
+using aoww.Services.Models;
+using aoWebWallet.Models;
 
 namespace aoWebWallet
 {
@@ -93,6 +95,7 @@ namespace aoWebWallet
             services.AddScoped<StorageService>();
             services.AddScoped<ClipboardService>();
             services.AddScoped<TransactionService>();
+            services.AddScoped<GatewayUrlHelper>();
 
             services.AddSingleton<MemoryDataCache>();
 
@@ -112,6 +115,10 @@ namespace aoWebWallet
             services.AddBlazoredLocalStorage();
 
             services.AddClipboard();
+
+            //Options
+            services.AddSingleton(new GraphqlConfig());
+            services.AddSingleton(new GatewayConfig());
         }
     }
 }

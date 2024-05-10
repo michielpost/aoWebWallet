@@ -1,7 +1,7 @@
 ﻿@using aoWebWallet.Models
-
 @inherits MvvmComponentBase<MainViewModel>
 @inject TokenDataService dataService
+@inject GatewayUrlHelper UrlHelper;
 
 @if (transfer != null)
 {

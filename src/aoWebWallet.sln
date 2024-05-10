@@ -9,11 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{06E5BC39-7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webvNext.DataLoader", "webvNext.DataLoader\webvNext.DataLoader.csproj", "{17CA4374-64D0-4618-852F-8A76D0A57166}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoww.Services", "aoww.Services\aoww.Services.csproj", "{178C3213-D574-4B39-A2DA-1FB1D2806242}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoww.Services", "aoww.Services\aoww.Services.csproj", "{178C3213-D574-4B39-A2DA-1FB1D2806242}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{89AC47DF-65AD-4870-AA1D-74ABF1F3D8FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoww.Services.Tests", "aoww.Services.Tests\aoww.Services.Tests.csproj", "{322F4807-05CF-431D-B400-7420E1B29936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoww.Services.Tests", "aoww.Services.Tests\aoww.Services.Tests.csproj", "{322F4807-05CF-431D-B400-7420E1B29936}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +43,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{17CA4374-64D0-4618-852F-8A76D0A57166} = {06E5BC39-764A-48B9-B4F9-F48387A2C965}
+		{178C3213-D574-4B39-A2DA-1FB1D2806242} = {06E5BC39-764A-48B9-B4F9-F48387A2C965}
 		{322F4807-05CF-431D-B400-7420E1B29936} = {89AC47DF-65AD-4870-AA1D-74ABF1F3D8FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

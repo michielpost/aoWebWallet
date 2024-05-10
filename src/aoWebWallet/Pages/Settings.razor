@@ -24,18 +24,19 @@
 
         }
 
+        <MudItem xs="12" sm="6" md="6">
+            <MudPaper Class="pa-4">
 
-        @*  <MudPaper Class="pa-4">
-        <MudSelect @bind-Value="newUrl" T="string" Label="Select API URL" AnchorOrigin="Origin.BottomCenter" FullWidth="true">
-        </MudSelect>
-        </MudPaper>
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GatewayUrl" Label="Gateway" InputType="InputType.Url" />
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GraphqlUrl" Label="GraphQL" InputType="InputType.Url" />
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.ComputeUnitUrl" Label="Compute Unit" InputType="InputType.Url" />
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.MessengerUnitUrl" Label="Messenger Unit" InputType="InputType.Url" />
 
-        <MudPaper Class="pa-4">
-        <MudTextField T="string" @bind-Value="customUrl" Label="Custom URL" InputType="InputType.Url" />
-        </MudPaper>
+                <MudButton Class="pa-4"  OnClick="Submit">Save</MudButton>
 
-        <MudButton OnClick="Submit">Save</MudButton>
-        *@
+            </MudPaper>
+        </MudItem>
+
 
     </MudStack>
 </MudContainer>
@@ -44,18 +45,16 @@
     private string? newUrl { get; set; }
     private string? customUrl { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        newUrl = MainViewModel.ComputeUnitUrl;
-        base.OnInitialized();
+        await BindingContext.LoadUserSettings();
+
+        await base.OnInitializedAsync();
     }
 
-    void Submit()
+    async void Submit()
     {
-        if (!string.IsNullOrEmpty(newUrl))
-            MainViewModel.ComputeUnitUrl = newUrl;
-        if (!string.IsNullOrEmpty(customUrl))
-            MainViewModel.ComputeUnitUrl = customUrl;
+        await BindingContext.SaveUserSettings();
 
         Snackbar.Add("Settings saved, reloading data...", Severity.Info);
     }
