@@ -53,6 +53,16 @@
                     </MudText>
                 </MudStack>
             }
+            else if (!string.IsNullOrEmpty(Error))
+            {
+                <MudStack>
+                    <MudText Typo="Typo.h5">Transfer Error!</MudText>
+                    <MudText>TransactionId</MudText>
+                    <MudText Typo="Typo.caption">
+                        @Error
+                    </MudText>
+                </MudStack>
+            }
         }
     </DialogContent>
     <DialogActions>
@@ -84,6 +94,7 @@
     public string? Address { get; set; }
     public decimal Amount { get; set; }
     public string? TransactionId { get; set; }
+    public string? Error { get; set; }
 
     public bool isConfirm = false;
     public bool showLoader = false;
@@ -132,6 +143,8 @@
 
     public async Task Confirm()
     {
+        Error = null;
+
         if (string.IsNullOrEmpty(Address))
             return;
         if (Address.Length != 43)
@@ -159,6 +172,11 @@
         long amountLong = BalanceHelper.DecimalToTokenAmount(Amount, BindingContext.SelectedBalanceDataVM.Token.TokenData.Denomination!.Value);
         var result = await BindingContext.SendToken(BindingContext.SelectedWallet.Wallet, BindingContext.SelectedBalanceDataVM.Token.TokenId, Address, amountLong);
         TransactionId = result?.Id;
+
+        if(string.IsNullOrEmpty(TransactionId))
+        {
+            Error = "Error sending transaction.";
+        }
 
         if (!string.IsNullOrEmpty(BindingContext.SelectedAddress))
         {
