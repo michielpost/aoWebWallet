@@ -7,11 +7,8 @@ using ArweaveBlazor;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MudBlazor;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Net;
 using webvNext.DataLoader;
 using webvNext.DataLoader.Cache;
-using static MudBlazor.Colors;
 
 namespace aoWebWallet.ViewModels
 {
@@ -26,8 +23,14 @@ namespace aoWebWallet.ViewModels
         private readonly ISnackbar snackbar;
         private readonly MemoryDataCache memoryDataCache;
 
+        private List<TokenTransfer> incoming = new();
+        private List<TokenTransfer> outgoing = new();
+        private List<TokenTransfer> outgoingProcess = new();
+
+
         private string? selectedAddress = null;
 
+        public bool CanLoadMoreTransactions { get; set; } = true;
 
         [ObservableProperty]
         private bool canClaim1;
@@ -114,6 +117,19 @@ namespace aoWebWallet.ViewModels
         {
             if (selectedAddress != null)
             {
+                incoming = new();
+                outgoing = new();
+                outgoingProcess = new();
+                TokenTransferList.Data = new();
+
+                await LoadTokenTransferList(selectedAddress);
+            }
+        }
+
+        public async Task LoadMoreTransactions()
+        {
+            if (selectedAddress != null)
+            {
                 await LoadTokenTransferList(selectedAddress);
             }
         }
@@ -130,7 +146,7 @@ namespace aoWebWallet.ViewModels
         {
             if (selectedAddress != null)
             {
-                await LoadTokenTransferList(selectedAddress);
+                await RefreshTokenTransferList();
                 await LoadBalanceDataList(selectedAddress);
             }
         }
@@ -199,23 +215,27 @@ namespace aoWebWallet.ViewModels
 
         public Task LoadTokenTransferList(string address) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
-            TokenTransferList.Data = new();
+            incoming = await graphqlClient.GetTransactionsIn(address, GetCursor(incoming));
+            outgoing = await graphqlClient.GetTransactionsOut(address, GetCursor(outgoing));
+            outgoingProcess = await graphqlClient.GetTransactionsOutFromProcess(address, GetCursor(outgoingProcess));
 
-            var incoming = await graphqlClient.GetTransactionsIn(address);
-            var outgoing = await graphqlClient.GetTransactionsOut(address);
-            var outgoingProcess = await graphqlClient.GetTransactionsOutFromProcess(address);
+            var allNew = incoming.Concat(outgoing).Concat(outgoingProcess).OrderByDescending(x => x.Timestamp).ToList();
+            CanLoadMoreTransactions = allNew.Any();
 
-            var all = incoming.Concat(outgoing).Concat(outgoingProcess);
+            var existing = TokenTransferList.Data ?? new();
 
-            TokenTransferList.Data = all.OrderByDescending(x => x.Timestamp).ToList();
+            TokenTransferList.Data = existing.Concat(allNew).OrderByDescending(x => x.Timestamp).ToList();
 
-            var allTokenIds = all.Select(x => x.TokenId).Distinct().ToList();
+            var allTokenIds = allNew.Select(x => x.TokenId).Distinct().ToList();
             dataService.TryAddTokenIds(allTokenIds);
 
             return TokenTransferList.Data;
         });
 
-
+        private static string? GetCursor(List<TokenTransfer> transactions)
+        {
+            return transactions.Select(x => x.Cursor).LastOrDefault();
+        }
 
         public async Task LoadBalanceDataList(string address, bool onlyNew = false)
         {

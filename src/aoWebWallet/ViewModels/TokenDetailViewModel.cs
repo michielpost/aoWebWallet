@@ -13,6 +13,11 @@ namespace aoWebWallet.ViewModels
         private readonly MainViewModel mainViewModel;
         private readonly GraphqlClient graphqlClient;
         private readonly TokenDataService dataService;
+        private string? _tokenId;
+
+        private List<TokenTransfer> tokenTransactions = new();
+
+        public bool CanLoadMoreTransactions { get; set; } = true;
 
         public DataLoaderViewModel<Token> Token { get; set; } = new();
 
@@ -28,6 +33,9 @@ namespace aoWebWallet.ViewModels
 
         public async Task Initialize(string tokenId)
         {
+            _tokenId = tokenId;
+            TokenTransferList.Data = new();
+
             await this.LoadTokenData(tokenId);
 
             this.LoadTokenTransferListForToken(tokenId);
@@ -47,18 +55,31 @@ namespace aoWebWallet.ViewModels
 
         public Task LoadTokenTransferListForToken(string tokenId) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
-            TokenTransferList.Data = new();
+            tokenTransactions = await graphqlClient.GetTransactionsForToken(tokenId, GetCursor(tokenTransactions));
+            CanLoadMoreTransactions = tokenTransactions.Any();
 
-            var all = await graphqlClient.GetTransactionsForToken(tokenId);
+            var existing = TokenTransferList.Data ?? new();
 
-            TokenTransferList.Data = all.ToList();
+            TokenTransferList.Data = existing.Concat(tokenTransactions).OrderByDescending(x => x.Timestamp).ToList();
 
-            var allTokenIds = all.Select(x => x.TokenId).Distinct().ToList();
+            var allTokenIds = tokenTransactions.Select(x => x.TokenId).Distinct().ToList();
             dataService.TryAddTokenIds(allTokenIds);
 
             return TokenTransferList.Data;
            
         });
 
+        public async Task LoadMoreTransactions()
+        {
+            if (_tokenId != null)
+            {
+                await LoadTokenTransferListForToken(_tokenId);
+            }
+        }
+
+        private static string? GetCursor(List<TokenTransfer> transactions)
+        {
+            return transactions.Select(x => x.Cursor).LastOrDefault();
+        }
     }
 }

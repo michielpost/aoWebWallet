@@ -15,12 +15,13 @@ namespace aoww.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<List<TokenTransfer>> GetTransactionsIn(string adddress, string? fromTxId = null)
+        public async Task<List<TokenTransfer>> GetTransactionsIn(string adddress, string? cursor = null)
         {
             string query = $$"""
                                 query {
                                   transactions(
-                                    first: 100
+                                    first: 50
+                                    after: "{{cursor}}"
                                     sort: HEIGHT_DESC
                                     tags: [
                                       { name: "Data-Protocol", values: ["ao"] }
@@ -29,6 +30,7 @@ namespace aoww.Services
                                     ]
                                   ) {
                                     edges {
+                                      cursor
                                       node {
                                         id
                                         recipient
@@ -77,6 +79,7 @@ namespace aoww.Services
             var transaction = new TokenTransfer()
             {
                 Id = edge.Node.Id,
+                Cursor = edge.Cursor,
                 From = edge.Node.Owner?.Address ?? string.Empty,
                 TokenTransferType = Enums.TokenTransferType.Transfer
             };
@@ -132,12 +135,13 @@ namespace aoww.Services
             return processInfo;
         }
 
-        public async Task<List<TokenTransfer>> GetTransactionsOut(string address, string? fromTxId = null)
+        public async Task<List<TokenTransfer>> GetTransactionsOut(string address, string? cursor = null)
         {
             string query = $$"""
                                 query {
                                   transactions(
-                                    first: 100
+                                    first: 50
+                                    after: "{{cursor}}"
                                     sort: HEIGHT_DESC
                                     owners: ["{{address}}"]
                                     tags: [
@@ -146,6 +150,7 @@ namespace aoww.Services
                                     ]
                                   ) {
                                     edges {
+                                      cursor
                                       node {
                                         id
                                         recipient
@@ -180,12 +185,13 @@ namespace aoww.Services
             return result;
         }
 
-        public async Task<List<TokenTransfer>> GetTransactionsOutFromProcess(string address, string? fromTxId = null)
+        public async Task<List<TokenTransfer>> GetTransactionsOutFromProcess(string address, string? cursor = null)
         {
             string query = $$"""
                 query {
                   transactions(
-                    first: 100
+                    first: 50
+                    after: "{{cursor}}"
                     sort: HEIGHT_DESC
                     tags: [
                       { name: "From-Process", values: ["{{address}}"] }
@@ -194,6 +200,7 @@ namespace aoww.Services
                     ]
                   ) {
                     edges {
+                      cursor
                       node {
                         id
                         recipient
@@ -277,12 +284,13 @@ namespace aoww.Services
             return result.FirstOrDefault();
         }
 
-        public async Task<List<TokenTransfer>> GetTransactionsForToken(string tokenId, string? fromTxId = null)
+        public async Task<List<TokenTransfer>> GetTransactionsForToken(string tokenId, string? cursor = null)
         {
             string query = $$"""
                 query {
                   transactions(
                     first: 50
+                    after: "{{cursor}}"
                     sort: HEIGHT_DESC
                     recipients: ["{{tokenId}}"]
                     tags: [
@@ -291,6 +299,7 @@ namespace aoww.Services
                     ]
                   ) {
                     edges {
+                      cursor
                       node {
                         id
                         recipient

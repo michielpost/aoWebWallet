@@ -185,6 +185,13 @@
                             <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedWallet?.Wallet.Address" />
                         }
                     </MudTimeline>
+
+                    @if (BindingContext.TokenTransferList.DataLoader.LoadingState == LoadingState.Finished && BindingContext.CanLoadMoreTransactions)
+                    {
+                        <MudButton OnClick="() => LoadMoreTransactions()">Load More</MudButton>
+                    }
+                    <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
+
                 }
             </MudStack>
         </MudItem>
@@ -290,6 +297,11 @@
     private async Task Claim3()
     {
         await BindingContext.Claim3();
+    }
+
+    private Task LoadMoreTransactions()
+    {
+        return BindingContext.LoadMoreTransactions();
     }
 
 }
