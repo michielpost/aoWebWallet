@@ -75,8 +75,9 @@
                         var error = msg.Tags.Where(x => x.Name == "Error").Select(x => x.Value).FirstOrDefault();
 
                         <MudText Typo="Typo.body2">Message for: @msg.Target</MudText>
-                        <MudText Typo="Typo.body2">@RemoveColorCodes(msg.Data)</MudText>
+                        <MudText Typo="Typo.body2">@msg.Data</MudText>
                         <MudText Typo="Typo.body2" Color="Color.Error">@error</MudText>
+                        <br />
                     }
                 </MudCardContent>
                 @* <MudCardActions>
@@ -118,18 +119,6 @@
     private bool readOnly = false;
     private bool started = false;
 
-    static string RemoveColorCodes(string? input)
-    {
-        if (input == null)
-            return string.Empty;
-
-        // Define a regular expression pattern to match color codes
-        string pattern = @"\x1B\[[0-9;]*[mK]";
-
-        // Replace color codes with an empty string
-        string output = System.Text.RegularExpressions.Regex.Replace(input, pattern, "");
-        return output;
-    }
 
     private async void Preview()
     {

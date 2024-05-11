@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Numerics;
-
-namespace aoWebWallet.Services
+﻿namespace aoWebWallet.Services
 {
     public class BalanceHelper
     {

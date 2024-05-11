@@ -8,7 +8,9 @@ using webvNext.DataLoader;
 
 namespace aoWebWallet.Services
 {
-    public class TransactionService(ArweaveService arweaveService, ArweaveAO.AODataClient aODataClient) : ObservableObject
+    public class TransactionService(ArweaveService arweaveService, 
+        ArweaveAO.AODataClient aODataClient,
+        TokenDataService tokenDataService) : ObservableObject
     {
         public void Reset()
         {
@@ -48,8 +50,50 @@ namespace aoWebWallet.Services
 
                  var result = await aODataClient.DryRun(target, druRunRequest);
 
+                 var balanceInputs = action.AllInputs.Where(x => x.ParamType == ActionParamType.Balance);
+                 foreach (var balanceInput in balanceInputs) 
+                 {
+                     if (balanceInput.Value == null)
+                         continue;
+
+                     var token = tokenDataService.TokenList.Where(x => x.TokenId == balanceInput.Args.FirstOrDefault()).FirstOrDefault();
+
+                     if(token?.TokenData?.Denomination != null)
+                     {
+                         string original1 = $"You received {balanceInput.Value}";
+                         string original2 = $"You transferred {balanceInput.Value}";
+
+                         long longValue = long.Parse(balanceInput.Value);
+                         var formatValue = BalanceHelper.FormatBalance(longValue, token.TokenData.Denomination.Value);
+
+                         string replace1 = $"You received {formatValue} {token.TokenData.Ticker}";
+                         string replace2 = $"You transferred {formatValue} {token.TokenData.Ticker}";
+
+                         foreach(var msg in result?.Messages ?? new())
+                         {
+                             msg.Data = RemoveColorCodes(msg.Data);
+                             msg.Data = msg.Data.Replace(original1, replace1);
+                             msg.Data = msg.Data.Replace(original2, replace2);
+                         }
+
+                     }
+                 }
+
                  return result;
              }, x => DryRunResult.Data = x);
+
+        static string RemoveColorCodes(string? input)
+        {
+            if (input == null)
+                return string.Empty;
+
+            // Define a regular expression pattern to match color codes
+            string pattern = @"\x1B\[[0-9;]*[mK]";
+
+            // Replace color codes with an empty string
+            string output = System.Text.RegularExpressions.Regex.Replace(input, pattern, "");
+            return output;
+        }
 
         public async Task SendAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
         {
