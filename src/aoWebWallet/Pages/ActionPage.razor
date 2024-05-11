@@ -36,7 +36,7 @@
                                             @wallet.Address
                                         </MudText>
                                     </div>
-                                    <div style="display:flex; flex-direction:row;">
+                                    <div style="display:flex; flex-direction:row;padding-top:5px;">
                                         <MudText Typo="Typo.body2">@wallet.Name</MudText>
                                     </div>
                                 </MudStack>
@@ -59,7 +59,7 @@
 
     @if (!readOnly && !string.IsNullOrEmpty(selectedWallet))
     {
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview" Class="mt-2">Preview</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" FullWidth="true" OnClick="Preview" Class="mt-8">Preview</MudButton>
         <MudText Color="Color.Error">@validation</MudText>
     }
     else if (!started && !string.IsNullOrEmpty(selectedWallet) && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
@@ -85,8 +85,8 @@
             </MudCard>
         }
 
-        <MudButton Color="Color.Default" Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+        <MudButton Class="px-12 mt-8 mr-2" Color="Color.Default" Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Class="px-12 mt-8" Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
     }
 
     @if (transactionService.LastTransaction.DataLoader != null)

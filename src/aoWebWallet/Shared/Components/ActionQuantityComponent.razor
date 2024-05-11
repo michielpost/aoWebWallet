@@ -36,7 +36,7 @@
 
             <MudStack Row="true">
                 <MudTextField @ref="mudTextField" T="decimal" Label="@label" Variant="Variant.Text" ValueChanged="UpdateDecimalValue" Format="@DenominationFormat" Validation="@(new Func<decimal, IEnumerable<string>>(ValidateBalance))"></MudTextField>
-                <MudText>@Token?.TokenData?.Ticker</MudText>
+                @*<MudText>@Token?.TokenData?.Ticker</MudText>*@
         </MudStack>
 
         if (ActionParam.ParamType == ActionParamType.Balance)
