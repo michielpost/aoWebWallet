@@ -41,8 +41,8 @@ namespace aoWebWallet.ViewModels
 
             SelectedTransaction.Data = result;
 
-            if (result != null)
-                dataService.TryAddTokenIds(new List<string?>() { result.TokenId });
+            if (result?.TokenId != null)
+                dataService.TryAddTokenIds(new List<string>() { result.TokenId });
 
             return result;
         }, (x) => SelectedTransaction.Data = x);

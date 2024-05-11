@@ -28,6 +28,11 @@ namespace aoWebWallet.ViewModels
         private List<TokenTransfer> outgoingProcess = new();
 
 
+        [ObservableProperty]
+        public List<string> visibleTokenList = new();
+
+
+
         private string? selectedAddress = null;
 
         public bool CanLoadMoreTransactions { get; set; } = true;
@@ -80,6 +85,11 @@ namespace aoWebWallet.ViewModels
 
         public async Task Initialize(string address)
         {
+            VisibleTokenList = new();
+            VisibleTokenList.Add("Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc");
+
+            ResetTokenTransferlist();
+
             selectedAddress = address;
 
             await SelectWallet(address);
@@ -117,13 +127,18 @@ namespace aoWebWallet.ViewModels
         {
             if (selectedAddress != null)
             {
-                incoming = new();
-                outgoing = new();
-                outgoingProcess = new();
-                TokenTransferList.Data = new();
+                ResetTokenTransferlist();
 
                 await LoadTokenTransferList(selectedAddress);
             }
+        }
+
+        private void ResetTokenTransferlist()
+        {
+            incoming = new();
+            outgoing = new();
+            outgoingProcess = new();
+            TokenTransferList.Data = new();
         }
 
         public async Task LoadMoreTransactions()
@@ -226,8 +241,22 @@ namespace aoWebWallet.ViewModels
 
             TokenTransferList.Data = existing.Concat(allNew).OrderByDescending(x => x.Timestamp).ToList();
 
-            var allTokenIds = allNew.Select(x => x.TokenId).Distinct().ToList();
+            List<string> allTokenIds = allNew.Where(x => x.TokenId != null).Select(x => x.TokenId!).Distinct().ToList();
             dataService.TryAddTokenIds(allTokenIds);
+
+            bool hasNew = false;
+            foreach(var token in allTokenIds)
+            {
+                var exist = VisibleTokenList.Where(x => x == token).Any();
+                if (!exist)
+                {
+                    VisibleTokenList.Add(token);
+                    hasNew = true;
+                }
+            }
+            if (hasNew)
+                OnPropertyChanged(nameof(VisibleTokenList));
+
 
             return TokenTransferList.Data;
         });
@@ -237,15 +266,13 @@ namespace aoWebWallet.ViewModels
             return transactions.Select(x => x.Cursor).LastOrDefault();
         }
 
-        public async Task LoadBalanceDataList(string address, bool onlyNew = false)
+        private async Task LoadBalanceDataList(string address, bool onlyNew = false)
         {
             //First clear
             if (!onlyNew)
                 BalanceDataList.Clear();
 
-            var result = new List<BalanceDataViewModel>();
-
-            foreach (var token in dataService.TokenList.Where(x => x.IsVisible))
+            foreach (var token in dataService.TokenList.Where(x => VisibleTokenList.Contains(x.TokenId) && x.IsVisible))
             {
                 if (onlyNew)
                 {
@@ -254,6 +281,9 @@ namespace aoWebWallet.ViewModels
 
                 }
                 var balanceData = new BalanceDataViewModel { Token = token };
+                BalanceDataList.Add(balanceData);
+
+                await Task.Delay(60);
 
                 balanceData.BalanceDataLoader.DataLoader.LoadAsync(async () =>
                 {
@@ -265,7 +295,8 @@ namespace aoWebWallet.ViewModels
                     TokenTransferList.ForcePropertyChanged();
                 });
 
-                BalanceDataList.Add(balanceData);
+
+
             }
         }
 

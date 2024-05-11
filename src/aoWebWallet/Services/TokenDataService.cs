@@ -23,7 +23,7 @@ namespace aoWebWallet.Services
             this.tokenClient = tokenClient;
         }
 
-        public async Task TryAddTokenIds(List<string?> allTokenIds)
+        public async Task TryAddTokenIds(List<string> allTokenIds)
         {
             allTokenIds = allTokenIds.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
 

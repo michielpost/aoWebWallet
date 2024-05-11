@@ -62,8 +62,10 @@ namespace aoWebWallet.Pages
                             .AllInputs
                             .Where(x => x.ParamType == ActionParamType.Balance || x.ParamType == ActionParamType.Quantity)
                             .Select(x => x.Args.FirstOrDefault())
+                            .Where(x => x != null)
                             .Distinct()
-            .ToList();
+                            .Select(x => x!)
+                            .ToList();
 
             await dataService.TryAddTokenIds(tokens);
 

@@ -62,7 +62,7 @@ namespace aoWebWallet.ViewModels
 
             TokenTransferList.Data = existing.Concat(tokenTransactions).OrderByDescending(x => x.Timestamp).ToList();
 
-            var allTokenIds = tokenTransactions.Select(x => x.TokenId).Distinct().ToList();
+            var allTokenIds = tokenTransactions.Where(x => x.TokenId != null).Select(x => x.TokenId!).Distinct().ToList();
             dataService.TryAddTokenIds(allTokenIds);
 
             return TokenTransferList.Data;

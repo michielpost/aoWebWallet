@@ -1,9 +1,6 @@
-﻿using aoWebWallet.ViewModels;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using webvNext.DataLoader;
 
 namespace aoWebWallet.Pages
@@ -51,6 +48,8 @@ namespace aoWebWallet.Pages
         private void Obj_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             this.StateHasChanged();
+            //Console.WriteLine("Obj Collection changed: " + sender?.ToString());
+
         }
 
         protected virtual Task LoadDataAsync()
