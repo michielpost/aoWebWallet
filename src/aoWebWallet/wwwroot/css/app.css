@@ -317,7 +317,7 @@ body {
 }
 
 .trigger-transparency.mud-paper {
-    background-color: rgba(222,222,222,0);
+    background-color: rgba(222,222,222,0) !important;
 }
 
 .trigger-transparency {
