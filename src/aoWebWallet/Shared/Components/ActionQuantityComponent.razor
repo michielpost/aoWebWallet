@@ -36,12 +36,12 @@
 
             <MudStack Row="true">
                 <MudTextField @ref="mudTextField" T="decimal" Label="@label" Variant="Variant.Text" ValueChanged="UpdateDecimalValue" Format="@DenominationFormat" Validation="@(new Func<decimal, IEnumerable<string>>(ValidateBalance))"></MudTextField>
-                <MudText>@Token?.TokenData?.Ticker</MudText>
+                @*<MudText>@Token?.TokenData?.Ticker</MudText>*@
         </MudStack>
 
         if (ActionParam.ParamType == ActionParamType.Balance)
         {
-                <MudChip Color="Color.Info">Balance available: @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
+                <MudChip style="border-radius:0;" Variant="Variant.Text" Color="Color.Success">Balance available: @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
         }
     }
 }
@@ -86,7 +86,7 @@
         if (token.TokenData?.Denomination != null)
             Token = token;
 
-        if (ActionParam.ParamType == ActionParamType.Balance 
+        if (ActionParam.ParamType == ActionParamType.Balance
             && !string.IsNullOrEmpty(Address)
             && !ReadOnly)
         {
@@ -140,7 +140,7 @@
         if (!(mudTextField?.ValidationErrors.Any() ?? false))
         {
             long amountLong = BalanceHelper.DecimalToTokenAmount(e, Token.TokenData.Denomination.Value);
-            
+
             ActionParam.Value = amountLong.ToString();
         }
         else
