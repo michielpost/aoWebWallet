@@ -405,3 +405,15 @@ body {
 .mud-paper, .mud-tabs-toolbar {
     background-color: rgba(16,16,67,0.33) !important;
 }
+
+.wallet-item-background {
+    background-color: rgba(16,16,67,1) !important;
+}
+
+.mud-primary-hover.wallet-item-background {
+    background-color: rgba(16,16,67,1) !important;
+}
+
+.mud-list.mud-list-padding {
+    background-color: rgba(16,16,67,1) !important;
+}

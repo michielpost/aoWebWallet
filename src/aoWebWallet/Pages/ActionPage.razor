@@ -24,10 +24,10 @@
             }
             else
             {
-                <MudSelect @bind-Value="@selectedWallet" Label="Select a wallet" Variant="Variant.Outlined" MaxHeight="250" ReadOnly="@readOnly">
+                <MudSelect @bind-Value="@selectedWallet" Label="Select a wallet" Class="mb-4 wallet-item-background" Variant="Variant.Outlined"  ReadOnly="@readOnly">
                     @foreach (var wallet in sendWallets ?? new())
                     {
-                        <MudSelectItem Value="@wallet.Address">
+                        <MudSelectItem Value="@wallet.Address" Class="wallet-item-background">
                             <MudStack Row="true">
                                 @* <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" /> *@
                                 <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
@@ -59,7 +59,7 @@
 
     @if (!readOnly && !string.IsNullOrEmpty(selectedWallet))
     {
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview">Preview</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview" Class="mt-2">Preview</MudButton>
         <MudText Color="Color.Error">@validation</MudText>
     }
     else if (!started && !string.IsNullOrEmpty(selectedWallet) && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
@@ -67,7 +67,7 @@
         <SendTransactionProgress DataLoader="transactionService.DryRunResult.DataLoader" Title="Getting dry run result..." />
         if (transactionService.DryRunResult.Data != null)
         {
-            <MudCard Outlined="true">
+            <MudCard Outlined="true" Class="my-2">
                 <MudCardContent>
                     <MudText>Preview Result</MudText>
                     @foreach (var msg in transactionService.DryRunResult.Data.Messages)
