@@ -46,7 +46,7 @@ namespace aoWebWallet.Services
                     {
                         await storageService.AddToken(tokenId, data, isUserAdded: false, null);
 
-                        await LoadTokenList();
+                        await LoadTokenList(force: true);
                     }
                 });
 
