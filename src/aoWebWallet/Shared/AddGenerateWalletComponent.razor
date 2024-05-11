@@ -2,6 +2,7 @@
 @inherits MvvmComponentBase<MainViewModel>
 @inject ArweaveService ArweaveService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
 <MudPaper Class="pa-8 trigger-transparency">
     <MudStack Spacing="2">
@@ -13,7 +14,7 @@
             <MudText DefaultFocus="DefaultFocus" Color="Color.Secondary">@Progress</MudText>
             <div Class="d-w-100 d-flex justify-center mt-2">
                 <MudButton Class="text-transform-none"  Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">
-                    Create AOWW Wallet
+                    Create aoWW Wallet
                 </MudButton>
             </div>
     </MudStack>
@@ -65,6 +66,11 @@
         {
             MudDialog.Close();
         }
+        else
+        {
+            NavigationManager.NavigateTo($"/wallet/{wallet.Address}");
+        }
+
         return true;
     }
 }

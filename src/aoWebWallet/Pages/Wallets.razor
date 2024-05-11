@@ -100,11 +100,6 @@
 
 @code
 {
-    private void OpenDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddWalletDialog>("Add Wallet", options);
-    }
 
     private async void EditWallet(Wallet wallet)
     {

@@ -2,6 +2,8 @@
 @inherits MvvmComponentBase<MainViewModel>
 @inject ArweaveService ArweaveService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
 
 <MudPaper Class="pa-8 trigger-transparency">
     <MudStack Spacing="2">
@@ -153,6 +155,14 @@
         if (MudDialog != null)
         {
             MudDialog.Close();
+        }
+        else if(_fileNames.Count == 1)
+        {
+            NavigationManager.NavigateTo($"/wallet/{_fileNames.First().Address}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"/");
         }
     }
 

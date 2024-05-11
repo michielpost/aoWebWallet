@@ -4,9 +4,9 @@
 
 <MudPaper Class="pa-8">
     <MudStack Spacing="2">
-        <MudTextField @bind-Value="Wallet.Address" Required="true" RequiredError="Input a wallet address" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
-        <MudTextField @bind-Value="Wallet.Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Wallet.Address" ReadOnly="@IsReadOnly" Required="true" RequiredError="Input a wallet address" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
         <MudText Color="Color.Secondary">@Progress</MudText>
+        <MudTextField @bind-Value="Wallet.Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
 
         <div Class="d-w-100 d-flex justify-end mt-2">
             <MudButton OnClick="Submit"  Color="Color.Primary" Variant="Variant.Filled">
@@ -26,8 +26,7 @@
 
     public string? Progress { get; set; }
 
-    [Parameter]
-    public bool IsExpanded { get; set; }
+    public bool IsReadOnly => !Wallet.IsReadOnly;
 
 
     protected override void OnInitialized()
@@ -35,10 +34,6 @@
         base.OnInitialized();
     }
 
-    private void OnExpandCollapseClick()
-    {
-        IsExpanded = !IsExpanded;
-    }
 
     public async Task<bool> Submit()
     {

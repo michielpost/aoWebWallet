@@ -62,7 +62,7 @@
         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview">Preview</MudButton>
         <MudText Color="Color.Error">@validation</MudText>
     }
-    else if (!started && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
+    else if (!started && !string.IsNullOrEmpty(selectedWallet) && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
     {
         <SendTransactionProgress DataLoader="transactionService.DryRunResult.DataLoader" Title="Getting dry run result..." />
         if (transactionService.DryRunResult.Data != null)
@@ -204,8 +204,9 @@
 
     private void OpenDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddWalletDialog>("Add Wallet", options);
+        NavigationManager.NavigateTo("/start");
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+        // DialogService.Show<AddWalletDialog>("Add Wallet", options);
     }
 
 }
