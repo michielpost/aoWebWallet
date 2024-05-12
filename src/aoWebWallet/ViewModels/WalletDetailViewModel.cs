@@ -283,7 +283,7 @@ namespace aoWebWallet.ViewModels
                 var balanceData = new BalanceDataViewModel { Token = token };
                 BalanceDataList.Add(balanceData);
 
-                await Task.Delay(60);
+                await Task.Delay(30);
 
                 balanceData.BalanceDataLoader.DataLoader.LoadAsync(async () =>
                 {

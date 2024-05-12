@@ -123,43 +123,7 @@
         {
             @foreach (var balance in BindingContext.BalanceDataList)
             {
-                if (balance.Token?.TokenData == null)
-                    continue;
-
-                <MudPaper Class="pa-4">
-                    <MudStack Row="true">
-                        <div Class="d-custom-1">
-                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Token.TokenData?.Logo)" Size="Size.Medium" title="@balance.Token.TokenId" />
-                            <MudStack Class="ml-4" Justify="Justify.Center" Spacing="0">
-                                <MudText Class="d-font-weight-500" Typo="Typo.body1">@balance.Token.TokenData?.Name</MudText>
-                                <MudText Typo="Typo.body2">@balance.Token.TokenData?.Ticker</MudText>
-                            </MudStack>
-                        </div>
-
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <DataLoaderProgress DataLoader="balance.BalanceDataLoader.DataLoader" Title="balance" />
-                            @if (balance.BalanceDataLoader.Data != null)
-                            {
-                                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(balance.BalanceDataLoader.Data?.Balance, balance.Token?.TokenData?.Denomination ?? 0)</MudText>
-                            }
-                        </MudStack>
-                        <MudSpacer />
-                        <MudSpacer />
-                        <MudStack Justify="Justify.Center" Spacing="0" Row="true">
-                            <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Top">
-                                <MudButton Variant="Variant.Filled" Size="Size.Small"  Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDownward" aria-label="Receive" OnClick="()=>{Receive(balance);}">Receive</MudButton>
-                            </MudTooltip>
-
-                            @if ((BindingContext.SelectedWallet?.CanSend ?? false))
-                            {
-                                var hasBalance = balance.BalanceDataLoader.Data?.Balance ?? 0;
-                                <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Bottom">
-                                    <MudButton Class="ml-1" Variant="Variant.Filled" Size="Size.Small"  Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowUpward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance);}">Send</MudButton>
-                                </MudTooltip>
-                            }
-                        </MudStack>
-                    </MudStack>
-                </MudPaper>
+                <BalanceDataComponent CanSend="@(BindingContext.SelectedWallet?.CanSend ?? false)" BalanceDataVM="balance" />
             }
         }
 
@@ -251,22 +215,7 @@
         StateHasChanged();
     }
 
-    private void Receive(BalanceDataViewModel? balanceDataVM)
-    {
-        var parameters = new DialogParameters<ReceiveTokenDialog> { { x => x.SelectedBalanceDataVM, balanceDataVM } };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ReceiveTokenDialog>("Receive Token", parameters, options);
-    }
-
-    private void Send(BalanceDataViewModel? balanceDataVM)
-    {
-        if(balanceDataVM?.Token == null)
-            return;
-
-        var aoAction = AoAction.CreateForTokenTransaction(balanceDataVM.Token.TokenId);
-
-        NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
-    }
+  
 
     private async Task RefreshBalances()
     {
