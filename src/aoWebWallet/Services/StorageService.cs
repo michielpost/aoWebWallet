@@ -1,9 +1,6 @@
 ﻿using aoWebWallet.Models;
-using aoWebWallet.Pages;
 using ArweaveAO.Models.Token;
 using Blazored.LocalStorage;
-using System.Reflection.Metadata;
-using static MudBlazor.CategoryTypes;
 
 namespace aoWebWallet.Services
 {
@@ -24,9 +21,18 @@ namespace aoWebWallet.Services
             var result = await localStorage.GetItemAsync<List<Token>>(TOKEN_LIST_KEY);
             result = result ?? new();
 
-            AddSystemToken(result, "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc", 
-                new TokenData { 
-                    Denomination = 3, 
+            AddSystemTokens(result);
+
+            return result;
+        }
+
+        public static void AddSystemTokens(List<Token> result)
+        {
+            AddSystemToken(result, "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
+                new TokenData
+                {
+                    TokenId = "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
+                    Denomination = 3,
                     Logo = "eIOOJiqtJucxvB4k8a-sEKcKpKTh9qQgOV3Au7jlGYc",
                     Name = "AOCRED",
                     Ticker = "testnet-AOCRED"
@@ -36,6 +42,7 @@ namespace aoWebWallet.Services
             AddSystemToken(result, "8p7ApPZxC_37M06QHVejCQrKsHbcJEerd3jWNkDUWPQ",
                 new TokenData
                 {
+                    TokenId = "8p7ApPZxC_37M06QHVejCQrKsHbcJEerd3jWNkDUWPQ",
                     Denomination = 3,
                     Logo = "AdFxCN1eEPboxNpCNL23WZRNhIhiamOeS-TUwx_Nr3Q",
                     Name = "Bark",
@@ -45,6 +52,7 @@ namespace aoWebWallet.Services
             AddSystemToken(result, "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww",
                 new TokenData
                 {
+                    TokenId = "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww",
                     Denomination = 3,
                     Logo = "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0",
                     Name = "TRUNK",
@@ -54,15 +62,17 @@ namespace aoWebWallet.Services
             AddSystemToken(result, "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
                 new TokenData
                 {
+                    TokenId = "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
                     Denomination = 12,
                     Logo = "nvx7DgTR8ws_k6VNCSe8vhwbZLx5jNbfNLJS0IKTTHA",
                     Name = "0rbit Points",
-                    Ticker = "0RBIT"
+                    Ticker = "0RBT"
                 });  //0rbit
 
             AddSystemToken(result, "PBg5TSJPQp9xgXGfjN27GA28Mg5bQmNEdXH2TXY4t-A",
                new TokenData
                {
+                   TokenId = "PBg5TSJPQp9xgXGfjN27GA28Mg5bQmNEdXH2TXY4t-A",
                    Denomination = 12,
                    Logo = "VzvP24VxdNt1kf3E-EXxxrihaNBnXpEI-5ymwWddJRk",
                    Name = "Earth",
@@ -72,6 +82,7 @@ namespace aoWebWallet.Services
             AddSystemToken(result, "KmGmJieqSRJpbW6JJUFQrH3sQPEG9F6DQETlXNt4GpM",
                new TokenData
                {
+                   TokenId = "KmGmJieqSRJpbW6JJUFQrH3sQPEG9F6DQETlXNt4GpM",
                    Denomination = 12,
                    Logo = "jayAVj1wgIcmin0bjG_DIGxq3_qANSp5EV7PcfUAvdQ",
                    Name = "Fire",
@@ -81,6 +92,7 @@ namespace aoWebWallet.Services
             AddSystemToken(result, "2nfFJb8LIA69gwuLNcFQezSuw4CXPE4--U-j-7cxKOU",
                new TokenData
                {
+                   TokenId = "2nfFJb8LIA69gwuLNcFQezSuw4CXPE4--U-j-7cxKOU",
                    Denomination = 12,
                    Logo = "7WqV5FWdDcbQzQNxNvfpr093yLHDtjeO7qPM9HQskWE",
                    Name = "Air",
@@ -90,18 +102,15 @@ namespace aoWebWallet.Services
             AddSystemToken(result, "NkXX3uZ4oGkQ3DPAWtjLb2sTA-yxmZKdlOlEHqMfWLQ",
                new TokenData
                {
+                   TokenId = "NkXX3uZ4oGkQ3DPAWtjLb2sTA-yxmZKdlOlEHqMfWLQ",
                    Denomination = 12,
                    Logo = "ioI2_z6qkzGBrvZXbojjf6Q5uVZumx4rDDdHm-Jfyt0",
                    Name = "Lava",
                    Ticker = "FIRE-EARTH"
                });
-
-           
-
-            return result;
         }
 
-        private void AddSystemToken(List<Token> list, string tokenId, TokenData tokenData)
+        private static void AddSystemToken(List<Token> list, string tokenId, TokenData tokenData)
         {
             var existing = list.Where(x => x.TokenId == tokenId).FirstOrDefault();
             if (existing != null)
