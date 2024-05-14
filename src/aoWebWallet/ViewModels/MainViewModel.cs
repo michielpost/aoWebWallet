@@ -5,6 +5,7 @@ using aoWebWallet.Services;
 using aoww.Services;
 using aoww.Services.Models;
 using ArweaveAO;
+using ArweaveAO.Models;
 using ArweaveAO.Models.Token;
 using ArweaveBlazor;
 using ClipLazor.Components;
@@ -28,6 +29,7 @@ namespace aoWebWallet.ViewModels
         private readonly ArweaveService arweaveService;
         private readonly GraphqlClient graphqlClient;
         private readonly MemoryDataCache memoryDataCache;
+        private readonly ArweaveConfig arweaveConfig;
         private readonly GatewayConfig gatewayConfig;
         private readonly GraphqlConfig graphqlConfig;
 
@@ -55,13 +57,15 @@ namespace aoWebWallet.ViewModels
             GraphqlClient graphqlClient,
             MemoryDataCache memoryDataCache,
             IOptions<GraphqlConfig> graphqlConfig,
-            IOptions<GatewayConfig> gatewayConfig) : base()
+            IOptions<GatewayConfig> gatewayConfig,
+            IOptions<ArweaveConfig> arweaveConfig) : base()
         {
             this.dataService = dataService;
             this.storageService = storageService;
             this.arweaveService = arweaveService;
             this.graphqlClient = graphqlClient;
             this.memoryDataCache = memoryDataCache;
+            this.arweaveConfig = arweaveConfig.Value;
             this.gatewayConfig = gatewayConfig.Value;
             this.graphqlConfig = graphqlConfig.Value;
         }
@@ -197,6 +201,9 @@ namespace aoWebWallet.ViewModels
         {
             graphqlConfig.ApiUrl = userSettings.GraphqlUrl;
             gatewayConfig.GatewayUrl = userSettings.GatewayUrl;
+            arweaveConfig.ComputeUnitUrl = userSettings.ComputeUnitUrl;
+
+            arweaveService.SetConnection(userSettings.GatewayUrl, userSettings.GraphqlUrl, userSettings.MessengerUnitUrl, userSettings.ComputeUnitUrl);
         }
 
         public async Task DisconnectArWallet()

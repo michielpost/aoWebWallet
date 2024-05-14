@@ -14,6 +14,7 @@ using ClipLazor.Extention;
 using aoww.Services;
 using aoww.Services.Models;
 using aoWebWallet.Models;
+using ArweaveAO.Models;
 
 namespace aoWebWallet
 {
@@ -119,6 +120,7 @@ namespace aoWebWallet
             //Options
             services.AddSingleton(new GraphqlConfig());
             services.AddSingleton(new GatewayConfig());
+            services.AddSingleton(new ArweaveConfig());
         }
     }
 }

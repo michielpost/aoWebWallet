@@ -1,6 +1,8 @@
 using aoWebWallet.Models;
 using aoWebWallet.Services;
 using ArweaveAO;
+using ArweaveAO.Models;
+using Microsoft.Extensions.Options;
 
 namespace aoWebWallet.Tests
 {
@@ -14,7 +16,7 @@ namespace aoWebWallet.Tests
 
             StorageService.AddSystemTokens(result);
 
-            TokenClient tokenClient = new TokenClient(new HttpClient());
+            TokenClient tokenClient = new TokenClient(Options.Create(new ArweaveConfig()), new HttpClient());
 
            foreach(var token in result)
             {

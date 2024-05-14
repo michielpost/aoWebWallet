@@ -12,8 +12,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ArweaveAO" Version="0.0.2" />
-		<PackageReference Include="ArweaveBlazor" Version="0.0.6" />
+		<PackageReference Include="ArweaveAO" Version="0.0.3" />
+		<PackageReference Include="ArweaveBlazor" Version="0.0.7" />
 		<PackageReference Include="ClipLazor" Version="2.1.1" />
 		<PackageReference Include="MudBlazor" Version="6.19.1" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
