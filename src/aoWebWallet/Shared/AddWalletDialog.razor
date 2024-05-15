@@ -1,48 +1,18 @@
 ﻿@using aoWebWallet.Models
 @using aoWebWallet.Shared
-@inherits MvvmComponentBase<MainViewModel>
-@inject TokenClient TokenClient
 @inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
-        <MudDivider Class="mb-5" />
-        <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-            <MudTabPanel Text="New wallet">
-                <AddGenerateWalletComponent></AddGenerateWalletComponent>
-            </MudTabPanel>
-            <MudTabPanel Text="ArConnect">
-                <AddArConnectComponent></AddArConnectComponent>
-            </MudTabPanel>
-            <MudTabPanel Text="Load .json">
-                <AddUploadWalletComponent></AddUploadWalletComponent>
-            </MudTabPanel>
-            <MudTabPanel Text="Read-only" >
-                <AddWalletComponent @ref="addWalletRef" HideAddButton="true"></AddWalletComponent>
-            </MudTabPanel>
-        </MudTabs>
+        <AddWalletComponent />
     </DialogContent>
 </MudDialog>
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    private AddWalletComponent? addWalletRef;
-
     public async Task Submit()
     {
-        // Call a function in AddWalletComponent
-        if (addWalletRef != null)
-        {
-            var result = await addWalletRef.Submit();
-            if(result)
-            {
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-        }
-        else
-        {
-            MudDialog.Close(DialogResult.Ok(true));
-        }
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
     //void Submit() => MudDialog.Close(DialogResult.Ok(true));

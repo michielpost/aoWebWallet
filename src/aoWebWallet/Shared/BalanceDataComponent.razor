@@ -1,0 +1,70 @@
+﻿@using aoWebWallet.Models
+@inject GatewayUrlHelper UrlHelper
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+@if (BalanceDataVM?.Token?.TokenData == null)
+{
+    return;
+}
+
+<MudPaper Class="pa-4">
+    <MudStack Row="true">
+        <div Class="d-custom-1">
+            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BalanceDataVM.Token.TokenData?.Logo)" Size="Size.Medium" title="@BalanceDataVM.Token.TokenId" />
+            <MudStack Class="ml-4" Justify="Justify.Center" Spacing="0">
+                <MudText Class="d-font-weight-500" Typo="Typo.body1">@BalanceDataVM.Token.TokenData?.Name</MudText>
+                <MudText Typo="Typo.body2">@BalanceDataVM.Token.TokenData?.Ticker</MudText>
+            </MudStack>
+        </div>
+
+        <MudStack Justify="Justify.Center" Spacing="0">
+            <DataLoaderProgress DataLoader="BalanceDataVM.BalanceDataLoader.DataLoader" Title="balance" />
+            @if (BalanceDataVM.BalanceDataLoader.Data != null)
+            {
+                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(BalanceDataVM.BalanceDataLoader.Data?.Balance, BalanceDataVM.Token?.TokenData?.Denomination ?? 0)</MudText>
+            }
+        </MudStack>
+        <MudSpacer />
+        <MudSpacer />
+        <MudStack Justify="Justify.Center" Spacing="0" Row="true">
+            <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Top">
+                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDownward" aria-label="Receive" OnClick="()=>{Receive(BalanceDataVM);}">Receive</MudButton>
+            </MudTooltip>
+
+            @if (CanSend)
+            {
+                var hasBalance = BalanceDataVM.BalanceDataLoader.Data?.Balance ?? 0;
+                <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Bottom">
+                    <MudButton Class="ml-1" Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowUpward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(BalanceDataVM);}">Send</MudButton>
+                </MudTooltip>
+            }
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+@code{
+    [Parameter]
+    public BalanceDataViewModel? BalanceDataVM { get; set; }
+
+    [Parameter]
+    public bool CanSend { get; set; }
+
+    private void Receive(BalanceDataViewModel? balanceDataVM)
+    {
+        var parameters = new DialogParameters<ReceiveTokenDialog> { { x => x.SelectedBalanceDataVM, balanceDataVM } };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<ReceiveTokenDialog>("Receive Token", parameters, options);
+    }
+
+    private void Send(BalanceDataViewModel? balanceDataVM)
+    {
+        if (balanceDataVM?.Token == null)
+            return;
+
+        var aoAction = AoAction.CreateForTokenTransaction(balanceDataVM.Token.TokenId);
+
+        NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
+    }
+}
+  

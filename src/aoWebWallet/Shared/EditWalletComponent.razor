@@ -1,0 +1,77 @@
+﻿@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject ISnackbar Snackbar
+
+<MudPaper Class="pa-8">
+    <MudStack Spacing="2">
+        <MudTextField @bind-Value="Address" ReadOnly="@IsReadOnly" Required="true" RequiredError="Input a wallet address" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+        <MudText Color="Color.Secondary">@Progress</MudText>
+        <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
+
+        <div Class="d-w-100 d-flex justify-end mt-2">
+            <MudButton OnClick="Submit"  Color="Color.Primary" Variant="Variant.Filled">
+                Save
+            </MudButton>
+        </div>
+    </MudStack>
+</MudPaper>
+
+
+
+@code {
+    [Parameter]
+    public Wallet Wallet { get; set; } = new() { Address = string.Empty };
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    public string? Progress { get; set; }
+    public string Address { get; set; } = string.Empty;
+    public string? Name { get; set; }
+
+    public bool IsReadOnly => !string.IsNullOrEmpty(Wallet.Address);
+
+
+    protected override void OnParametersSet()
+    {
+        Address = Wallet.Address;
+        Name = Wallet.Name;
+
+        base.OnParametersSet();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+
+    public async Task<bool> Submit()
+    {
+        // if(string.IsNullOrWhiteSpace(Address))
+        // {
+        //     Progress = "Input a wallet address.";
+        //     StateHasChanged();
+        //     return false;
+        // }
+
+        if (string.IsNullOrWhiteSpace(Address) || Address.Length != 43)
+        {
+            Progress = "Length must be 43 characters.";
+            StateHasChanged();
+            return false;
+        }
+
+        Wallet.Name = Name;
+        Wallet.Address = Address;
+
+        await BindingContext.SaveWallet(Wallet);
+
+        StateHasChanged();
+
+        Snackbar.Add($"Address saved {Wallet.Name} ({Wallet.Address})", Severity.Info);
+
+        MudDialog?.Close(true);
+
+        return true;
+    }
+}

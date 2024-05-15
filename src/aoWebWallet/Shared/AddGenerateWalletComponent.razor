@@ -1,22 +1,30 @@
 ﻿@using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
-@inject TokenClient TokenClient
 @inject ArweaveService ArweaveService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
-<MudPaper Class="pa-8">
+<MudPaper Class="pa-8 trigger-transparency">
     <MudStack Spacing="2">
-            <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
-            <MudText Color="Color.Secondary">@Progress</MudText>
-            <div Class="d-w-100 d-flex justify-end mt-2">
-                <MudButton  Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">
-                    Create AOWW Wallet
+
+            <MudFocusTrap Disabled="@Disabled" DefaultFocus="@DefaultFocus">
+                <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
+            </MudFocusTrap>
+
+            <MudText DefaultFocus="DefaultFocus" Color="Color.Secondary">@Progress</MudText>
+            <div Class="d-w-100 d-flex justify-center mt-2">
+                <MudButton Class="text-transform-none"  Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">
+                    Create aoWW Wallet
                 </MudButton>
             </div>
     </MudStack>
 </MudPaper>
 
 @code {
+
+    bool Disabled { get; set; } = false;
+    DefaultFocus DefaultFocus { get; set; } = DefaultFocus.FirstChild;
+
     [Parameter]
     public bool HideAddButton { get; set; }
 
@@ -58,6 +66,11 @@
         {
             MudDialog.Close();
         }
+        else
+        {
+            NavigationManager.NavigateTo($"/wallet/{wallet.Address}");
+        }
+
         return true;
     }
 }

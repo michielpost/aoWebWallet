@@ -1,67 +1,34 @@
-﻿@using aoWebWallet.Models
-@inherits MvvmComponentBase<MainViewModel>
-@inject TokenClient TokenClient
-@inject ISnackbar Snackbar
-
-<MudPaper Class="pa-8">
-    <MudStack Spacing="2">
-        <MudTextField @bind-Value="Address" MaxLength=43 Label="Wallet Address" Variant="Variant.Text"></MudTextField>
-        <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
-        <MudText Color="Color.Secondary">@Progress</MudText>
-
-        <div Class="d-w-100 d-flex justify-end mt-2">
-            <MudButton OnClick="Submit"  Color="Color.Primary" Variant="Variant.Filled">
-                Add Custom Wallet
-            </MudButton>
-        </div>
-    </MudStack>
-</MudPaper>
-
-
-
-@code {
-    [Parameter]
-    public bool HideAddButton { get; set; }
-
-    public string? Name { get; set; }
-    public string? Address { get; set; }
-    public string? Progress { get; set; }
-
-    [Parameter]
-    public bool IsExpanded { get; set; }
-
-    private void OnExpandCollapseClick()
-    {
-        IsExpanded = !IsExpanded;
-    }
-
-    public async Task<bool> Submit()
-    {
-        if(string.IsNullOrWhiteSpace(Address))
-        {
-            Progress = "Input a wallet address.";
-            StateHasChanged();
-            return false;
-        }
-        if (Address.Length != 43)
-        {
-            Progress = "Length must be 43 characters.";
-            StateHasChanged();
-            return false;
-        }
-
-        var wallet = new Wallet
-            {
-                Address = Address,
-                Name = Name,
-                Source = WalletTypes.Manual,
-                IsReadOnly = true,
-                AddedDate = DateTimeOffset.UtcNow
-            };
-
-        await BindingContext.SaveWallet(wallet);
-
-        Snackbar.Add($"Wallet added ({Address})", Severity.Info);
-        return true;
-    }
-}
+﻿<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudGrid>
+        <MudItem xs="12" md="12" lg="4">
+            <MudPaper Elevation="2" Class="pa-4 border-radius-25 first-wallet">
+                <div Style="width:100%; display:flex; flex-direction:row; justify-content:center;">
+                    <div Class="background-x">
+                        <MudImage Src="images/ths.svg" Alt="hello" Elevation="25" Class="ww-image-start" />
+                    </div>
+                </div>
+                <AddGenerateWalletComponent></AddGenerateWalletComponent>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="12" lg="4">
+            <MudPaper Elevation="2" Class="pa-4 border-radius-25 first-wallet">
+                <div Style="width:100%; display:flex; flex-direction:row; justify-content:center;">
+                    <div Class="background-x">
+                        <MudImage Src="images/arconnect-logo.svg" Alt="hello" Elevation="25" Class="ww-image-start ar-logo-setup" />
+                    </div>
+                </div>
+                <AddArConnectComponent></AddArConnectComponent>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="12" lg="4">
+            <MudPaper Elevation="2" Class="pa-4 border-radius-25 first-wallet-upload">
+                <div Style="width:100%; display:flex; flex-direction:row; justify-content:center;">
+                    <div Class="background-x">
+                        <MudImage Src="images/json-logo.svg" Alt="hello" Elevation="25" Class="ww-image-start ar-logo-setup" />
+                    </div>
+                </div>
+                <AddUploadWalletComponent></AddUploadWalletComponent>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

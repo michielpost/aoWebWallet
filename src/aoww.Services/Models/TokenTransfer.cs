@@ -18,5 +18,6 @@ namespace aoww.Services.Models
         public long Quantity { get; set; }
 
         public TokenTransferType TokenTransferType { get; set; }
+        public string? Cursor { get; set; }
     }
 }

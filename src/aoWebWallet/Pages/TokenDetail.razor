@@ -1,9 +1,11 @@
 ﻿@page "/token/{tokenId}"
 @using aoWebWallet.Models
-@inherits MvvmComponentBase<MainViewModel>
+@inherits MvvmComponentBase<TokenDetailViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager;
+@inject TokenDataService dataService;
+@inject GatewayUrlHelper UrlHelper;
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
@@ -11,25 +13,23 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h5">Token Explorer</MudText>
 
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="BindingContext.Token.DataLoader" Title="tokens" />
 
     <MudStack>
-        @if (BindingContext.TokenList.Data != null)
+        @if (BindingContext.Token.Data != null)
         {
-            var token = BindingContext.TokenList.Data.Where(x => x.TokenId == TokenId).FirstOrDefault();
-            if (token != null)
-            {
-                <MudPaper Class="pa-4 mb-14 mt-4">
-                    <MudStack Row="true">
-                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
-                            <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                            <MudText Class="KodeMono" Typo="Typo.subtitle1">@token.TokenId</MudText>
-                        </MudStack>
+            var token = BindingContext.Token.Data;
+
+            <MudPaper Class="pa-4 mb-14 mt-4">
+                <MudStack Row="true">
+                    <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
+                    <MudStack Justify="Justify.Center" Spacing="0">
+                        <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
+                        <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
+                        <MudText Class="KodeMono" Typo="Typo.subtitle1">@token.TokenId</MudText>
                     </MudStack>
-                </MudPaper>
-            }
+                </MudStack>
+            </MudPaper>
         }
 
     </MudStack>
@@ -42,11 +42,18 @@
             <MudText Typo="Typo.h5">Transactions</MudText>
 
             <MudTimeline TimelinePosition="TimelinePosition.Left">
-            @foreach (var transfer in BindingContext.TokenTransferList.Data)
-            {
-               <TransactionComponent transfer="transfer" />
-            }
+                @foreach (var transfer in BindingContext.TokenTransferList.Data)
+                {
+                    <TransactionComponent transfer="transfer" />
+                }
             </MudTimeline>
+
+            @if (BindingContext.TokenTransferList.DataLoader.LoadingState == LoadingState.Finished && BindingContext.CanLoadMoreTransactions)
+            {
+                <MudButton OnClick="() => LoadMoreTransactions()">Load More</MudButton>
+            }
+            <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
+
         }
 
     </MudStack>
@@ -57,5 +64,9 @@
     [Parameter]
     public string? TokenId { get; set; }
 
+    private Task LoadMoreTransactions()
+    {
+        return BindingContext.LoadMoreTransactions();
+    }
 
 }

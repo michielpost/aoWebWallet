@@ -3,13 +3,16 @@
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject TokenDataService dataService
+@inject ClipboardService ClipboardService
+@inject NavigationManager Navigation
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
 
-    @if (BindingContext.WalletList.Data == null || BindingContext.WalletList.Data.Count > 1)
+    @if (BindingContext.WalletList.Data == null || BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).Count() > 1)
     {
         <MudText Typo="Typo.h5">Wallets</MudText>
     }
@@ -18,13 +21,13 @@
         <MudText Typo="Typo.h5">Wallet</MudText>
     }
 
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
+        <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-3 d-max-w-100">
             @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
                 {
                     <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
-                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
+                        <MudIconButton Href="/start" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
                     </MudTooltip>
                 }
     </MudContainer>
@@ -32,14 +35,14 @@
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
         {
-            if(BindingContext.WalletList.Data.Any())
+            if (BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).Any())
             {
                 int logoCount = 1;
-                foreach (var wallet in BindingContext.WalletList.Data)
+                foreach (var wallet in BindingContext.WalletList.Data.Where(x => !x.IsReadOnly))
                 {
                     string logoUrl = $"images/account--{logoCount}.svg";
                     string detailUrl = $"wallet/{wallet.Address}";
-                    <MudPaper Class="pa-4">
+                    <MudPaper Class="pa-4 wallet-list">
                         <MudStack Row="true">
                             <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" />
 
@@ -48,13 +51,9 @@
                                     <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
                                         @wallet.Address
                                     </MudLink>
-                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(wallet.Address); }" />
+                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(wallet.Address); }" />
                                 </div>
                                 <div Class="d-flex flex-row">
-                                    @if (wallet.IsReadOnly)
-                                    {
-                                        <MudText Typo="Typo.body2">read-only &nbsp;</MudText>
-                                    }
                                     <MudText Typo="Typo.body2">@wallet.Name</MudText>
 
                                     @if (wallet.NeedsBackup)
@@ -73,6 +72,7 @@
                             {
                                 <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>
                             }
+                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }"></MudIconButton>
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
                         </MudStack>
                     </MudPaper>
@@ -84,25 +84,7 @@
             }
             else
             {
-                <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
-                    <MudItem sm="12" xs="12">
-                        <MudTabs Class="mud-width-full" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                            <MudTabPanel Text="Create new">
-                                <AddGenerateWalletComponent IsExpanded="true"></AddGenerateWalletComponent>
-                            </MudTabPanel>
-                            <MudTabPanel Text="ArConnect">
-                                <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
-                            </MudTabPanel>
-                            <MudTabPanel Text="Load .json">
-                                <AddUploadWalletComponent IsExpanded="true"></AddUploadWalletComponent>
-                            </MudTabPanel>
-                            <MudTabPanel Text="Read-only" >
-                                <AddWalletComponent IsExpanded="true"></AddWalletComponent>
-                            </MudTabPanel>
-                        </MudTabs>
-                    </MudItem>
-                </MudGrid>
-
+                Navigation.NavigateTo("/start");
             }
         }
         else
@@ -118,10 +100,15 @@
 
 @code
 {
-    private void OpenDialog()
+
+    private async void EditWallet(Wallet wallet)
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddWalletDialog>("Add Wallet", options);
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+
+        StateHasChanged();
     }
 
     private async void DeleteWallet(Wallet wallet)

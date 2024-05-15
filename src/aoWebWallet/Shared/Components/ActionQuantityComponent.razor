@@ -1,0 +1,152 @@
+﻿@using ArweaveAO.Models.Token
+@using aoWebWallet.Models
+@inject TokenDataService tokenDataService
+@inject TokenClient tokenClient
+@* <p>@ActionParam.Key = @ActionParam.Value | @ActionParam.ParamType</p> *@
+
+<MudItem>
+@if(Token == null)
+{
+    <MudText>Loading token data...</MudText>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+    return;
+}
+@if (ActionParam.ParamType == ActionParamType.Balance && string.IsNullOrEmpty(Address))
+{
+    <MudText>Please select a wallet...</MudText>
+    return;
+}
+@if (ActionParam.ParamType == ActionParamType.Balance && BalanceData == null && !ReadOnly)
+{
+    <MudText>Loading balance...</MudText>
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+    return;
+}
+
+@if (ReadOnly)
+{
+        <MudChip>@ActionParam.Key</MudChip> <MudChip Color="Color.Secondary"> @BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token?.TokenData?.Denomination ?? 0) @Token?.TokenData?.Ticker</MudChip>
+    }
+    else
+    {
+        if (ActionParam.ParamType == ActionParamType.Quantity
+    || ActionParam.ParamType == ActionParamType.Balance)
+        {
+            var label = $"{ActionParam.Key} ({Token?.TokenData?.Ticker})";
+
+            <MudStack Row="true">
+                <MudTextField @ref="mudTextField" T="decimal" Label="@label" Variant="Variant.Text" ValueChanged="UpdateDecimalValue" Format="@DenominationFormat" Validation="@(new Func<decimal, IEnumerable<string>>(ValidateBalance))"></MudTextField>
+                @*<MudText>@Token?.TokenData?.Ticker</MudText>*@
+        </MudStack>
+
+        if (ActionParam.ParamType == ActionParamType.Balance)
+        {
+                <MudChip style="border-radius:0;" Variant="Variant.Text" Color="Color.Success">Balance available: @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
+        }
+    }
+}
+</MudItem>
+
+@code {
+
+    [Parameter]
+    public required ActionParam ActionParam { get; set; }
+
+    [Parameter]
+    public string? Address { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public required string TokenId { get; set; }
+
+    public Token? Token { get; set; }
+
+    public BalanceData? BalanceData { get; set; }
+
+    public string DenominationFormat => "F" + (Token?.TokenData?.Denomination ?? 1).ToString();
+
+    MudTextField<decimal>? mudTextField;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!(mudTextField?.ValidationErrors.Any() ?? false) && Token?.TokenData?.Denomination != null)
+        {
+            mudTextField?.SetText(@BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token.TokenData.Denomination.Value));
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        BalanceData = null;
+        var token = await tokenDataService.LoadTokenAsync(TokenId);
+        if (token.TokenData?.Denomination != null)
+            Token = token;
+
+        if (ActionParam.ParamType == ActionParamType.Balance
+            && !string.IsNullOrEmpty(Address)
+            && !ReadOnly)
+        {
+            BalanceData = await tokenClient.GetBalance(token.TokenId, Address);
+        }
+
+        base.OnParametersSetAsync();
+    }
+
+    public IEnumerable<string> ValidateBalance(decimal e)
+    {
+        if (e < 0)
+        {
+            yield return "Must be greater or equal than 0.";
+        }
+
+        if(e > 0)
+        {
+
+            if (ActionParam.ParamType == ActionParamType.Balance)
+            {
+                if (Token?.TokenData?.Denomination.HasValue ?? false)
+                {
+                    long amountLong = BalanceHelper.DecimalToTokenAmount(e, Token.TokenData.Denomination.Value);
+
+                    if (BalanceData?.Balance < amountLong)
+                    {
+                        yield return "Not enough balance available.";
+                    }
+                }
+                else
+                {
+                    yield return "Token data is not available.";
+                }
+            }
+        }
+    }
+
+    public async void UpdateDecimalValue(decimal e)
+    {
+        if (mudTextField != null)
+            await mudTextField.Validate();
+
+        if (Token?.TokenData?.Denomination == null)
+        {
+            ActionParam.Value = null;
+            return;
+        }
+
+
+        if (!(mudTextField?.ValidationErrors.Any() ?? false))
+        {
+            long amountLong = BalanceHelper.DecimalToTokenAmount(e, Token.TokenData.Denomination.Value);
+
+            ActionParam.Value = amountLong.ToString();
+        }
+        else
+            ActionParam.Value = null;
+
+        StateHasChanged();
+    }
+
+}

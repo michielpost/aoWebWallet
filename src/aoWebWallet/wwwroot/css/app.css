@@ -111,9 +111,10 @@ a, .btn-link {
     justify-content: center;
 }
 .loading-progress-text {
-    position: absolute;
+    position: relative;
     text-align: center;
     font-weight: bold;
+    color: white;
 
 }
 
@@ -267,4 +268,153 @@ button.mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.copy-clipboard
     margin-top:5px;
     display: flex;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
+}
+
+.border-radius-25 {
+    border-radius: 25px;
+}
+
+.mud-paper.border-radius-25 {
+    border-radius: 25px;
+}
+
+.mud-paper.first-wallet {
+    background: rgb(48,20,82);
+    background: linear-gradient(180deg, rgba(48,20,82,1) 0%, rgba(69,20,84,1) 100%);
+    height: auto;
+    min-height: 333px;
+
+}
+
+.mud-paper.first-wallet-upload {
+    background: rgb(48,20,82);
+    background: linear-gradient(180deg, rgba(48,20,82,1) 0%, rgba(69,20,84,1) 100%);
+    height: auto;
+
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.mud-navmenu {
+    background: rgb(48,20,82);
+    background: linear-gradient(180deg, rgba(48,20,82,1) 0%, rgba(69,20,84,1) 100%);
+}
+
+.mud-appbar {
+    background-color: #101043 !important;
+}
+
+body {
+    background: rgb(56,18,74);
+    background: linear-gradient(90deg, rgba(56,18,74,1) 0%, rgba(24,17,69,1) 100%, rgba(0,212,255,1) 100%);
+}
+
+
+
+.wallet-list.mud-paper {
+    background-color: rgba(222,222,222,0);
+}
+
+.trigger-transparency.mud-paper {
+    background-color: rgba(222,222,222,0) !important;
+}
+
+.trigger-transparency {
+    background-color: rgba(222,222,222,0) !important;
+}
+
+.trigger-transparency .mud-input-control-input-container .mud-paper{
+    background-color: rgba(222,222,222,0) !important;
+}
+
+
+
+
+.background-xs {
+    background-image: url("../images/origin-icon-base.png");
+    width: 333px;
+    background-size: 333px;
+    animation:spin 111s linear infinite;
+}
+
+.ww-image-start-xs {
+    width: 333px;
+    border-radius: 333px !important;
+    animation:spin-clockwise 111s linear infinite;
+}
+
+.background-x {
+    background-image: url("../images/origin-icon-base.png");
+    width: 100px;
+    background-size: 100px;
+    animation:spin 111s linear infinite;
+}
+
+.ww-image-start {
+    width: 100px;
+    border-radius: 333px !important;
+    animation:spin-clockwise 111s linear infinite;
+
+}
+
+.ar-image-start {
+    width: 33px;
+    border-radius: 333px !important;
+    opacity: 0.55;
+    padding: 1.72rem 0;
+    animation:spin-clockwise 111s linear infinite;
+}
+
+.ar-logo-setup {
+    padding: 2.4321rem;
+    opacity: 0.67;
+
+}
+
+@keyframes spin{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+@keyframes spin-clockwise{
+    from{transform:rotate(360deg)}
+    to{transform:rotate(0deg)}
+}
+
+.text-transform-none {
+    text-transform: none !important;
+}
+
+.twitter-image {
+    margin-top: 10px;
+    margin-left: 10px;
+    object-fit: fill !important;
+}
+
+.discord-image {
+    padding: 5px;
+    object-fit: fill !important;
+}
+
+.mud-chip.mud-chip-size-medium .mud-avatar.custom-avatar-size {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+.mud-paper, .mud-tabs-toolbar {
+    background-color: rgba(16,16,67,0.33) !important;
+}
+
+.wallet-item-background {
+    background-color: rgba(16,16,67,1) !important;
+}
+
+.mud-primary-hover.wallet-item-background {
+    background-color: rgba(16,16,67,1) !important;
+}
+
+.mud-list.mud-list-padding, .mud-dialog {
+    background-color: rgba(16,16,67,1) !important;
 }

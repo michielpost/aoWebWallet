@@ -5,50 +5,70 @@ using MudBlazor;
 
 namespace aoWebWallet.Pages
 {
-    public partial class WalletDetail : MvvmComponentBase<MainViewModel>
+    public partial class WalletDetail : MvvmComponentBase<WalletDetailViewModel>
     {
         protected override void OnInitialized()
         {
-            WatchDataLoaderVM(BindingContext.TokenList);
-            WatchDataLoaderVM(BindingContext.WalletList);
-            WatchDataLoaderVM(BindingContext.BalanceDataList);
+            //WatchObject(dataService.TokenList);
+            //WatchObject(BindingContext.BalanceDataList);
+            WatchObject(dataService.TokenDataLoader);
+
+            WatchCollection(dataService.TokenList);
+            WatchCollection(BindingContext.BalanceDataList);
+            WatchDataLoaderVM(MainViewModel.WalletList);
             WatchDataLoaderVM(BindingContext.TokenTransferList);
             WatchDataLoaderVM(BindingContext.SelectedProcessData);
+
+            dataService.TokenList.CollectionChanged += TokenList_CollectionChanged;
+            BindingContext.PropertyChanged += BindingContext_PropertyChanged;
 
             base.OnInitialized();
         }
 
-        protected override void OnParametersSet()
+        private void BindingContext_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            BindingContext.SelectedWallet = null;
-            //BindingContext.SelectedAddress = null;
+            if (e.PropertyName == nameof(BindingContext.VisibleTokenList))
+            {
+                BindingContext.TokenAddedRefresh();
+            }
+        }
 
-            if(Address != null && Address.Length != 43)
+        private async void TokenList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            await BindingContext.TokenAddedRefresh();
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (Address != null && Address.Length != 43)
             {
                 NavigationManager.NavigateTo("");
             }
 
-            BindingContext.SelectedAddress = Address;
+            if (Address != null)
+                await BindingContext.Initialize(Address);
 
-            base.OnParametersSet();
+            await base.OnParametersSetAsync();
         }
 
         protected override async Task LoadDataAsync()
         {
-            BindingContext.LoadTokenList();
-
-            //if (!string.IsNullOrEmpty(Address))
-            //{
-            //    BindingContext.LoadBalanceDataList(Address);
-            //}
+            dataService.LoadTokenList();
 
             await base.LoadDataAsync();
         }
 
         private async void DownloadWallet(Wallet wallet)
         {
-            await BindingContext.DownloadWallet(wallet);
+            await MainViewModel.DownloadWallet(wallet);
             StateHasChanged();
+        }
+
+        public override void Dispose()
+        {
+            dataService.TokenList.CollectionChanged -= TokenList_CollectionChanged;
+
+            base.Dispose();
         }
 
     }

@@ -5,27 +5,33 @@
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<VersionPrefix>0.2.0</VersionPrefix>
+		<VersionPrefix>0.3.0</VersionPrefix>
 		<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
 		<BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
 		<InvariantGlobalization>true</InvariantGlobalization>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ArweaveAO" Version="0.0.2" />
-		<PackageReference Include="ArweaveBlazor" Version="0.0.5" />
+		<PackageReference Include="ArweaveAO" Version="0.0.3" />
+		<PackageReference Include="ArweaveBlazor" Version="0.0.8" />
 		<PackageReference Include="ClipLazor" Version="2.1.1" />
 		<PackageReference Include="MudBlazor" Version="6.19.1" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
 		<PackageReference Include="BlazorWasmPreRendering.Build" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.4" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.5" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\aoww.Services\aoww.Services.csproj" />
 	  <ProjectReference Include="..\webvNext.DataLoader\webvNext.DataLoader.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="Shared\AddWalletComponent.razor">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </Content>
 	</ItemGroup>
 
 </Project>

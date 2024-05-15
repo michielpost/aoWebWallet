@@ -1,0 +1,201 @@
+﻿@page "/action"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject TokenDataService dataService
+@inject TransactionService transactionService;
+@inject WalletDetailViewModel WalletDetailViewModel
+
+<PageTitle>@Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h5">New transaction</MudText>
+
+    <MudStack>
+        @if (BindingContext.WalletList.Data != null)
+        {
+            var sendWallets = BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).ToList();
+            if (!sendWallets.Any())
+            {
+                <MudButton aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog">Add Wallet</MudButton>
+            }
+            else
+            {
+                <MudSelect @bind-Value="@selectedWallet" Label="Select a wallet" Class="mb-4 wallet-item-background" Variant="Variant.Outlined"  ReadOnly="@readOnly">
+                    @foreach (var wallet in sendWallets ?? new())
+                    {
+                        <MudSelectItem Value="@wallet.Address" Class="wallet-item-background">
+                            <MudStack Row="true">
+                                @* <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" /> *@
+                                <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
+                                    <div style="display:flex; white-space: nowrap;">
+                                        <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                                            @wallet.Address
+                                        </MudText>
+                                    </div>
+                                    <div style="display:flex; flex-direction:row;padding-top:5px;">
+                                        <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                                    </div>
+                                </MudStack>
+                            </MudStack>
+
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+        }
+
+    </MudStack>
+
+    @if(readOnly)
+    {
+        <MudText>Please review your transaction:</MudText>
+    }
+
+    <ActionEditor AoAction="@AoAction" ReadOnly="@readOnly" Address="@selectedWallet" />
+
+    @if (!readOnly && !string.IsNullOrEmpty(selectedWallet))
+    {
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" FullWidth="true" OnClick="Preview" Class="mt-8">Preview</MudButton>
+        <MudText Color="Color.Error">@validation</MudText>
+    }
+    else if (!started && !string.IsNullOrEmpty(selectedWallet) && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
+    {
+        <SendTransactionProgress DataLoader="transactionService.DryRunResult.DataLoader" Title="Getting dry run result..." />
+        if (transactionService.DryRunResult.Data != null)
+        {
+            <MudCard Outlined="true" Class="my-2">
+                <MudCardContent>
+                    <MudText>Preview Result</MudText>
+                    @foreach (var msg in transactionService.DryRunResult.Data.Messages)
+                    {
+                        var error = msg.Tags.Where(x => x.Name == "Error").Select(x => x.Value).FirstOrDefault();
+
+                        <MudText Typo="Typo.body2">Message for: @msg.Target</MudText>
+                        <MudText Typo="Typo.body2">@msg.Data</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Error">@error</MudText>
+                        <br />
+                    }
+                </MudCardContent>
+                @* <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+                </MudCardActions> *@
+            </MudCard>
+        }
+
+        <MudButton Class="px-12 mt-8 mr-2" Color="Color.Default" Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Class="px-12 mt-8" Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+    }
+
+    @if (transactionService.LastTransaction.DataLoader != null)
+    {
+        <SendTransactionProgress DataLoader="transactionService.LastTransaction.DataLoader" Title="Sending transaction..." />
+        if (!string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
+        {
+            <MudStack>
+                <MudText Typo="Typo.h5">Transfer success!</MudText>
+                <MudText>Message Id</MudText>
+                <MudText Class="KodeMono" Typo="Typo.caption">
+                    @transactionService.LastTransaction.Data?.Id
+                </MudText>
+            </MudStack>
+
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ReturnToWallet">Return to wallet</MudButton>
+            @* <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ViewTransaction">View Transaction</MudButton> *@
+        }
+    }
+
+
+</MudContainer>
+
+@code
+{
+    private string? validation;
+    private string? selectedWallet;
+    private Wallet? selectedWalletObj;
+    private bool readOnly = false;
+    private bool started = false;
+
+
+    private async void Preview()
+    {
+        //transactionService.LastTransaction.Data = new Transaction() { Id = "test" };
+
+        validation = AoAction.IsValid();
+        readOnly = string.IsNullOrEmpty(validation);
+
+        if (BindingContext.WalletList.Data == null)
+            return;
+
+        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == selectedWallet).FirstOrDefault();
+        if (wallet == null)
+        {
+            if (selectedWalletObj?.Address == selectedWallet)
+            {
+                wallet = selectedWalletObj;
+            }
+        }
+
+        if (wallet == null)
+            return;
+
+        //Do we need the owner wallet?
+        //Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+
+        transactionService.DryRunAction(wallet, AoAction);
+
+    }
+    private void Cancel()
+    {
+        readOnly = false;
+    }
+
+    private void ReturnToWallet()
+    {
+        NavigationManager.NavigateTo($"/wallet/{selectedWallet}");
+    }
+
+    private void ViewTransaction()
+    {
+        if (!string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
+            NavigationManager.NavigateTo($"/transaction/{transactionService.LastTransaction.Data?.Id}");
+        else
+            ReturnToWallet();
+
+    }
+
+    private async Task Submit()
+    {
+        if (BindingContext.WalletList.Data == null)
+            return;
+
+        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == selectedWallet).FirstOrDefault();
+        if(wallet == null)
+        {
+            if(selectedWalletObj?.Address == selectedWallet)
+            {
+                wallet = selectedWalletObj;
+            }
+        }
+
+        if (wallet == null)
+            return;
+
+        //Do we need the owner wallet?
+        Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+
+        started = true;
+        await transactionService.SendAction(wallet, ownerWallet, AoAction);
+    }
+
+    private void OpenDialog()
+    {
+        NavigationManager.NavigateTo("/start");
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+        // DialogService.Show<AddWalletDialog>("Add Wallet", options);
+    }
+
+}

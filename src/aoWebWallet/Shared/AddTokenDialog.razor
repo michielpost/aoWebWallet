@@ -1,12 +1,11 @@
-﻿@inherits MvvmComponentBase<MainViewModel>
-@inject TokenClient TokenClient
+﻿@inject TokenDataService dataService
 @inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
         Add a token to view your balance. Provide a process-id that implements the token standard.
         <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
-            <MudTextField @bind-Value="TokenId" Label="Token Id" Variant="Variant.Text"></MudTextField>
+            <MudTextField @bind-Value="TokenId" Label="Token Id" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" MaxLength="43" Variant="Variant.Text"></MudTextField>
         </MudFocusTrap>
         <MudText Color="Color.Secondary">@Progress</MudText>
     </DialogContent>
@@ -37,11 +36,10 @@
         Progress = "Checking metadata...";
         try
         {
-            var data = await TokenClient.GetTokenMetaData(TokenId);
+            var token = await dataService.LoadTokenAsync(TokenId);
+            var data = token.TokenData;
             if (data != null)
             {
-                await BindingContext.AddToken(TokenId, data, isUserAdded: true);
-
                 Snackbar.Add($"Token added ({data.Name})", Severity.Info);
 
                 MudDialog.Close(DialogResult.Ok(true));

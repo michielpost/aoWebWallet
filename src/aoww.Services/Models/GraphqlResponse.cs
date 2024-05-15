@@ -26,6 +26,9 @@ namespace aoww.Services.Models
 
     public class Edge
     {
+        [JsonPropertyName("cursor")]
+        public string? Cursor { get; set; }
+
         [JsonPropertyName("node")]
         public Node? Node { get; set; }
     }

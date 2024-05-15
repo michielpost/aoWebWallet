@@ -1,13 +1,11 @@
 ﻿@using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
-@inject TokenClient TokenClient
 @inject ISnackbar Snackbar
 @inject ArweaveService ArweaveService
+@inject NavigationManager NavigationManager
 
-<MudPaper Class="pa-8 mb-4">
+<MudPaper Class="pa-8 mb-4 trigger-transparency">
     <MudStack Spacing="2">
-        <MudText Typo="Typo.button">Connect Wallet</MudText>
-        <MudDivider />
         <MudStack>
 
             @if (!BindingContext.HasArConnectExtension.HasValue)
@@ -128,7 +126,14 @@
 
             Snackbar.Add($"Wallet added ({address})", Severity.Info);
 
-            MudDialog?.Close(true);
+            if (MudDialog != null)
+            {
+                MudDialog.Close();
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"/wallet/{wallet.Address}");
+            }
         }
     }
 

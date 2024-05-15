@@ -29,7 +29,6 @@ namespace aoWebWallet.ViewModels
 
         partial void OnOwnerCanSendChanged(bool value)
         {
-            Console.WriteLine("Owner can send: " + value);
             SetCanSend();
         }
 

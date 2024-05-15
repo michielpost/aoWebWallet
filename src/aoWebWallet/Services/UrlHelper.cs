@@ -1,13 +1,24 @@
-﻿namespace aoWebWallet.Services
+﻿using aoWebWallet.Models;
+using Microsoft.Extensions.Options;
+
+namespace aoWebWallet.Services
 {
-    public static class UrlHelper
+    public class GatewayUrlHelper
     {
-        public static string? GetArweaveUrl(string? id)
+        private readonly GatewayConfig config;
+
+        public GatewayUrlHelper(IOptions<GatewayConfig> config)
+        {
+            this.config = config.Value;
+        }
+
+        public string? GetArweaveUrl(string? id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return null;
 
-            return $"https://arweave.net/{id}";
+            Uri combinedUri = new Uri(new Uri(config.GatewayUrl), id);
+            return combinedUri.ToString();
         }
     }
 }
