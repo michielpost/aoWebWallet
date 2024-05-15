@@ -176,7 +176,7 @@ namespace aoWebWallet.Services
             if(existing != null)
                list.Remove(existing);
 
-            list.Add(wallet);
+            list.Insert(0,wallet);
 
             await SaveWalletList(list);
         }
