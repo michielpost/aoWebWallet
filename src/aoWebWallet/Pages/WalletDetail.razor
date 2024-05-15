@@ -202,7 +202,7 @@
     private void OpenAddTokenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddTokenDialog>("Add Token", options);
+        DialogService.Show<AddTokenToWalletDialog>("Add Token", options);
     }
 
     private async void EditWallet(Wallet wallet)

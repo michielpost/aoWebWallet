@@ -33,9 +33,9 @@ namespace aoWebWallet.Pages
             }
         }
 
-        private void TokenList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private async void TokenList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            BindingContext.TokenAddedRefresh();
+            await BindingContext.TokenAddedRefresh();
         }
 
         protected override async Task OnParametersSetAsync()
