@@ -27,10 +27,10 @@
         <MudItem xs="12" sm="6" md="6">
             <MudPaper Class="pa-4">
 
-                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GatewayUrl" Label="Gateway" InputType="InputType.Url" />
-                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GraphqlUrl" Label="GraphQL" InputType="InputType.Url" />
-                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.ComputeUnitUrl" Label="Compute Unit" InputType="InputType.Url" />
-                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.MessengerUnitUrl" Label="Messenger Unit" InputType="InputType.Url" />
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GatewayUrlConfig.GatewayUrl" Label="Gateway" InputType="InputType.Url" />
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GatewayUrlConfig.GraphqlUrl" Label="GraphQL" InputType="InputType.Url" />
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GatewayUrlConfig.ComputeUnitUrl" Label="Compute Unit" InputType="InputType.Url" />
+                <MudTextField T="string" @bind-Value="BindingContext.UserSettings!.GatewayUrlConfig.MessengerUnitUrl" Label="Messenger Unit" InputType="InputType.Url" />
 
                 <MudButton Class="pa-4"  OnClick="Submit">Save</MudButton>
 

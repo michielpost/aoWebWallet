@@ -183,7 +183,7 @@ namespace aoWebWallet.ViewModels
             UserSettings = await storageService.GetUserSettings();
             if (UserSettings != null)
             {
-                UpdateUserSettings(UserSettings);
+                UpdateUserSettings(UserSettings.GatewayUrlConfig);
             }
         }
 
@@ -193,11 +193,11 @@ namespace aoWebWallet.ViewModels
             {
                 await storageService.SaveUserSettings(UserSettings);
 
-                UpdateUserSettings(UserSettings);
+                UpdateUserSettings(UserSettings.GatewayUrlConfig);
             }
         }
 
-        private void UpdateUserSettings(UserSettings userSettings)
+        private void UpdateUserSettings(GatewayUrlConfig userSettings)
         {
             graphqlConfig.ApiUrl = userSettings.GraphqlUrl;
             gatewayConfig.GatewayUrl = userSettings.GatewayUrl;
