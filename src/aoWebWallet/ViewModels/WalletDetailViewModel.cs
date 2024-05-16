@@ -280,7 +280,7 @@ namespace aoWebWallet.ViewModels
                         continue;
 
                 }
-                var balanceData = new BalanceDataViewModel { Token = token };
+                var balanceData = new BalanceDataViewModel { Token = token, Address = address };
                 BalanceDataList.Add(balanceData);
 
                 await Task.Delay(50);

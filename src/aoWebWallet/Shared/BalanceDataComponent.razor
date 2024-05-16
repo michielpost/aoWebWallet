@@ -50,9 +50,9 @@
     [Parameter]
     public bool CanSend { get; set; }
 
-    private void Receive(BalanceDataViewModel? balanceDataVM)
+    private void Receive(BalanceDataViewModel balanceDataVM)
     {
-        var parameters = new DialogParameters<ReceiveTokenDialog> { { x => x.SelectedBalanceDataVM, balanceDataVM } };
+        var parameters = new DialogParameters<ReceiveTokenDialog> { { x => x.SelectedBalanceDataVM, balanceDataVM }, { x => x.Address, balanceDataVM.Address } };
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<ReceiveTokenDialog>("Receive Token", parameters, options);
     }

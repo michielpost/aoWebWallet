@@ -7,7 +7,9 @@ namespace aoWebWallet.ViewModels
     public class BalanceDataViewModel
     {
         public DataLoaderViewModel<BalanceData> BalanceDataLoader { get; set; } = new DataLoaderViewModel<BalanceData>();
-        public Token? Token { get; set; }
+        public required Token Token { get; set; }
+
+        public required string Address { get; set; }
 
         //public void Load()
         //{
