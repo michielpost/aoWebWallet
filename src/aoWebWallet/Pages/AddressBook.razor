@@ -27,14 +27,12 @@
         {
             if(BindingContext.WalletList.Data.Where(x => x.IsReadOnly).Any())
             {
-                int logoCount = 1;
                 foreach (var wallet in BindingContext.WalletList.Data.Where(x => x.IsReadOnly))
                 {
-                    string logoUrl = $"images/account--{logoCount}.svg";
                     string detailUrl = $"wallet/{wallet.Address}";
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
-                            <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" />
+                            <WalletAvatar Address="@wallet.Address" />
 
                             <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
                                 <div Class="d-custom-2">
@@ -57,10 +55,6 @@
                             <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
                         </MudStack>
                     </MudPaper>
-
-                    logoCount++;
-                    if (logoCount > 5)
-                        logoCount = 1;
                 }
             }
             else

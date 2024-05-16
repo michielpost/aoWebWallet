@@ -50,9 +50,6 @@ namespace aoWebWallet.ViewModels
         [ObservableProperty]
         public bool? hasArConnectExtension;
 
-        public int? SelectedWalletIndex { get; set; }
-
-
         public WalletDetailsViewModel? SelectedWallet { get; set; }
 
 
@@ -194,9 +191,6 @@ namespace aoWebWallet.ViewModels
                 if (current != null)
                 {
                     SelectedWallet = new WalletDetailsViewModel(current);
-                    var indexOf = all.IndexOf(current);
-                    SelectedWalletIndex = (indexOf % 5) + 1;
-
                 }
                 else
                 {
@@ -209,7 +203,6 @@ namespace aoWebWallet.ViewModels
                         Source = WalletTypes.Explorer
                     };
                     SelectedWallet = new WalletDetailsViewModel(tempWallet);
-                    SelectedWalletIndex = 5;
                 }
 
                 this.LoadBalanceDataList(address);
@@ -224,7 +217,6 @@ namespace aoWebWallet.ViewModels
             else
             {
                 SelectedWallet = null;
-                SelectedWalletIndex = null;
             }
         }
 

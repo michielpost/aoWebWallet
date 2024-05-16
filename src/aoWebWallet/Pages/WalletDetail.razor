@@ -15,7 +15,7 @@
 <MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
     <MudPaper Class="pa-4 mb-4">
         <MudStack Row="true">
-            <MudAvatar Image="@($"images/account--{BindingContext.SelectedWalletIndex}.svg")" Size="Size.Large" Class="rounded-full" />
+            <WalletAvatar Address="@BindingContext.SelectedWallet?.Wallet.Address" />
             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
                 <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
                     @Address
