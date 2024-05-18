@@ -33,7 +33,7 @@ jobs:
       - name: Publish Website
         run: dotnet publish src/aoWebWallet -o publish/aoWebWallet -c Release --version-suffix ${{ env.APP_VERSION }}
       - name: upload the directory
-        uses: outlierventures/arweave-bundler-action@v0.3.2
+        uses: outlierventures/arweave-bundler@v0.3.2
         with:
           command: upload
           directory: publish/aoWebWallet/wwwroot/
