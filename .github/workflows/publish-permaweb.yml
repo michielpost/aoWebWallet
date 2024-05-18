@@ -38,4 +38,5 @@ jobs:
           command: upload
           directory: publish/aoWebWallet/wwwroot/
           private-key: ${{secrets.ARWEAVE_PRIVATE_KEY}}
+          ant-address: 'aowebwallet'
           network: arweave.net
