@@ -11,7 +11,7 @@
                     string detailUrl = $"wallet/{wallet.Address}";
 
                     <MudNavLink Class="menu-wallets" Href="@detailUrl" style="font-size:12px;" Match="NavLinkMatch.All">
-                    <div style="height:50px;width:50px">
+                    <div style="height:30px;width:30px">
                         <minidenticon-svg username="@wallet.Address"></minidenticon-svg>
                     </div>
                         <div>@wallet.Address.ToShortAddress()</div>

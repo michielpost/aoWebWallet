@@ -55,9 +55,7 @@
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <!-- If you add any scoped CSS files, uncomment the following to load them
     <link href="aoWebWallet.styles.css" rel="stylesheet" /> -->
-    <script type="module">
-        import { minidenticonSvg } from 'https://cdn.jsdelivr.net/npm/minidenticons@4.2.1/minidenticons.min.js'
-    </script>
+
 </head>
 
 <body>
@@ -65,7 +63,7 @@
         <div class="all-together-loading" Style="width:100%; display:flex; flex-direction:column; justify-content:center; align-items: center; height: 100vh">
             <div Style="width:100%; display:flex; flex-direction:column; justify-content:center; align-items: center; height: 100vh">
                 <div class="background-xs">
-                    <img src="images/ths.svg" Alt="AoWW"  class="ww-image-start-xs"/>
+                    <img src="images/ths.svg" Alt="AoWW" class="ww-image-start-xs" />
                 </div>
                 <h4 style="color:white;opacity: 0.55; margin-top:20px;">loading...</h4>
                 <!--<div class="circle-text">
@@ -108,6 +106,9 @@
                 }
             }
         });
+    </script>
+    <script type="module">
+        import { minidenticonSvg } from 'https://cdn.jsdelivr.net/npm/minidenticons@4.2.1/minidenticons.min.js'
     </script>
 </body>
 
