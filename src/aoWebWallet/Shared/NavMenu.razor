@@ -6,20 +6,16 @@
     {
         <MudNavLink Href="" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavGroup Class="mt-2 mb-2" Title="Wallets" Icon="@Icons.Material.Filled.Wallet" Expanded="true">
-            @{
-                int logoCount = 1;
-            }
             @foreach (var wallet in BindingContext.WalletList.Data?.Where(x => !x.IsReadOnly).ToList() ?? new())
             {
-                string logoUrl = $"images/account--{logoCount}.svg";
-                string detailUrl = $"wallet/{wallet.Address}";
+                    string detailUrl = $"wallet/{wallet.Address}";
 
                     <MudNavLink Class="menu-wallets" Href="@detailUrl" style="font-size:12px;" Match="NavLinkMatch.All">
-                        <MudAvatar Image="@logoUrl" Size="Size.Small" Class="rounded-full mr-2" />
+                    <div style="height:30px;width:30px">
+                        <minidenticon-svg username="@wallet.Address"></minidenticon-svg>
+                    </div>
                         <div>@wallet.Address.ToShortAddress()</div>
                     </MudNavLink>
-
-                logoCount++;
             }
         </MudNavGroup>
     }
