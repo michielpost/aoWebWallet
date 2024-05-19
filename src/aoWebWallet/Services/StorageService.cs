@@ -59,6 +59,16 @@ namespace aoWebWallet.Services
                     Ticker = "TRUNK"
                 });  //TRUNK
 
+            AddSystemToken(result, "aYrCboXVSl1AXL9gPFe3tfRxRf0ZmkOXH65mKT0HHZw",
+              new TokenData
+              {
+                  TokenId = "aYrCboXVSl1AXL9gPFe3tfRxRf0ZmkOXH65mKT0HHZw",
+                  Denomination = 0,
+                  Logo = "Sie_26dvgyok0PZD_-iQAFOhOd5YxDTkczOLoqTTL_A",
+                  Name = "AR.IO EXP",
+                  Ticker = "EXP"
+              });
+
             AddSystemToken(result, "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
                 new TokenData
                 {

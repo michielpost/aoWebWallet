@@ -56,6 +56,8 @@ namespace aoWebWallet.Services
 
         public async Task<Token> LoadTokenAsync(string tokenId)
         {
+            await LoadTokenList(force: false);
+
             var token = TokenList.Where(x => x.TokenId.Equals(tokenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if(token == null)
             {
