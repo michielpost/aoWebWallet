@@ -1,0 +1,44 @@
+﻿@page "/apps"
+@inject GatewayUrlHelper UrlHelper;
+@using aoWebWallet.Models
+@using aoWebWallet.Shared
+
+<PageTitle>Friends of aoWebWallet - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudText Typo="Typo.h5">Apps</MudText>
+    <br />
+    <MudText>A list of friends of aoWebWallet. Use your tokens and explore the ao ecosystem.</MudText>
+    <br />
+    <br />
+
+    <MudGrid>
+        <AppListItem Name="ArSwap"
+                     Link="https://arswap.org"
+                     Logo="https://pbs.twimg.com/profile_images/1778816003259985920/HpnZQDK6_400x400.jpg"
+                     Description="Swap tokens" />
+
+        <AppListItem Name="Bark"
+                     Link="https://bark.arweave.dev"
+                     Logo="https://bark.arweave.dev/icon.png"
+                     Description="Swap tokens" />
+
+        <AppListItem Name="AOX"
+                     Link="https://www.aox.xyz"
+                     Logo="https://pbs.twimg.com/profile_images/1777271483477475328/WiYfodZs_400x400.jpg"
+                     Description="AR to AO Bridge" />
+
+        <AppListItem Name="AstroUSD"
+                     Link="https://www.astrousd.com"
+                     Logo="https://pbs.twimg.com/profile_images/1762157501934370816/Be2PlMsV_400x400.jpg"
+                     Description="USD stable coin" />
+
+        <AppListItem Name="TrunkToken"
+                     Link="https://trunkao.xyz"
+                     Logo="https://pbs.twimg.com/profile_images/1771940735195152384/hNUuY1Fk_400x400.jpg"
+                     Description="Meme Token" />
+
+    </MudGrid>
+</MudContainer>
+
+

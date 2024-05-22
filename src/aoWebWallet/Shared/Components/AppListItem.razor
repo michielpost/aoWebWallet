@@ -1,0 +1,32 @@
+﻿<MudItem xs="12" md="6" lg="2">
+    <MudPaper Elevation="2" Class="pa-8">
+        <MudStack>
+            <MudStack AlignItems="AlignItems.Center">
+                <MudAvatar Size="Size.Large">
+                    <MudImage Src="@Logo" Alt="@Name" Elevation="25" />
+                </MudAvatar>
+            </MudStack>
+            <MudText>@Name - @Description</MudText>
+            <MudLink Href="@Link" Target="_blank">@Link</MudLink>
+        </MudStack>
+    </MudPaper>
+</MudItem>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public required string Name { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Link { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Logo { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public required string Description { get; set; }
+}
