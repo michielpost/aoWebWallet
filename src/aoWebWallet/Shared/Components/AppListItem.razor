@@ -1,13 +1,15 @@
-﻿<MudItem xs="12" md="6" lg="2">
-    <MudPaper Elevation="2" Class="pa-8">
+﻿<MudItem xs="12" sm="3" Class="pb-0">
+    <MudPaper Elevation="2" Class="pa-6">
         <MudStack>
-            <MudStack AlignItems="AlignItems.Center">
-                <MudAvatar Size="Size.Large">
-                    <MudImage Src="@Logo" Alt="@Name" Elevation="25" />
-                </MudAvatar>
-            </MudStack>
-            <MudText>@Name - @Description</MudText>
-            <MudLink Href="@Link" Target="_blank">@Link</MudLink>
+            <MudLink Href="@Link" Target="_blank">
+                <MudStack AlignItems="AlignItems.Center">
+                    <MudAvatar Size="Size.Large">
+                        <MudImage Src="@Logo" Alt="@Name" Elevation="25" />
+                    </MudAvatar>
+                </MudStack>
+                <MudText Class="my-2">@Name - @Description</MudText>
+                <MudIcon Icon="@Icons.Material.Filled.ArrowOutward" Class="float-right" Color="Color.Primary" />
+            </MudLink>
         </MudStack>
     </MudPaper>
 </MudItem>

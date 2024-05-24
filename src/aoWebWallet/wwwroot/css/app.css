@@ -418,3 +418,7 @@ body {
 .mud-list.mud-list-padding, .mud-dialog {
     background-color: rgba(16,16,67,1) !important;
 }
+
+.float-right {
+    float:right;
+}
