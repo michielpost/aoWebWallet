@@ -422,3 +422,8 @@ body {
 .float-right {
     float:right;
 }
+
+
+.hover-here:hover > svg.float-right {
+    background: white;
+}
