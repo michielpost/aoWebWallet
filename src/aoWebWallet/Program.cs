@@ -15,8 +15,7 @@ using aoww.Services;
 using aoww.Services.Models;
 using aoWebWallet.Models;
 using ArweaveAO.Models;
-using Blazor.QrCodeGen;
-using Microsoft.JSInterop;
+using MudExtensions.Services;
 
 namespace aoWebWallet
 {
@@ -91,8 +90,10 @@ namespace aoWebWallet
             //Set Version
             Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
-            services.AddTransient(sp => new ModuleCreator(sp.GetRequiredService<IJSRuntime>()));
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
+
+            services.AddMudExtensions();
+
 
             //Services
             services.AddScoped<TokenDataService>();

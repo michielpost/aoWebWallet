@@ -1,6 +1,7 @@
 ﻿@page "/receive/{address}"
-@using Blazor.QrCodeGen
+@using ZXing;
 @using aoWebWallet.Models
+@using MudExtensions
 @inherits MvvmComponentBase<ReceiveViewModel>
 @inject GatewayUrlHelper UrlHelper;
 @inject IDialogService DialogService
@@ -43,7 +44,7 @@
         </MudStack>
 
         <MudText Typo="Typo.h4">Scan QR</MudText>
-        <QrCode CanvasId="@Address" Text="@BindingContext.QrCode" Options="_options" />
+         <MudBarcode Value="@BindingContext.QrCode" Width="200" Height="200" ForceHeight="1" BarcodeFormat="BarcodeFormat.QR_CODE" Clickable="false" />
     </MudStack>
     <br />
     @if (BindingContext.Token != null)
@@ -68,8 +69,6 @@
     public string? TokenId { get; set; }
 
     public string detailUrl => $"/wallet/{Address}";
-
-    private QrCodeOptions _options = new QrCodeOptions() { ColorLight = System.Drawing.Color.White };
 
 
     protected override async Task OnParametersSetAsync()
