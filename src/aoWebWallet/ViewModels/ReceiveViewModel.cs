@@ -15,6 +15,8 @@ namespace aoWebWallet.ViewModels
         {
             get
             {
+                return $"{Address}";
+
                 if (string.IsNullOrEmpty(TokenId))
                     return $"ao:{Address}";
                 else
