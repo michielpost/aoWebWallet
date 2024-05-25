@@ -1,0 +1,88 @@
+﻿@page "/receive/{address}"
+@using Blazor.QrCodeGen
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<ReceiveViewModel>
+@inject GatewayUrlHelper UrlHelper;
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject TokenDataService dataService
+@inject TransactionService transactionService;
+@inject WalletDetailViewModel WalletDetailViewModel
+@inject ClipboardService ClipboardService
+
+
+<PageTitle>Receive - @Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h5">Receive</MudText>
+
+
+    @if (BindingContext.Token?.TokenData != null)
+    {
+        <MudStack Row=true>
+            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.Token.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.Token.TokenId" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.body1">@BindingContext.Token.TokenData?.Name</MudText>
+                <MudText Typo="Typo.body2">@BindingContext.Token.TokenData?.Ticker</MudText>
+            </MudStack>
+        </MudStack>
+        <br />
+    }
+    <MudStack>
+        <MudText Typo="Typo.h4">How to receive tokens?</MudText>
+        <MudText>Send tokens to this address:</MudText>
+        <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
+            <div Class="d-custom-2">
+                <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
+                    @Address
+                </MudLink>
+                <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(Address); }" />
+            </div>
+        </MudStack>
+
+        <MudText Typo="Typo.h4">Scan QR</MudText>
+        <QrCode CanvasId="@Address" Text="@BindingContext.QrCode" Options="_options" />
+    </MudStack>
+    <br />
+    @if (BindingContext.Token != null)
+    {
+        <MudStack>
+            <MudText Typo="Typo.h5">From aos:</MudText>
+            <MudText>Command:</MudText>
+            <MudText Class="KodeMono" Typo="Typo.subtitle1">
+                Send({ Target = "@BindingContext.Token.TokenId", Action = "Transfer", Recipient = "@Address", Quantity = "TOKEN_AMOUNT"})
+            </MudText>
+        </MudStack>
+    }
+
+</MudContainer>
+
+@code {
+
+    [Parameter]
+    public string? Address { get; set; }
+
+    [SupplyParameterFromQuery(Name = "tokenId")]
+    public string? TokenId { get; set; }
+
+    public string detailUrl => $"/wallet/{Address}";
+
+    private QrCodeOptions _options = new QrCodeOptions() { ColorLight = System.Drawing.Color.White };
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Address != null && Address.Length != 43)
+        {
+            NavigationManager.NavigateTo("");
+        }
+
+        if (Address != null)
+            await BindingContext.Initialize(Address, TokenId);
+
+        await base.OnParametersSetAsync();
+    }
+
+}

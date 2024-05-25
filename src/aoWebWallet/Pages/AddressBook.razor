@@ -29,7 +29,7 @@
             {
                 foreach (var wallet in BindingContext.WalletList.Data.Where(x => x.IsReadOnly))
                 {
-                    string detailUrl = $"wallet/{wallet.Address}";
+                    string detailUrl = $"/wallet/{wallet.Address}";
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
                             <WalletAvatar Address="@wallet.Address" />

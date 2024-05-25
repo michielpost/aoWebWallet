@@ -52,9 +52,7 @@
 
     private void Receive(BalanceDataViewModel balanceDataVM)
     {
-        var parameters = new DialogParameters<ReceiveTokenDialog> { { x => x.SelectedBalanceDataVM, balanceDataVM }, { x => x.Address, balanceDataVM.Address } };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ReceiveTokenDialog>("Receive Token", parameters, options);
+        NavigationManager.NavigateTo($"/receive/{balanceDataVM.Address}?tokenId={balanceDataVM.Token.TokenId}");
     }
 
     private void Send(BalanceDataViewModel? balanceDataVM)

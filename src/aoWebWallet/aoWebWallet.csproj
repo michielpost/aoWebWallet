@@ -14,6 +14,7 @@
 	<ItemGroup>
 		<PackageReference Include="ArweaveAO" Version="0.0.3" />
 		<PackageReference Include="ArweaveBlazor" Version="0.0.8" />
+		<PackageReference Include="Blazor.QrCodeGen" Version="1.1.3" />
 		<PackageReference Include="ClipLazor" Version="2.1.1" />
 		<PackageReference Include="MudBlazor" Version="6.19.1" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
@@ -21,6 +22,7 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.5" PrivateAssets="all" />
+		<PackageReference Include="ReactorBlazorQRCodeScanner" Version="1.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -32,6 +34,14 @@
 	  <Content Update="Shared\AddWalletComponent.razor">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Pages\ReceivePage.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Pages\ReceivePage.razor" />
 	</ItemGroup>
 
 </Project>

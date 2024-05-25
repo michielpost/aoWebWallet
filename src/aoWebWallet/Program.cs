@@ -15,6 +15,8 @@ using aoww.Services;
 using aoww.Services.Models;
 using aoWebWallet.Models;
 using ArweaveAO.Models;
+using Blazor.QrCodeGen;
+using Microsoft.JSInterop;
 
 namespace aoWebWallet
 {
@@ -89,6 +91,7 @@ namespace aoWebWallet
             //Set Version
             Version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
 
+            services.AddTransient(sp => new ModuleCreator(sp.GetRequiredService<IJSRuntime>()));
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 
             //Services
@@ -112,6 +115,7 @@ namespace aoWebWallet
             services.AddScoped<TokenDetailViewModel>();
             services.AddScoped<TransactionDetailViewModel>();
             services.AddScoped<WalletDetailViewModel>();
+            services.AddScoped<ReceiveViewModel>();
 
             services.AddBlazoredLocalStorage();
 
