@@ -13,7 +13,7 @@
 
             <MudText DefaultFocus="DefaultFocus" Color="Color.Secondary">@Progress</MudText>
             <div Class="d-w-100 d-flex justify-center mt-2">
-                <MudButton Class="text-transform-none"  Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">
+                <MudButton Disabled="ButtonDisabled" Class="text-transform-none"  Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">
                     Create aoWW Wallet
                 </MudButton>
             </div>
@@ -23,6 +23,7 @@
 @code {
 
     bool Disabled { get; set; } = false;
+    bool ButtonDisabled { get; set; } = false;
     DefaultFocus DefaultFocus { get; set; } = DefaultFocus.FirstChild;
 
     [Parameter]
@@ -44,6 +45,10 @@
 
     public async Task<bool> Submit()
     {
+        if (ButtonDisabled)
+            return false;
+
+        ButtonDisabled = true;
         var jwk = await ArweaveService.GenerateWallet();
         var address = await ArweaveService.GetAddress(jwk);
 
@@ -61,6 +66,8 @@
         await BindingContext.SaveWallet(wallet);
 
         Snackbar.Add($"Wallet added ({address})", Severity.Info);
+
+        ButtonDisabled = false;
 
         if (MudDialog != null)
         {
