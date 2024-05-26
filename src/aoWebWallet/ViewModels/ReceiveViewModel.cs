@@ -1,6 +1,7 @@
 ﻿using aoWebWallet.Models;
 using aoWebWallet.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Net;
 
 namespace aoWebWallet.ViewModels
 {
@@ -21,6 +22,19 @@ namespace aoWebWallet.ViewModels
                     return $"ao:{Address}";
                 else
                     return $"ao:{Address}?tokenId={TokenId}";
+            }
+        }
+
+        public string ShareLink
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(TokenId))
+                {
+                    return "/action?" + AoAction.CreateForTokenTransaction(Address, TokenId).ToQueryString();
+                }
+                else
+                    return $"/wallet/{Address}";
             }
         }
 

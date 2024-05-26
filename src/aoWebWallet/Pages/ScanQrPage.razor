@@ -55,6 +55,10 @@
 
             NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
         }
+        else
+        {
+            NavigationManager.NavigateTo($"/wallet/{address}");            
+        }
 
         Snackbar.Add("Token type not recognized", Severity.Error);
         return;

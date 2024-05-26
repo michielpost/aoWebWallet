@@ -43,9 +43,18 @@
             </div>
         </MudStack>
 
+        <MudText Typo="Typo.h4">From aoWebWallet</MudText>
+        <MudStack Spacing="0" Row="true">
+                <MudLink Href="@shareUrl" Typo="Typo.h6">
+                @shareUrl
+                </MudLink>
+            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(shareUrl); }" />
+        </MudStack>
+
         <MudText Typo="Typo.h4">Scan QR</MudText>
          <MudBarcode Value="@BindingContext.QrCode" Width="200" Height="200" ForceHeight="1" BarcodeFormat="BarcodeFormat.QR_CODE" Clickable="false" />
     </MudStack>
+
     <br />
     @if (BindingContext.Token != null)
     {
@@ -69,6 +78,7 @@
     public string? TokenId { get; set; }
 
     public string detailUrl => $"/wallet/{Address}";
+    public string shareUrl => NavigationManager.ToAbsoluteUri(BindingContext.ShareLink).ToString();
 
 
     protected override async Task OnParametersSetAsync()
