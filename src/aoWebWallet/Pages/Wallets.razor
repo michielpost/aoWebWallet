@@ -10,20 +10,11 @@
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-
-    @if (BindingContext.WalletList.Data == null || BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).Count() > 1)
-    {
-        <MudText Typo="Typo.h5">Wallets</MudText>
-    }
-    else
-    {
-        <MudText Typo="Typo.h5">Wallet</MudText>
-    }
+<MudContainer Class="px-8 mt-2" MaxWidth="MaxWidth.False">
 
     <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
-    <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-3 d-max-w-100">
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-3">
         @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
             {
                 <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
@@ -109,7 +100,6 @@
 
 @code
 {
-
     private async void EditWallet(Wallet wallet)
     {
         var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
