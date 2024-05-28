@@ -18,25 +18,25 @@
             </MudStack>
         </div>
 
-        <MudStack Justify="Justify.Center" Spacing="0">
+        <MudStack Justify="Justify.Center" Spacing="0" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden; min-width:80px;" >
             <DataLoaderProgress DataLoader="BalanceDataVM.BalanceDataLoader.DataLoader" Title="balance" />
             @if (BalanceDataVM.BalanceDataLoader.Data != null)
             {
-                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(BalanceDataVM.BalanceDataLoader.Data?.Balance, BalanceDataVM.Token?.TokenData?.Denomination ?? 0)</MudText>
+                <MudText style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;"  Typo="Typo.h5">@BalanceHelper.FormatBalance(BalanceDataVM.BalanceDataLoader.Data?.Balance, BalanceDataVM.Token?.TokenData?.Denomination ?? 0)</MudText>
             }
         </MudStack>
         <MudSpacer />
         <MudSpacer />
         <MudStack Justify="Justify.Center" Spacing="0" Row="true">
             <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Top">
-                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDownward" aria-label="Receive" OnClick="()=>{Receive(BalanceDataVM);}">Receive</MudButton>
+                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDownward" aria-label="Receive" OnClick="()=>{Receive(BalanceDataVM);}"><span Class="d-none d-sm-flex d-md-none">Receive</span></MudButton>
             </MudTooltip>
 
             @if (CanSend)
             {
                 var hasBalance = BalanceDataVM.BalanceDataLoader.Data?.Balance ?? 0;
                 <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Bottom">
-                    <MudButton Class="ml-1" Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowUpward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(BalanceDataVM);}">Send</MudButton>
+                    <MudButton Class="ml-1" Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowUpward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(BalanceDataVM);}"><span Class="d-none d-sm-flex d-md-none">Send</span></MudButton>
                 </MudTooltip>
             }
         </MudStack>
@@ -65,4 +65,3 @@
         NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
     }
 }
-  
