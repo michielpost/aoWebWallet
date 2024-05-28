@@ -21,15 +21,15 @@
         <MudText Typo="Typo.h5">Wallet</MudText>
     }
 
-        <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-3 d-max-w-100">
-            @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
-                {
-                    <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
-                        <MudIconButton Href="/start" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
-                    </MudTooltip>
-                }
+        @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
+            {
+                <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Href="/start" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
+                </MudTooltip>
+            }
     </MudContainer>
 
     <MudStack>
@@ -44,12 +44,12 @@
                     <MudPaper Class="pa-4 wallet-list">
                         <MudStack Row="true">
                             <div Class="relative">
-                            <WalletAvatar Address="@wallet.Address" />
-                            @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
-                                {
-                                   <MudChip Class="aos-chip" Variant="Variant.Outlined" Color="Color.Dark">AOS</MudChip>
-                                }
-                                </div>
+                                <WalletAvatar Address="@wallet.Address" />
+                                @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
+                                    {
+                                       <MudChip Class="aos-chip" Variant="Variant.Outlined" Color="Color.Dark">AOS</MudChip>
+                                    }
+                            </div>
 
                             <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
                                 <div Class="d-custom-2">
@@ -69,13 +69,20 @@
                                 </div>
                             </MudStack>
                             <MudSpacer />
-
-                            @if(!string.IsNullOrEmpty(wallet.Jwk))
-                            {
-                                <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>
-                            }
-                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }"></MudIconButton>
-                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
+                            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                @if(!string.IsNullOrEmpty(wallet.Jwk))
+                                {
+                                    <MudMenuItem>
+                                        <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }">Backup</MudButton>
+                                    </MudMenuItem>
+                                }
+                                <MudMenuItem>
+                                    <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }">Edit</MudButton>
+                                </MudMenuItem>
+                                <MudMenuItem>
+                                    <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }">Delete</MudButton>
+                                </MudMenuItem>
+                            </MudMenu>
                         </MudStack>
                     </MudPaper>
 
