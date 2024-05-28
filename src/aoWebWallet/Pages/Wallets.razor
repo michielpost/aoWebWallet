@@ -43,7 +43,13 @@
                     string detailUrl = $"wallet/{wallet.Address}";
                     <MudPaper Class="pa-4 wallet-list">
                         <MudStack Row="true">
+                            <div Class="relative">
                             <WalletAvatar Address="@wallet.Address" />
+                            @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
+                                {
+                                   <MudChip Class="aos-chip" Variant="Variant.Outlined" Color="Color.Dark">AOS</MudChip>
+                                }
+                                </div>
 
                             <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
                                 <div Class="d-custom-2">
@@ -63,10 +69,7 @@
                                 </div>
                             </MudStack>
                             <MudSpacer />
-                            @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
-                            {
-                                <MudChip>AOS</MudChip>
-                            }
+
                             @if(!string.IsNullOrEmpty(wallet.Jwk))
                             {
                                 <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>
