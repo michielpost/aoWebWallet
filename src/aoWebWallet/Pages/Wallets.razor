@@ -14,11 +14,13 @@
 
     <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
     <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-3">
         @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
             {
                 <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Href="/start" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
+                    <MudIconButton Href="/start" style="padding-top: 0;" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
                 </MudTooltip>
             }
     </MudContainer>
@@ -100,6 +102,12 @@
 
 @code
 {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "#"),
+            new BreadcrumbItem("", href: "#")
+        };
+
     private async void EditWallet(Wallet wallet)
     {
         var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
