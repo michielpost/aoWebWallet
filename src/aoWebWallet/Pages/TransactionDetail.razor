@@ -54,12 +54,13 @@
                             string detailUrlTo = $"wallet/{transfer.To}";
                         }
 
-                        <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlFrom" Typo="Typo.h6">
+                        <MudLink Class="KodeMono tx-wrap" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlFrom" Typo="Typo.h6">
                             @transfer.From
                         </MudLink>
+
                         <MudIcon Icon="@Icons.Material.Filled.ArrowRight" aria-label="Receive"></MudIcon>
 
-                        <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlTo" Typo="Typo.h6">
+                        <MudLink Class="KodeMono tx-wrap" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlTo" Typo="Typo.h6">
                             @transfer.To
                         </MudLink>
 
