@@ -8,13 +8,13 @@
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h5">Token Explorer</MudText>
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
-    <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-4 d-max-w-100">
-        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" OnClick="OpenAddTokenDialog"></MudIconButton>
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;"  Class="d-flex justify-end mb-4 pr-4">
+        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
     </MudContainer>
 
     <MudStack>
@@ -42,6 +42,12 @@
 
 @code
 {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Token explorer", href: null, disabled: true)
+        };
+
 
     private void OpenAddTokenDialog()
     {
