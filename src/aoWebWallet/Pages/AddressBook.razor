@@ -8,18 +8,15 @@
 <PageTitle>Address Book - @Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-4 px-8" MaxWidth="MaxWidth.False">
 
-  
-     <MudText Typo="Typo.h5">Address Book</MudText>
-
-    <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-3 d-max-w-100">
-            @if (BindingContext.WalletList.Data != null)
-                {
-                    <MudTooltip Text="Add contact" Arrow="true" Placement="Placement.Left">
-                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add contact" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
-                    </MudTooltip>
-                }
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;"  Class="d-flex justify-end mb-4 pr-3">
+        @if (BindingContext.WalletList.Data != null)
+            {
+                <MudTooltip Text="Add contact" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add contact" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
+                </MudTooltip>
+            }
     </MudContainer>
 
     <MudStack>
@@ -123,5 +120,5 @@
         StateHasChanged();
     }
 
-   
+
 }
