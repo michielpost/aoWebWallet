@@ -7,17 +7,11 @@ using aoww.Services.Enums;
 
 namespace aoww.Services.Models
 {
-    public class TokenTransfer
+    public class TokenTransfer : AoTransaction
     {
-        public required string Id { get; set; }
-        public DateTimeOffset Timestamp { get; set; }
-        public int? BlockHeight { get; set; }
         public string? TokenId { get; set; }
-        public required string From { get; set; }
-        public string? To { get; set; }
         public long Quantity { get; set; }
 
         public TokenTransferType TokenTransferType { get; set; }
-        public string? Cursor { get; set; }
     }
 }

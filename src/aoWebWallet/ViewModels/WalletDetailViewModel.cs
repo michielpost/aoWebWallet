@@ -222,7 +222,7 @@ namespace aoWebWallet.ViewModels
 
         public Task LoadTokenTransferList(string address) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
-            incoming = await graphqlClient.GetTransactionsIn(address, GetCursor(incoming));
+            incoming = await graphqlClient.GetTokenTransfersIn(address, GetCursor(incoming));
             outgoing = await graphqlClient.GetTransactionsOut(address, GetCursor(outgoing));
             outgoingProcess = await graphqlClient.GetTransactionsOutFromProcess(address, GetCursor(outgoingProcess));
 

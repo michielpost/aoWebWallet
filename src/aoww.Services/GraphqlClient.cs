@@ -18,7 +18,58 @@ namespace aoww.Services
             this.config = config.Value;
         }
 
-        public async Task<List<TokenTransfer>> GetTransactionsIn(string adddress, string? cursor = null)
+        public async Task<List<AoTransaction>> GetTransactionsIn(string address, string? cursor = null)
+        {
+            string query = $$"""
+                                query {
+                                  transactions(
+                                    first: 50
+                                    after: "{{cursor}}"
+                                    sort: HEIGHT_DESC
+                                    tags: [
+                                      { name: "Data-Protocol", values: ["ao"] }
+                                      { name: "Recipient", values: ["{{address}}"] }
+                                    ]
+                                  ) {
+                                    edges {
+                                      cursor
+                                      node {
+                                        id
+                                        recipient
+                                        owner {
+                                          address
+                                        }
+                                        block {
+                                          timestamp
+                                          height
+                                        }
+                                        tags {
+                                          name
+                                          value
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                                
+                                """;
+            var queryResult = await PostQueryAsync(query);
+
+            var result = new List<AoTransaction>();
+
+            foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
+            {
+                AoTransaction? transaction = GetAoTransaction(edge);
+
+                if (transaction != null)
+                    result.Add(transaction);
+            }
+
+            return result;
+        }
+
+
+        public async Task<List<TokenTransfer>> GetTokenTransfersIn(string address, string? cursor = null)
         {
             string query = $$"""
                                 query {
@@ -29,7 +80,7 @@ namespace aoww.Services
                                     tags: [
                                       { name: "Data-Protocol", values: ["ao"] }
                                       { name: "Action", values: ["Transfer", "Mint-Token"] }
-                                      { name: "Recipient", values: ["{{adddress}}"] }
+                                      { name: "Recipient", values: ["{{address}}"] }
                                     ]
                                   ) {
                                     edges {
@@ -60,7 +111,7 @@ namespace aoww.Services
 
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
-                TokenTransfer? transaction = GetTransaction(edge);
+                TokenTransfer? transaction = GetTokenTransfer(edge);
 
                 if (transaction != null)
                     result.Add(transaction);
@@ -69,7 +120,37 @@ namespace aoww.Services
             return result;
         }
 
-        private static TokenTransfer? GetTransaction(Edge edge)
+        private static AoTransaction? GetAoTransaction(Edge edge)
+        {
+            if (edge == null || edge.Node == null)
+                return null;
+
+            var transaction = new AoTransaction()
+            {
+                Id = edge.Node.Id,
+                Cursor = edge.Cursor,
+                From = edge.Node.Owner?.Address ?? string.Empty,
+            };
+
+            if (edge.Node.Block != null)
+            {
+                transaction.Timestamp = DateTimeOffset.FromUnixTimeSeconds(edge.Node.Block.Timestamp);
+                transaction.BlockHeight = edge.Node.Block.Height;
+            }
+            else
+                transaction.Timestamp = DateTimeOffset.UtcNow;
+
+            var fromProcess = edge.Node.Tags.Where(x => x.Name == "From-Process").Select(x => x.Value).FirstOrDefault();
+            if (!string.IsNullOrEmpty(fromProcess))
+                transaction.From = fromProcess;
+
+           
+            transaction.To = edge.Node.Tags.Where(x => x.Name == "Recipient").Select(x => x.Value).FirstOrDefault();
+
+            return transaction;
+        }
+
+        private static TokenTransfer? GetTokenTransfer(Edge edge)
         {
             if (edge == null || edge.Node == null)
                 return null;
@@ -179,7 +260,7 @@ namespace aoww.Services
 
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
-                TokenTransfer? transaction = GetTransaction(edge);
+                TokenTransfer? transaction = GetTokenTransfer(edge);
 
                 if (transaction != null)
                     result.Add(transaction);
@@ -230,7 +311,7 @@ namespace aoww.Services
 
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
-                TokenTransfer? transaction = GetTransaction(edge);
+                TokenTransfer? transaction = GetTokenTransfer(edge);
 
                 if (transaction != null)
                     result.Add(transaction);
@@ -278,7 +359,7 @@ namespace aoww.Services
 
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
-                TokenTransfer? transaction = GetTransaction(edge);
+                TokenTransfer? transaction = GetTokenTransfer(edge);
 
                 if (transaction != null)
                     result.Add(transaction);
@@ -328,7 +409,7 @@ namespace aoww.Services
 
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
-                TokenTransfer? transaction = GetTransaction(edge);
+                TokenTransfer? transaction = GetTokenTransfer(edge);
 
                 if (transaction != null)
                     result.Add(transaction);
