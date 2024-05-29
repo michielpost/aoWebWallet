@@ -436,3 +436,19 @@ body {
 .mud-breadcrumbs.breadcrumbs-aoww {
     padding-bottom: 0;
 }
+
+
+@media only screen and (max-width: 600px) {
+    .flex-row.send-receive-buttons-mobile {
+        flex-direction: column-reverse !important;
+
+
+
+    }
+
+    .flex-row.send-receive-buttons-mobile button{
+        margin-left:0 !important;
+        margin-bottom: 4px;
+    }
+}
+
