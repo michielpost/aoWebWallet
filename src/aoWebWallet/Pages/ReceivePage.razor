@@ -67,6 +67,35 @@
         </MudStack>
     }
 
+    <MudGrid Spacing="2">
+        <MudItem xs="12" sm="6">
+            <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
+
+            <MudStack>
+                @if (BindingContext.TokenTransferList.Data?.Any() ?? false)
+                {
+                    <MudStack Row="true" style="display: block !important;">
+                        <MudText Typo="Typo.h5">Transactions</MudText>
+                    </MudStack>
+
+                    <MudTimeline TimelinePosition="TimelinePosition.Left">
+                        @foreach (var transfer in BindingContext.TokenTransferList.Data)
+                        {
+                            <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.Address" />
+                        }
+                    </MudTimeline>
+
+                }
+                else
+                {
+                    <MudStack Row="true" style="display: block !important;">
+                        <MudText Typo="Typo.h5">Waiting for incoming transactions...</MudText>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+
 </MudContainer>
 
 @code {
@@ -77,9 +106,23 @@
     [SupplyParameterFromQuery(Name = "tokenId")]
     public string? TokenId { get; set; }
 
+    private Timer? _timer;
     public string detailUrl => $"/wallet/{Address}";
     public string shareUrl => NavigationManager.ToAbsoluteUri(BindingContext.ShareLink).ToString();
 
+    private void Callback(object? state)
+    {
+        InvokeAsync(() =>
+        {
+            Console.WriteLine($"{Address}: Updated at: {DateTime.Now}");
+
+            BindingContext.LoadTokenTransferList();
+
+            StateHasChanged();
+        });
+    }
+
+    
 
     protected override async Task OnParametersSetAsync()
     {
@@ -92,6 +135,11 @@
             await BindingContext.Initialize(Address, TokenId);
 
         await base.OnParametersSetAsync();
+    }
+
+    public override void Dispose()
+    {
+        _timer?.Dispose();
     }
 
 }
