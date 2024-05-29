@@ -11,13 +11,12 @@
 
 <PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
 
-
-<MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
     <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
-    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-2">
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-2 pr-2">
         <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
-            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
+            <MudIconButton style="padding-top: 0;" Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
         </MudTooltip>
     </MudContainer>
 
@@ -71,9 +70,6 @@
                         }
                 </MudMenuItem>
             </MudMenu>
-
-
-
         </MudStack>
     </MudPaper>
 

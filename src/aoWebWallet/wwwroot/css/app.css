@@ -145,11 +145,6 @@ a, .btn-link {
     justify-content: start;
 }
 
-.menu-wallets .mud-nav-link {
-    padding-top: 6px;
-    padding-bottom: 6px;
-}
-
 .mud-nav-item a:hover{
     color: var(--mud-palette-primary);
 }
