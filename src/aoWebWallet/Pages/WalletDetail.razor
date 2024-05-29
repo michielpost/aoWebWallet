@@ -13,6 +13,14 @@
 
 
 <MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-2">
+        <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
+            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
+        </MudTooltip>
+    </MudContainer>
+
     <MudPaper Class="pa-4 mb-4">
         <MudStack Row="true">
             <WalletAvatar Address="@BindingContext.SelectedWallet?.Wallet.Address" />
@@ -119,16 +127,7 @@
 
     }
 
-    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-2">
-        @*         <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-        <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
-        </MudTooltip> *@
-        <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
-            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
-        </MudTooltip>
-    </MudContainer>
-
-        <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudStack Class="mb-12">
         @if (BindingContext.BalanceDataList != null)
@@ -208,6 +207,12 @@
 
 @code
 {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Wallet", href: null, disabled: true)
+        };
+
     [Parameter]
     public string? Address { get; set; }
 
