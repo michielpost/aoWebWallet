@@ -12,8 +12,6 @@
 
 <MudContainer Class="px-8 mt-2" MaxWidth="MaxWidth.False">
 
-    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
-
     <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-3">
@@ -25,6 +23,7 @@
             }
     </MudContainer>
 
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
         {
