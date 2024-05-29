@@ -55,12 +55,12 @@
                         }
 
                         <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlFrom" Typo="Typo.h6">
-                            @transfer.From.ToShortAddress()
+                            @transfer.From
                         </MudLink>
                         <MudIcon Icon="@Icons.Material.Filled.ArrowRight" aria-label="Receive"></MudIcon>
 
                         <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlTo" Typo="Typo.h6">
-                            @transfer.To.ToShortAddress()
+                            @transfer.To
                         </MudLink>
 
                         @if (tokenData != null)
