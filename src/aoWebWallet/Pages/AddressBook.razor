@@ -30,7 +30,6 @@
                     <MudPaper Class="pa-4">
                         <MudStack Row="true">
                             <WalletAvatar Address="@wallet.Address" />
-
                             <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
                                 <div Class="d-custom-2">
                                     <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
@@ -48,8 +47,14 @@
                                 <MudChip>AOS</MudChip>
                             }
 
-                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }"></MudIconButton>
-                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
+                            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                <MudMenuItem>
+                                    <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }"></MudIconButton>
+                                </MudMenuItem>
+                                <MudMenuItem>
+                                    <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
+                                </MudMenuItem>
+                            </MudMenu>
                         </MudStack>
                     </MudPaper>
                 }
