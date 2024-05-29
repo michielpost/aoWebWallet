@@ -54,28 +54,20 @@
                 <MudMenuItem>
                     @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.Jwk))
                     {
-                        <MudTooltip Text="Download wallet file" Arrow="true" Placement="Placement.Left">
-                            <MudIconButton Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet.Wallet); }"></MudIconButton>
-                        </MudTooltip>
+                        <MudButton StartIcon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet.Wallet); }">Save</MudButton>
                     }
                 </MudMenuItem>
                 <MudMenuItem>
-                    <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-                        <MudIconButton Class="mt-1" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
-                    </MudTooltip>
+                        <MudButton StartIcon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudButton>
                 </MudMenuItem>
                 <MudMenuItem>
                     @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
                         {
-                            <MudTooltip Text="Save wallet" Arrow="true" Placement="Placement.Left">
-                                <MudIconButton Icon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudIconButton>
-                            </MudTooltip>
+                            <MudButton StartIcon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudButton>
                         }
                         else if(BindingContext.SelectedWallet?.Wallet != null)
                         {
-                            <MudTooltip Text="Edit" Arrow="true" Placement="Placement.Left">
-                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudIconButton>
-                            </MudTooltip>
+                            <MudButton StartIcon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudButton>
                         }
                 </MudMenuItem>
             </MudMenu>
