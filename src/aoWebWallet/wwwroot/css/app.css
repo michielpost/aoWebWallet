@@ -122,15 +122,25 @@ a, .btn-link {
     content: var(--blazor-load-percentage-text, "Loading");
 }
 
+
+
 .aoww-main-menu {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 64px);
+
 }
 
-@media (max-width: 960px) {
+@media (min-width: 960px) {
+    .aoww-main-menu {
+        min-height: calc(100vh - 64px);
+        max-height: calc(100vh - 64px);
+    }
+}
+
+@media (max-width: 959px) {
     .aoww-main-menu {
         min-height: 100vh;
+        max-height: calc(100vh - 64px);
     }
 }
 
