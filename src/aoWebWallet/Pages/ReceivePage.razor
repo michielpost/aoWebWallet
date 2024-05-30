@@ -13,59 +13,116 @@
 @inject ClipboardService ClipboardService
 
 
-<PageTitle>Receive - @Program.PageTitlePostFix</PageTitle>
+<PageTitle>Receive Tokens - @Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h5">Receive</MudText>
+<MudContainer Class="mt-16 px-4" MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h5">Receive Tokens</MudText>
+
+    <MudGrid>
+        <MudItem xs="12" md="3">
+            <MudPaper Class="pa-4">
+                <MudStack>
+                    <MudText Typo="Typo.h4">Scan QR</MudText>
+                    <MudBarcode Value="@BindingContext.QrCode" Width="200" Height="200" ForceHeight="1" BarcodeFormat="BarcodeFormat.QR_CODE" Clickable="false" />
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4">
+                <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
+                    @if (BindingContext.Token?.TokenData != null)
+                    {
+                        <MudStack Row=true>
+                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.Token.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.Token.TokenId" />
+                            <MudStack Justify="Justify.Center" Spacing="0">
+                                <MudText Typo="Typo.body1">@BindingContext.Token.TokenData?.Name</MudText>
+                                <MudText Typo="Typo.body2">@BindingContext.Token.TokenData?.Ticker</MudText>
+                            </MudStack>
+                        </MudStack>
+                    }
+
+                    <MudStack>
+                        <br />
+                        <br />
+                        <MudText>Address</MudText>
+                        <MudStack Row="true">
+                            <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
+                                @Address
+                            </MudLink>
+                            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(Address); }" />
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
 
 
-    @if (BindingContext.Token?.TokenData != null)
-    {
-        <MudStack Row=true>
-            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.Token.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.Token.TokenId" />
-            <MudStack Justify="Justify.Center" Spacing="0">
-                <MudText Typo="Typo.body1">@BindingContext.Token.TokenData?.Name</MudText>
-                <MudText Typo="Typo.body2">@BindingContext.Token.TokenData?.Ticker</MudText>
-            </MudStack>
-        </MudStack>
-        <br />
-    }
-    <MudStack>
-        <MudText Typo="Typo.h4">How to receive tokens?</MudText>
-        <MudText>Send tokens to this address:</MudText>
-        <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
-            <div Class="d-custom-2">
-                <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
-                    @Address
-                </MudLink>
-                <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(Address); }" />
-            </div>
-        </MudStack>
+            </MudPaper>
+        </MudItem>
 
-        <MudText Typo="Typo.h4">From aoWebWallet</MudText>
-        <MudStack Spacing="0" Row="true">
-                <MudLink Href="@shareUrl" Typo="Typo.h6">
-                @shareUrl
-                </MudLink>
-            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(shareUrl); }" />
-        </MudStack>
 
-        <MudText Typo="Typo.h4">Scan QR</MudText>
-         <MudBarcode Value="@BindingContext.QrCode" Width="200" Height="200" ForceHeight="1" BarcodeFormat="BarcodeFormat.QR_CODE" Clickable="false" />
-    </MudStack>
+        <MudItem xs="12">
+            <MudPaper Class="pa-4">
+                <MudStack>
+                    <MudText Typo="Typo.h6">Share URL</MudText>
+                    <MudStack Spacing="0" Row="true">
+                        <MudLink Href="@shareUrl" Typo="Typo.subtitle1">
+                            @shareUrl
+                        </MudLink>
+                        <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(shareUrl); }" />
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        @if (BindingContext.Token != null)
+        {
+            <MudItem xs="12">
+                <MudPaper Class="pa-4">
 
-    <br />
-    @if (BindingContext.Token != null)
-    {
-        <MudStack>
-            <MudText Typo="Typo.h5">From aos:</MudText>
-            <MudText>Command:</MudText>
-            <MudText Class="KodeMono" Typo="Typo.subtitle1">
-                Send({ Target = "@BindingContext.Token.TokenId", Action = "Transfer", Recipient = "@Address", Quantity = "TOKEN_AMOUNT"})
-            </MudText>
-        </MudStack>
-    }
+                    <MudStack>
+                        <MudText Typo="Typo.h6">aos command</MudText>
+                        <MudText Class="KodeMono" Typo="Typo.subtitle1">
+                            Send({ Target = "@BindingContext.Token.TokenId", Action = "Transfer", Recipient = "@Address", Quantity = "TOKEN_AMOUNT"})
+                        </MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        }
+
+
+    </MudGrid>
+
+
+    <MudGrid Spacing="2">
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4">
+                <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="incoming transactions" />
+
+                <MudStack>
+                    @if (BindingContext.TokenTransferList.Data?.Any() ?? false)
+                    {
+                        <MudStack Row="true" style="display: block !important;">
+                            <MudText Typo="Typo.h6">Incoming Transactions</MudText>
+                        </MudStack>
+
+                        <MudTimeline TimelinePosition="TimelinePosition.Left">
+                            @foreach (var transfer in BindingContext.TokenTransferList.Data)
+                            {
+                                <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.Address" />
+                            }
+                        </MudTimeline>
+
+                    }
+                    else
+                    {
+                        <MudStack Row="true" style="display: block !important;">
+                            <MudText Typo="Typo.h5">Waiting for incoming transactions...</MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 
 </MudContainer>
 
@@ -77,8 +134,22 @@
     [SupplyParameterFromQuery(Name = "tokenId")]
     public string? TokenId { get; set; }
 
+    private Timer? _timer;
     public string detailUrl => $"/wallet/{Address}";
     public string shareUrl => NavigationManager.ToAbsoluteUri(BindingContext.ShareLink).ToString();
+
+    private void Callback(object? state)
+    {
+        InvokeAsync(() =>
+        {
+            Console.WriteLine($"{Address}: Updated at: {DateTime.Now}");
+
+            BindingContext.LoadTokenTransferList();
+
+            StateHasChanged();
+        });
+    }
+
 
 
     protected override async Task OnParametersSetAsync()
@@ -92,6 +163,11 @@
             await BindingContext.Initialize(Address, TokenId);
 
         await base.OnParametersSetAsync();
+    }
+
+    public override void Dispose()
+    {
+        _timer?.Dispose();
     }
 
 }
