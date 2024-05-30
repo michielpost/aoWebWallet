@@ -10,8 +10,8 @@
 <PageTitle>Scan QR - @Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h5">QR Scanner</MudText>
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <MudItem xs="12" sm="6" Class="pb-0">
         <MudPaper Elevation="2" Class="pa-6">
@@ -23,6 +23,13 @@
 </MudContainer>
 
 @code {
+
+     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("QR Scanner", href: null, disabled: true)
+        };
+
     private QRCodeScannerJsInterop? _qrCodeScannerJsInterop;
     private Action<string>? _onQrCodeScanAction;
 

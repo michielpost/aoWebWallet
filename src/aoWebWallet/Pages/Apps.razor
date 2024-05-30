@@ -5,11 +5,14 @@
 
 <PageTitle>Friends of aoWebWallet - @Program.PageTitlePostFix</PageTitle>
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudText Typo="Typo.h5">Apps</MudText>
-    <MudText Class="mb-8">A list of friends of aoWebWallet. Use your tokens and explore the ao ecosystem.</MudText>
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
-    <MudGrid>
+    <MudPaper Elevation="2" Class="pa-6">
+        <MudText Class="mb-8">A list of friends of aoWebWallet. Use your tokens and explore the ao ecosystem.</MudText>
+    </MudPaper>
+
+    <MudGrid Class="mt-2">
         <AppListItem Name="ArSwap"
                      Link="https://arswap.org"
                      Logo="https://pbs.twimg.com/profile_images/1778816003259985920/HpnZQDK6_400x400.jpg"
@@ -37,4 +40,10 @@
     </MudGrid>
 </MudContainer>
 
-
+@code{
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Apps", href: null, disabled: true)
+        };
+}

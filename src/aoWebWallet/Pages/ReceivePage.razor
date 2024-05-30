@@ -16,7 +16,7 @@
 <PageTitle>Receive Tokens - @Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-4" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h5">Receive Tokens</MudText>
 
     <MudGrid>
@@ -64,12 +64,17 @@
         <MudItem xs="12">
             <MudPaper Class="pa-4">
                 <MudStack>
-                    <MudText Typo="Typo.h6">Share URL</MudText>
                     <MudStack Spacing="0" Row="true">
-                        <MudLink Href="@shareUrl" Typo="Typo.subtitle1">
-                            @shareUrl
+                        <MudLink Href="@shareUrl" Target="_blank" Typo="Typo.subtitle1">
+                            Pay using aoWebWallet
                         </MudLink>
                         <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(shareUrl); }" />
+                    </MudStack>
+                    <MudStack Spacing="0" Row="true">
+                        <MudLink Href="@NavigationManager.Uri" Target="_blank" Typo="Typo.subtitle1">
+                            Share this page
+                        </MudLink>
+                        <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(NavigationManager.Uri); }" />
                     </MudStack>
                 </MudStack>
             </MudPaper>

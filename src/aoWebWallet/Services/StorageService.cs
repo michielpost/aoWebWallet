@@ -63,8 +63,8 @@ namespace aoWebWallet.Services
               new TokenData
               {
                   TokenId = "aYrCboXVSl1AXL9gPFe3tfRxRf0ZmkOXH65mKT0HHZw",
-                  Denomination = 0,
-                  Logo = "Sie_26dvgyok0PZD_-iQAFOhOd5YxDTkczOLoqTTL_A",
+                  Denomination = 6,
+                  Logo = "wfI-5PlYXL66_BqquCXm7kq-ic1keu0b2CqRjw82yrU",
                   Name = "AR.IO EXP",
                   Ticker = "EXP"
               });
