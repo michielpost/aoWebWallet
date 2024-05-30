@@ -36,7 +36,7 @@ else
                         </MudText>
                     </ItemSelectedTemplate>
                  </MudAutocomplete>
-            <MudChip Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@(ActionParam.Value ?? "Not selected")</MudChip>
+            <MudChip Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@(ActionParam.Value?.ToShortAddress() ?? "Not selected")</MudChip>
 
         @* <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" /> *@
     }
