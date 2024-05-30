@@ -41,7 +41,7 @@
 
         if (ActionParam.ParamType == ActionParamType.Balance)
         {
-                <MudChip style="border-radius:0;" Variant="Variant.Text" Color="Color.Success">Balance available: @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
+                <MudChip style="border-radius:0;" Variant="Variant.Text" Color="Color.Success">Balance available: <br/> @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
         }
     }
 }

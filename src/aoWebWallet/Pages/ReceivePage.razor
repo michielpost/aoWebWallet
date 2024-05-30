@@ -15,9 +15,8 @@
 
 <PageTitle>Receive Tokens - @Program.PageTitlePostFix</PageTitle>
 
-
 <MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h5">Receive Tokens</MudText>
+    <MudBreadcrumbs Class="breadcrumbs-aoww mb-4" Items="_items"></MudBreadcrumbs>
 
     <MudGrid>
         <MudItem xs="12" md="3">
@@ -132,6 +131,11 @@
 </MudContainer>
 
 @code {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Receive tokens", href: null, disabled: true)
+        };
 
     [Parameter]
     public string? Address { get; set; }
