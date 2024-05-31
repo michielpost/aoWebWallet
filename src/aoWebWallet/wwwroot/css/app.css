@@ -122,15 +122,25 @@ a, .btn-link {
     content: var(--blazor-load-percentage-text, "Loading");
 }
 
+
+
 .aoww-main-menu {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 64px);
+
 }
 
-@media (max-width: 960px) {
+@media (min-width: 960px) {
+    .aoww-main-menu {
+        min-height: calc(100vh - 64px);
+        max-height: calc(100vh - 64px);
+    }
+}
+
+@media (max-width: 959px) {
     .aoww-main-menu {
         min-height: 100vh;
+        max-height: calc(100vh - 64px);
     }
 }
 
@@ -330,8 +340,6 @@ body {
 }
 
 
-
-
 .background-xs {
     background-image: url("../images/origin-icon-base.png");
     width: 333px;
@@ -427,3 +435,28 @@ body {
 .hover-here:hover > svg.float-right {
     background: white;
 }
+
+.mud-chip.aos-chip, .mud-chip.aos-chip:hover {
+    top:-15px; right:-15px; scale:0.67; background:white; font-weight: 900; padding: 5px;
+    position: absolute;
+}
+
+.mud-breadcrumbs.breadcrumbs-aoww {
+    padding-bottom: 0;
+}
+
+
+@media only screen and (max-width: 600px) {
+    .flex-row.send-receive-buttons-mobile {
+        flex-direction: column-reverse !important;
+
+
+
+    }
+
+    .flex-row.send-receive-buttons-mobile button{
+        margin-left:0 !important;
+        margin-bottom: 4px;
+    }
+}
+

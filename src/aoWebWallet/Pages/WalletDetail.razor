@@ -11,8 +11,15 @@
 
 <PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
 
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
-<MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-2 pr-2">
+        <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
+            <MudIconButton style="padding-top: 0;" Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
+        </MudTooltip>
+    </MudContainer>
+
     <MudPaper Class="pa-4 mb-4">
         <MudStack Row="true">
             <WalletAvatar Address="@BindingContext.SelectedWallet?.Wallet.Address" />
@@ -41,27 +48,28 @@
             </MudStack>
             <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(BindingContext.SelectedWallet?.Wallet.Address); }" />
             <MudSpacer />
-            @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.Jwk))
-            {
-                <MudTooltip Text="Download wallet file" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet.Wallet); }"></MudIconButton>
-                </MudTooltip>
-            }
-            <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-                <MudIconButton Class="mt-1" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
-            </MudTooltip>
-            @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
-            {
-                <MudTooltip Text="Save wallet" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudIconButton>
-                </MudTooltip>
-            }
-            else if(BindingContext.SelectedWallet?.Wallet != null)
-            {
-                <MudTooltip Text="Edit" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudIconButton>
-                </MudTooltip>
-            }
+
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem>
+                    @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.Jwk))
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet.Wallet); }">Save</MudButton>
+                    }
+                </MudMenuItem>
+                <MudMenuItem>
+                        <MudButton StartIcon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudButton>
+                </MudMenuItem>
+                <MudMenuItem>
+                    @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
+                        {
+                            <MudButton StartIcon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudButton>
+                        }
+                        else if(BindingContext.SelectedWallet?.Wallet != null)
+                        {
+                            <MudButton StartIcon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudButton>
+                        }
+                </MudMenuItem>
+            </MudMenu>
         </MudStack>
     </MudPaper>
 
@@ -107,16 +115,7 @@
 
     }
 
-    <MudContainer Width="100%" Class="d-flex justify-end mb-4 pr-2 d-max-w-100">
-        @*         <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-        <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
-        </MudTooltip> *@
-        <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
-            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
-        </MudTooltip>
-    </MudContainer>
-
-        <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudStack Class="mb-12">
         @if (BindingContext.BalanceDataList != null)
@@ -196,6 +195,12 @@
 
 @code
 {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Wallet", href: null, disabled: true)
+        };
+
     [Parameter]
     public string? Address { get; set; }
 
@@ -215,7 +220,7 @@
         StateHasChanged();
     }
 
-  
+
 
     private async Task RefreshBalances()
     {

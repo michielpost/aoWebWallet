@@ -5,15 +5,13 @@
     @if (BindingContext.WalletList.Data?.Where(x => !x.IsReadOnly).Any() ?? false)
     {
         <MudNavLink Href="" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-        <MudNavGroup Class="mt-2 mb-2" Title="Wallets" Icon="@Icons.Material.Filled.Wallet" Expanded="true">
+        <MudNavGroup Title="Wallets" Icon="@Icons.Material.Filled.Wallet" Expanded="true">
             @foreach (var wallet in BindingContext.WalletList.Data?.Where(x => !x.IsReadOnly).ToList() ?? new())
             {
                     string detailUrl = $"wallet/{wallet.Address}";
 
                     <MudNavLink Class="menu-wallets" Href="@detailUrl" style="font-size:12px;" Match="NavLinkMatch.All">
-                    <div style="height:30px;width:30px">
-                        <minidenticon-svg username="@wallet.Address"></minidenticon-svg>
-                    </div>
+                         <minidenticon-svg style="height:22px;width:22px" username="@wallet.Address"></minidenticon-svg>
                         <div>@wallet.Address.ToShortAddress()</div>
                     </MudNavLink>
             }
@@ -24,9 +22,9 @@
         <MudNavLink Href="" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Wallet">Wallets</MudNavLink>
     }
 
-    <MudNavLink Href="/address-book" Match="NavLinkMatch.All" Class="aoww-main-nav-text mt-2" Icon="@Icons.Material.Filled.Contacts">Address Book</MudNavLink>
-
+    <MudNavLink Href="/address-book" Match="NavLinkMatch.All" Class="aoww-main-nav-text" Icon="@Icons.Material.Filled.Contacts">Address Book</MudNavLink>
     <MudNavLink Href="/token-explorer" Match="NavLinkMatch.Prefix" Class="aoww-main-nav-text" Icon="@Icons.Material.Filled.Explore">Token Explorer</MudNavLink>
+    <MudNavLink Href="/scan-qr" Match="NavLinkMatch.Prefix" Class="aoww-main-nav-text" Icon="@Icons.Material.Filled.QrCode">QR Scanner</MudNavLink>
     <MudNavLink Href="/apps" Match="NavLinkMatch.Prefix" Class="aoww-main-nav-text" Icon="@Icons.Material.Filled.Apps">Apps</MudNavLink>
 
     <div style="margin-top: auto; display:flex; flex-direction: row; margin-bottom:20px">
@@ -72,5 +70,5 @@
 
         base.OnInitialized();
     }
-   
+
 }

@@ -5,8 +5,8 @@
 
 <PageTitle>Settings - @Program.PageTitlePostFix</PageTitle>
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudText Typo="Typo.h5" Class="mb-4">Settings</MudText>
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <MudStack>
         <MudItem xs="12" sm="6" md="6">
@@ -42,6 +42,12 @@
 </MudContainer>
 
 @code {
+
+     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Settings", href: null, disabled: true)
+        };
 
     async void Submit()
     {

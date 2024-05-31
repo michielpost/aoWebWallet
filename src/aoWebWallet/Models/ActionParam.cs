@@ -134,6 +134,21 @@ namespace aoWebWallet.Models
             return action;
         }
 
+        public static AoAction CreateForTokenTransaction(string recipient, string tokenId)
+        {
+            return new AoAction
+            {
+                Params = new List<ActionParam>
+                {
+                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= tokenId },
+                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Transfer" },
+                    new ActionParam { Key= "Recipient", ParamType = ActionParamType.Filled, Value = recipient },
+                    new ActionParam { Key= "Quantity", ParamType = ActionParamType.Balance, Args = new List<string> { tokenId } }
+                }
+
+            };
+        }
+
         public static AoAction CreateForTokenTransaction(string tokenId)
         {
             return new AoAction

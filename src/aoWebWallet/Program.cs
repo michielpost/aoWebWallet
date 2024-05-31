@@ -15,6 +15,7 @@ using aoww.Services;
 using aoww.Services.Models;
 using aoWebWallet.Models;
 using ArweaveAO.Models;
+using MudExtensions.Services;
 
 namespace aoWebWallet
 {
@@ -91,6 +92,9 @@ namespace aoWebWallet
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 
+            services.AddMudExtensions();
+
+
             //Services
             services.AddScoped<TokenDataService>();
             services.AddScoped<StorageService>();
@@ -112,6 +116,7 @@ namespace aoWebWallet
             services.AddScoped<TokenDetailViewModel>();
             services.AddScoped<TransactionDetailViewModel>();
             services.AddScoped<WalletDetailViewModel>();
+            services.AddScoped<ReceiveViewModel>();
 
             services.AddBlazoredLocalStorage();
 

@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{89AC47DF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoww.Services.Tests", "aoww.Services.Tests\aoww.Services.Tests.csproj", "{322F4807-05CF-431D-B400-7420E1B29936}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoWebWallet.Tests", "aoWebWallet.Tests\aoWebWallet.Tests.csproj", "{12E9E40E-96D1-4501-A9A4-EBE4D4F43D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoWebWallet.Tests", "aoWebWallet.Tests\aoWebWallet.Tests.csproj", "{12E9E40E-96D1-4501-A9A4-EBE4D4F43D8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

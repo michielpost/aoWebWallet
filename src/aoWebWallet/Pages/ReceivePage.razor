@@ -1,0 +1,182 @@
+﻿@page "/receive/{address}"
+@using ZXing;
+@using aoWebWallet.Models
+@using MudExtensions
+@inherits MvvmComponentBase<ReceiveViewModel>
+@inject GatewayUrlHelper UrlHelper;
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject TokenDataService dataService
+@inject TransactionService transactionService;
+@inject WalletDetailViewModel WalletDetailViewModel
+@inject ClipboardService ClipboardService
+
+
+<PageTitle>Receive Tokens - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww mb-4" Items="_items"></MudBreadcrumbs>
+
+    <MudGrid>
+        <MudItem xs="12" md="3">
+            <MudPaper Class="pa-4">
+                <MudStack>
+                    <MudText Typo="Typo.h4">Scan QR</MudText>
+                    <MudBarcode Value="@BindingContext.QrCode" Width="200" Height="200" ForceHeight="1" BarcodeFormat="BarcodeFormat.QR_CODE" Clickable="false" />
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4">
+                <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
+                    @if (BindingContext.Token?.TokenData != null)
+                    {
+                        <MudStack Row=true>
+                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.Token.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.Token.TokenId" />
+                            <MudStack Justify="Justify.Center" Spacing="0">
+                                <MudText Typo="Typo.body1">@BindingContext.Token.TokenData?.Name</MudText>
+                                <MudText Typo="Typo.body2">@BindingContext.Token.TokenData?.Ticker</MudText>
+                            </MudStack>
+                        </MudStack>
+                    }
+
+                    <MudStack>
+                        <br />
+                        <br />
+                        <MudText>Address</MudText>
+                        <MudStack Row="true">
+                            <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
+                                @Address
+                            </MudLink>
+                            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(Address); }" />
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+
+
+            </MudPaper>
+        </MudItem>
+
+
+        <MudItem xs="12">
+            <MudPaper Class="pa-4">
+                <MudStack>
+                    <MudStack Spacing="0" Row="true">
+                        <MudLink Href="@shareUrl" Target="_blank" Typo="Typo.subtitle1">
+                            Pay using aoWebWallet
+                        </MudLink>
+                        <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(shareUrl); }" />
+                    </MudStack>
+                    <MudStack Spacing="0" Row="true">
+                        <MudLink Href="@NavigationManager.Uri" Target="_blank" Typo="Typo.subtitle1">
+                            Share this page
+                        </MudLink>
+                        <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(NavigationManager.Uri); }" />
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        @if (BindingContext.Token != null)
+        {
+            <MudItem xs="12">
+                <MudPaper Class="pa-4">
+
+                    <MudStack>
+                        <MudText Typo="Typo.h6">aos command</MudText>
+                        <MudText Class="KodeMono" Typo="Typo.subtitle1">
+                            Send({ Target = "@BindingContext.Token.TokenId", Action = "Transfer", Recipient = "@Address", Quantity = "TOKEN_AMOUNT"})
+                        </MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        }
+
+
+    </MudGrid>
+
+
+    <MudGrid Spacing="2">
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4">
+                <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="incoming transactions" />
+
+                <MudStack>
+                    @if (BindingContext.TokenTransferList.Data?.Any() ?? false)
+                    {
+                        <MudStack Row="true" style="display: block !important;">
+                            <MudText Typo="Typo.h6">Incoming Transactions</MudText>
+                        </MudStack>
+
+                        <MudTimeline TimelinePosition="TimelinePosition.Left">
+                            @foreach (var transfer in BindingContext.TokenTransferList.Data)
+                            {
+                                <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.Address" />
+                            }
+                        </MudTimeline>
+
+                    }
+                    else
+                    {
+                        <MudStack Row="true" style="display: block !important;">
+                            <MudText Typo="Typo.h5">Waiting for incoming transactions...</MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>
+
+@code {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Receive tokens", href: null, disabled: true)
+        };
+
+    [Parameter]
+    public string? Address { get; set; }
+
+    [SupplyParameterFromQuery(Name = "tokenId")]
+    public string? TokenId { get; set; }
+
+    private Timer? _timer;
+    public string detailUrl => $"/wallet/{Address}";
+    public string shareUrl => NavigationManager.ToAbsoluteUri(BindingContext.ShareLink).ToString();
+
+    private void Callback(object? state)
+    {
+        InvokeAsync(() =>
+        {
+            Console.WriteLine($"{Address}: Updated at: {DateTime.Now}");
+
+            BindingContext.LoadTokenTransferList();
+
+            StateHasChanged();
+        });
+    }
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Address != null && Address.Length != 43)
+        {
+            NavigationManager.NavigateTo("");
+        }
+
+        if (Address != null)
+            await BindingContext.Initialize(Address, TokenId);
+
+        await base.OnParametersSetAsync();
+    }
+
+    public override void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+}

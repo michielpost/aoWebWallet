@@ -8,35 +8,35 @@
     return;
 }
 
-<MudPaper Class="pa-4">
+<MudPaper Class="py-2 pl-2">
     <MudStack Row="true">
         <div Class="d-custom-1">
             <MudAvatar Image="@UrlHelper.GetArweaveUrl(BalanceDataVM.Token.TokenData?.Logo)" Size="Size.Medium" title="@BalanceDataVM.Token.TokenId" />
             <MudStack Class="ml-4" Justify="Justify.Center" Spacing="0">
-                <MudText Class="d-font-weight-500" Typo="Typo.body1">@BalanceDataVM.Token.TokenData?.Name</MudText>
+                <MudText Class="d-font-weight-500" Typo="Typo.body1"><span Class="d-none d-sm-flex">@BalanceDataVM.Token.TokenData?.Name</span></MudText>
                 <MudText Typo="Typo.body2">@BalanceDataVM.Token.TokenData?.Ticker</MudText>
             </MudStack>
         </div>
 
-        <MudStack Justify="Justify.Center" Spacing="0">
+        <MudStack Justify="Justify.Center" Spacing="0" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden; min-width:80px;" >
             <DataLoaderProgress DataLoader="BalanceDataVM.BalanceDataLoader.DataLoader" Title="balance" />
             @if (BalanceDataVM.BalanceDataLoader.Data != null)
             {
-                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(BalanceDataVM.BalanceDataLoader.Data?.Balance, BalanceDataVM.Token?.TokenData?.Denomination ?? 0)</MudText>
+                <MudText style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;"  Typo="Typo.h5">@BalanceHelper.FormatBalance(BalanceDataVM.BalanceDataLoader.Data?.Balance, BalanceDataVM.Token?.TokenData?.Denomination ?? 0)</MudText>
             }
         </MudStack>
         <MudSpacer />
         <MudSpacer />
-        <MudStack Justify="Justify.Center" Spacing="0" Row="true">
+        <MudStack Justify="Justify.FlexEnd" Class="send-receive-buttons-mobile" Spacing="0" Row="true">
             <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Top">
-                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDownward" aria-label="Receive" OnClick="()=>{Receive(BalanceDataVM);}">Receive</MudButton>
+                <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDownward" aria-label="Receive" OnClick="()=>{Receive(BalanceDataVM);}"><span Class="d-none d-sm-flex">Receive</span></MudButton>
             </MudTooltip>
 
             @if (CanSend)
             {
                 var hasBalance = BalanceDataVM.BalanceDataLoader.Data?.Balance ?? 0;
                 <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Bottom">
-                    <MudButton Class="ml-1" Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowUpward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(BalanceDataVM);}">Send</MudButton>
+                    <MudButton Class="ml-1" Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowUpward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(BalanceDataVM);}"><span Class="d-none d-sm-flex">Send</span></MudButton>
                 </MudTooltip>
             }
         </MudStack>
@@ -52,9 +52,7 @@
 
     private void Receive(BalanceDataViewModel balanceDataVM)
     {
-        var parameters = new DialogParameters<ReceiveTokenDialog> { { x => x.SelectedBalanceDataVM, balanceDataVM }, { x => x.Address, balanceDataVM.Address } };
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ReceiveTokenDialog>("Receive Token", parameters, options);
+        NavigationManager.NavigateTo($"/receive/{balanceDataVM.Address}?tokenId={balanceDataVM.Token.TokenId}");
     }
 
     private void Send(BalanceDataViewModel? balanceDataVM)
@@ -67,4 +65,3 @@
         NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
     }
 }
-  

@@ -10,8 +10,8 @@
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h5">Token Explorer</MudText>
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <DataLoaderProgress DataLoader="BindingContext.Token.DataLoader" Title="tokens" />
 
@@ -20,13 +20,13 @@
         {
             var token = BindingContext.Token.Data;
 
-            <MudPaper Class="pa-4 mb-14 mt-4">
+            <MudPaper Class="pa-4 mb-14 mt-4 d-overflow-hidden">
                 <MudStack Row="true">
                     <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
                     <MudStack Justify="Justify.Center" Spacing="0">
                         <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
                         <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                        <MudText Class="KodeMono" Typo="Typo.subtitle1">@token.TokenId</MudText>
+                        <MudText Class="KodeMono tx-wrap" Typo="Typo.subtitle1">@token.TokenId</MudText>
                     </MudStack>
                 </MudStack>
             </MudPaper>
@@ -61,6 +61,12 @@
 
 @code
 {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Token details", href: null, disabled: true)
+    };
+
     [Parameter]
     public string? TokenId { get; set; }
 

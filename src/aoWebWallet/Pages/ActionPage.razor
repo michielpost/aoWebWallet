@@ -11,8 +11,8 @@
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Typo="Typo.h5">New transaction</MudText>
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww mb-4" Items="_items"></MudBreadcrumbs>
 
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
@@ -59,7 +59,7 @@
 
     @if (!readOnly && !string.IsNullOrEmpty(selectedWallet))
     {
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" FullWidth="true" OnClick="Preview" Class="mt-8">Preview</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview" Class="mt-8">Preview</MudButton>
         <MudText Color="Color.Error">@validation</MudText>
     }
     else if (!started && !string.IsNullOrEmpty(selectedWallet) && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
@@ -118,6 +118,12 @@
     private Wallet? selectedWalletObj;
     private bool readOnly = false;
     private bool started = false;
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem("Home", href: "/"),
+                new BreadcrumbItem("New transaction", href: null, disabled: true)
+            };
 
 
     private async void Preview()
