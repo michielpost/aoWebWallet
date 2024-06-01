@@ -17,10 +17,10 @@ namespace aoWebWallet.Pages
         {
             if (firstRender)
             {
-                await BindingContext.CheckHasArConnectExtension();
-
                 await BindingContext.LoadWalletList();
                 await dataService.LoadTokenList();
+
+                await BindingContext.CheckHasArConnectExtension();
             }
 
             await base.OnAfterRenderAsync(firstRender);
