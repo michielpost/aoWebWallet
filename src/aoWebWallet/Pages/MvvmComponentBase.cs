@@ -1,8 +1,6 @@
-﻿using aoWebWallet.ViewModels;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using webvNext.DataLoader;
 
 namespace aoWebWallet.Pages
@@ -13,18 +11,30 @@ namespace aoWebWallet.Pages
         public T BindingContext { get; set; } = default!;
 
         public List<INotifyPropertyChanged> ObjWatch { get; set; } = new();
+        public List<INotifyCollectionChanged> CollectionWatch { get; set; } = new();
 
         protected  override void OnInitialized()
         {
-            BindingContext.PropertyChanged += BindingContext_PropertyChanged;
+            //BindingContext.PropertyChanged += BindingContext_PropertyChanged;
 
-            foreach(var obj in ObjWatch)
+            foreach (var obj in ObjWatch)
             {
                 obj.PropertyChanged += ObjWatch_PropertyChanged;
             }
 
+            foreach (var obj in CollectionWatch)
+            {
+                obj.CollectionChanged += Obj_CollectionChanged;
+            }
+
             base.OnInitialized();
         }
+
+        //private void BindingContext_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        //{
+        //    Console.WriteLine("Changed! " + e.PropertyName);
+        //    this.StateHasChanged();
+        //}
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,24 +48,16 @@ namespace aoWebWallet.Pages
         //    await base.OnParametersSetAsync();
         //}
 
-        internal async void BindingContext_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MainViewModel.ComputeUnitUrl))
-            {
-                await LoadDataAsync();
-                this.StateHasChanged();
-            }
-        }
-
-        internal async void ObjWatch_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        internal void ObjWatch_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             this.StateHasChanged();
-            await ChartRenderAsync();
+            //Console.WriteLine("Obj State changed: " + sender?.ToString());
         }
-
-        protected virtual Task ChartRenderAsync()
+        private void Obj_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            return Task.CompletedTask;
+            this.StateHasChanged();
+            //Console.WriteLine("Obj Collection changed: " + sender?.ToString());
+
         }
 
         protected virtual Task LoadDataAsync()
@@ -63,9 +65,14 @@ namespace aoWebWallet.Pages
             return Task.CompletedTask;
         }
 
-        protected void WatchObject<D>(D obj) where D : ObservableObject
+        protected void WatchObject<D>(D obj) where D : INotifyPropertyChanged
         {
             ObjWatch.Add(obj);
+        }
+
+        protected void WatchCollection<D>(D obj) where D : INotifyCollectionChanged
+        {
+            CollectionWatch.Add(obj);
         }
 
         protected void WatchDataLoaderVM<D>(DataLoaderViewModel<D> vm) where D : class
@@ -76,11 +83,16 @@ namespace aoWebWallet.Pages
 
         public virtual void Dispose()
         {
-            BindingContext.PropertyChanged -= BindingContext_PropertyChanged;
+            //BindingContext.PropertyChanged -= BindingContext_PropertyChanged;
 
             foreach (var obj in ObjWatch)
             {
                 obj.PropertyChanged -= ObjWatch_PropertyChanged;
+            }
+
+            foreach (var obj in CollectionWatch)
+            {
+                obj.CollectionChanged -= Obj_CollectionChanged;
             }
         }
     }

@@ -1,0 +1,139 @@
+﻿@page "/address-book"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject ClipboardService ClipboardService
+
+<PageTitle>Address Book - @Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;"  Class="d-flex justify-end mb-4 pr-3">
+        @if (BindingContext.WalletList.Data != null)
+            {
+                <MudTooltip Text="Add contact" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add contact" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
+                </MudTooltip>
+            }
+    </MudContainer>
+
+    <MudStack>
+        @if (BindingContext.WalletList.Data != null)
+        {
+            if(BindingContext.WalletList.Data.Where(x => x.IsReadOnly).Any())
+            {
+                foreach (var wallet in BindingContext.WalletList.Data.Where(x => x.IsReadOnly))
+                {
+                    string detailUrl = $"/wallet/{wallet.Address}";
+                    <MudPaper Class="pa-4">
+                        <MudStack Row="true">
+                            <div Class="relative">
+                                <WalletAvatar Address="@wallet.Address" />
+                                @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
+                                    {
+                                       <MudChip Class="aos-chip" Variant="Variant.Outlined" Color="Color.Dark">AOS</MudChip>
+                                    }
+                            </div>
+                            <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
+                                <div Class="d-custom-2">
+                                    <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
+                                        @wallet.Address
+                                    </MudLink>
+                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(wallet.Address); }" />
+                                </div>
+                                <div Class="d-flex flex-row">
+                                    <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                                </div>
+                            </MudStack>
+
+                            <MudSpacer />
+
+                            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                <MudMenuItem>
+                                    <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }">Edit</MudButton>
+                                </MudMenuItem>
+                                <MudMenuItem>
+                                    <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }">Delete</MudButton>
+                                </MudMenuItem>
+                            </MudMenu>
+                        </MudStack>
+                    </MudPaper>
+                }
+            }
+            else
+            {
+                <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
+                    <MudItem sm="12" xs="12">
+                        <MudText>Your Address Book is currently empty.</MudText>
+                        <MudButton OnClick="OpenDialog">Add your first contact</MudButton>
+                    </MudItem>
+                </MudGrid>
+
+            }
+        }
+        else
+        {
+            <MudText Typo="Typo.h6">Loading address book...</MudText>
+
+            <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="wallets" />
+        }
+
+    </MudStack>
+</MudContainer>
+
+
+@code
+{
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Address book", href: null, disabled: true)
+    };
+
+    private void OpenDialog()
+    {
+        var tempWallet = new Wallet()
+            {
+                Address = string.Empty,
+                IsReadOnly = true,
+                AddedDate = DateTimeOffset.UtcNow,
+                Source = WalletTypes.Manual
+            };
+
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, tempWallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Add Contact", parameters, options);
+    }
+
+    private async void EditWallet(Wallet wallet)
+    {
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Edit Contact", parameters, options);
+
+        StateHasChanged();
+    }
+
+    private async void DeleteWallet(Wallet wallet)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            $"Are you sure you want to delete this contact? {wallet.Address}?",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        if (result != null)
+        {
+            await BindingContext.DeleteWallet(wallet);
+
+            Snackbar.Add($"Contact deleted ({wallet.Address})", Severity.Info);
+        }
+        StateHasChanged();
+    }
+
+
+}

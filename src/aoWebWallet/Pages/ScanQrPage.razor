@@ -1,0 +1,75 @@
+﻿@page "/scan-qr"
+@using ReactorBlazorQRCodeScanner
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject GatewayUrlHelper UrlHelper;
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+<PageTitle>Scan QR - @Program.PageTitlePostFix</PageTitle>
+
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    <MudItem xs="12" sm="6" Class="pb-0">
+        <MudPaper Elevation="2" Class="pa-6">
+            <MudStack>
+                <QRCodeScanner />
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudContainer>
+
+@code {
+
+     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("QR Scanner", href: null, disabled: true)
+        };
+
+    private QRCodeScannerJsInterop? _qrCodeScannerJsInterop;
+    private Action<string>? _onQrCodeScanAction;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _onQrCodeScanAction = (code) => OnQrCodeScan(code);
+
+            _qrCodeScannerJsInterop = new QRCodeScannerJsInterop(JS);
+            await _qrCodeScannerJsInterop.Init(_onQrCodeScanAction);
+        }
+    }
+
+    private void OnQrCodeScan(string code)
+    {
+        if(!code.StartsWith("ao:"))
+        {
+            Snackbar.Add("QR Code not recognized", Severity.Error);
+            return;
+        }
+
+        var address = code.Substring(3, 43);
+
+        int tokenStart = code.IndexOf("?tokenId=");
+        if (tokenStart > 0)
+        {
+            string tokenId = code.Substring(tokenStart + 9, 43);
+
+            var aoAction = AoAction.CreateForTokenTransaction(address, tokenId);
+
+            NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"/wallet/{address}");            
+        }
+
+        Snackbar.Add("Token type not recognized", Severity.Error);
+        return;
+        
+    }
+}

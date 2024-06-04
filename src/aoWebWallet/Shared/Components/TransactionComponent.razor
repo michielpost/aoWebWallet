@@ -1,9 +1,11 @@
 ﻿@using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
+@inject TokenDataService dataService
+@inject GatewayUrlHelper UrlHelper;
 
 @if (transfer != null)
 {
-    var tokenData = BindingContext.TokenList.Data?.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
+    var tokenData = dataService.TokenList.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
     var isSend = SelectedAddress == transfer.From;
     var isReceive = SelectedAddress == transfer.To;
     string txUrl = $"transaction/{transfer.Id}";
@@ -46,7 +48,15 @@
             else if(isReceive)
             {
                 <MudText Typo="Typo.h6" style="color:green">+ @BalanceHelper.FormatBalance(transfer.Quantity, tokenData?.Denomination ?? 0)</MudText>
-                <MudIcon Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIcon>
+
+                @if(transfer.TokenTransferType == aoww.Services.Enums.TokenTransferType.Mint)
+                {
+                    <MudText Typo="Typo.h6" style="color:green">MINT</MudText>
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIcon>
+                }
                 <MudLink Class="KodeMono tx-wrap" Href="@detailUrlFrom" Typo="Typo.h6">
                     @transfer.From
                 </MudLink>
@@ -56,9 +66,7 @@
                 <MudLink Class="KodeMono tx-wrap" Href="@detailUrlFrom" Typo="Typo.h6">
                     @transfer.From
                 </MudLink>
-                <br />
                 <MudIcon style="width:15px;" Icon="@Icons.Material.Filled.South" aria-label="Receive"></MudIcon>
-                <br />
 
                 <MudLink Class="KodeMono tx-wrap" Href="@detailUrlTo" Typo="Typo.h6">
                     @transfer.To

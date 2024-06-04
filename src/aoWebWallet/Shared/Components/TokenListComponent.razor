@@ -1,16 +1,17 @@
 ﻿@using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
+@inject GatewayUrlHelper UrlHelper;
 
 @if (token != null)
 {
     <MudPaper Class="pa-4 pt-5 pb-4 mb-0">
         <MudStack Row="true">
-            <div style="display:flex; flex-direction: row; align-items:center; max-height: 50px;">
+            <div style="display:flex; flex-direction: row; align-items:center; max-height: 70px;" Class=" d-overflow-hidden">
                 <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
                 <MudStack Justify="Justify.Center" Spacing="0">
                     <MudText style="font-weight: 500;" Typo="Typo.body1">@token.TokenData?.Name</MudText>
                     <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>
-                    <MudLink Class="KodeMono" Typo="Typo.subtitle1" Href="@TokenUrl">
+                    <MudLink Class="KodeMono tx-wrap" Typo="Typo.subtitle1" Href="@TokenUrl">
                         @token.TokenId
                     </MudLink>
                 </MudStack>

@@ -1,0 +1,26 @@
+﻿using ClipLazor.Components;
+using ClipLazor.Enums;
+using MudBlazor;
+
+namespace aoWebWallet.Services
+{
+    public class ClipboardService(IClipLazor clipboard, ISnackbar snackbar)
+    {
+        public async Task CopyToClipboard(string? text)
+        {
+            bool isSupported = await clipboard.IsClipboardSupported();
+            bool isWritePermitted = await clipboard.IsPermitted(PermissionCommand.Write);
+            if (isSupported && !string.IsNullOrEmpty(text))
+            {
+                if (isWritePermitted)
+                {
+                    var isCopied = await clipboard.WriteTextAsync(text.AsMemory());
+                    if (isCopied)
+                    {
+                        snackbar.Add("Address copied to clipboard", Severity.Success);
+                    }
+                }
+            }
+        }
+    }
+}

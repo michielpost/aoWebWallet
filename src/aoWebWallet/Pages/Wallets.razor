@@ -3,80 +3,78 @@
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject TokenDataService dataService
+@inject ClipboardService ClipboardService
+@inject NavigationManager Navigation
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="px-8 mt-2" MaxWidth="MaxWidth.False">
 
-    @if (BindingContext.WalletList.Data == null || BindingContext.WalletList.Data.Count > 1)
-    {
-        <MudText Typo="Typo.h5">Wallets</MudText>
-    }
-    else
-    {
-        <MudText Typo="Typo.h5">Wallet</MudText>
-    }
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
-
-    <MudContainer style="max-width: 100%;"  Width="100%" Class="d-flex justify-end mb-4 pr-3">
-            @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
-                {
-                    <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
-                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large" OnClick="OpenDialog"></MudIconButton>
-                    </MudTooltip>
-                }
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-3">
+        @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
+            {
+                <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
+                    <MudIconButton Href="/start" style="padding-top: 0;" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
+                </MudTooltip>
+            }
     </MudContainer>
 
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
     <MudStack>
         @if (BindingContext.WalletList.Data != null)
         {
-            if(BindingContext.WalletList.Data.Any())
+            if (BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).Any())
             {
                 int logoCount = 1;
-                foreach (var wallet in BindingContext.WalletList.Data)
+                foreach (var wallet in BindingContext.WalletList.Data.Where(x => !x.IsReadOnly))
                 {
-                    string logoUrl = $"images/account--{logoCount}.svg";
                     string detailUrl = $"wallet/{wallet.Address}";
-                    <MudPaper Class="pa-4">
+                    <MudPaper Class="pa-4 wallet-list">
                         <MudStack Row="true">
-                            <MudAvatar Image="@logoUrl" Size="Size.Large" Class="rounded-full" />
+                            <div Class="relative">
+                                <WalletAvatar Address="@wallet.Address" />
+                                @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
+                                    {
+                                       <MudChip Class="aos-chip" Variant="Variant.Outlined" Color="Color.Dark">AOS</MudChip>
+                                    }
+                            </div>
 
-                            <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
-                                <div style="display:flex; white-space: nowrap;">
-                                    <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrl" Typo="Typo.h6">
+                            <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">
+                                <div Class="d-custom-2">
+                                    <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
                                         @wallet.Address
                                     </MudLink>
-                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(wallet.Address); }" />
+                                    <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(wallet.Address); }" />
                                 </div>
-                                <div style="display:flex; flex-direction:row;">
-                                    @if (wallet.IsReadOnly)
-                                    {
-                                        <MudText Typo="Typo.body2">read-only &nbsp;</MudText>
-                                    }
+                                <div Class="d-flex flex-row">
                                     <MudText Typo="Typo.body2">@wallet.Name</MudText>
-                                    @if (wallet.IsConnected)
-                                    {
-                                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
-                                    }
+
                                     @if (wallet.NeedsBackup)
                                     {
-                                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                                        <MudIcon Class="d-icon-wallet" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
                                         <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
                                     }
                                 </div>
                             </MudStack>
                             <MudSpacer />
-                            @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
-                            {
-                                <MudChip>AOS</MudChip>
-                            }
-                            @if(!string.IsNullOrEmpty(wallet.Jwk))
-                            {
-                                <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }"></MudIconButton>
-                            }
-                            <MudIconButton Class="delete-address" Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }"></MudIconButton>
+                            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                @if(!string.IsNullOrEmpty(wallet.Jwk))
+                                {
+                                    <MudMenuItem>
+                                        <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }">Backup</MudButton>
+                                    </MudMenuItem>
+                                }
+                                <MudMenuItem>
+                                    <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="() => { EditWallet(wallet); }">Edit</MudButton>
+                                </MudMenuItem>
+                                <MudMenuItem>
+                                    <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => { DeleteWallet(wallet); }">Delete</MudButton>
+                                </MudMenuItem>
+                            </MudMenu>
                         </MudStack>
                     </MudPaper>
 
@@ -87,15 +85,7 @@
             }
             else
             {
-                <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
-                    <MudItem lg="6" xs="12">
-                        <AddArConnectComponent IsExpanded="true"></AddArConnectComponent>
-                        <AddUploadWalletComponent IsExpanded="true"></AddUploadWalletComponent>
-                        <AddGenerateWalletComponent IsExpanded="true"></AddGenerateWalletComponent>
-                        <AddWalletComponent IsExpanded="true"></AddWalletComponent>
-                    </MudItem>
-                </MudGrid>
-
+                Navigation.NavigateTo("/start");
             }
         }
         else
@@ -111,10 +101,20 @@
 
 @code
 {
-    private void OpenDialog()
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "#"),
+            new BreadcrumbItem("", href: "#")
+        };
+
+    private async void EditWallet(Wallet wallet)
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddWalletDialog>("Add Wallet", options);
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+
+        StateHasChanged();
     }
 
     private async void DeleteWallet(Wallet wallet)

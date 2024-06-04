@@ -6,7 +6,7 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
-            WatchDataLoaderVM(BindingContext.TokenList);
+            //WatchDataLoaderVM(BindingContext.TokenList);
             WatchDataLoaderVM(BindingContext.WalletList);
             WatchDataLoaderVM(BindingContext.ProcessesDataList);
 
@@ -17,21 +17,14 @@ namespace aoWebWallet.Pages
         {
             if (firstRender)
             {
-                await BindingContext.CheckHasArConnectExtension();
-
                 await BindingContext.LoadWalletList();
-                await BindingContext.LoadTokenList();
+                await dataService.LoadTokenList();
+
+                await BindingContext.CheckHasArConnectExtension();
             }
 
             await base.OnAfterRenderAsync(firstRender);
         }
-
-        //protected override async Task LoadDataAsync()
-        //{
-           
-
-        //    //BindingContext.LoadStats();
-        //}
 
     }
 }

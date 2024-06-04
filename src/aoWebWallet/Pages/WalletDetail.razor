@@ -1,58 +1,86 @@
 ﻿@page "/wallet/{address}"
 @using aoWebWallet.Models
-@inherits MvvmComponentBase<MainViewModel>
+@inherits MvvmComponentBase<WalletDetailViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@inject NavigationManager NavigationManager;
+@inject NavigationManager NavigationManager
+@inject TokenDataService dataService
+@inject MainViewModel MainViewModel
+@inject ClipboardService ClipboardService
+@inject GatewayUrlHelper UrlHelper;
 
 <PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
 
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
-<MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
+    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-2 pr-2">
+        <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
+            <MudIconButton style="padding-top: 0;" Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
+        </MudTooltip>
+    </MudContainer>
+
     <MudPaper Class="pa-4 mb-4">
         <MudStack Row="true">
-            <MudAvatar Image="@($"images/account--{BindingContext.SelectedWalletIndex}.svg")" Size="Size.Large" Class="rounded-full" />
+            <WalletAvatar Address="@BindingContext.SelectedWallet?.Wallet.Address" />
             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
                 <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
                     @Address
                 </MudText>
-                <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Name</MudText>
-                @if (BindingContext.SelectedWallet?.NeedsBackup ?? false)
+                <MudStack Row="true">
+                    @if (BindingContext.SelectedWallet?.IsConnected ?? false)
+                    {
+                        <MudIcon Class="d-icon-wallet" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" />
+                    }
+                    <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Wallet.Name</MudText>
+                    @if (BindingContext.SelectedWallet?.Wallet.OwnerAddress != null)
+                    {
+                        <MudChip>owner: @BindingContext.SelectedWallet?.Wallet.OwnerAddress</MudChip>
+                    }
+                </MudStack>
+                @if (BindingContext.SelectedWallet?.Wallet.NeedsBackup ?? false)
                 {
                     <MudStack Row="true">
-                        <MudIcon style="margin-left:2px; width:20px; padding-bottom:4px;" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                        <MudIcon Class="d-icon-wallet" Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
                         <MudText Typo="Typo.body2">Wallet not backed up yet!</MudText>
                     </MudStack>
                 }
             </MudStack>
-            <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await BindingContext.CopyToClipboard(BindingContext.SelectedWallet?.Address); }" />
+            <MudIconButton Class="copy-clipboard mb-4 ml-0" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(BindingContext.SelectedWallet?.Wallet.Address); }" />
             <MudSpacer />
-            @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Jwk))
-            {
-                <MudTooltip Text="Download wallet file" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet); }"></MudIconButton>
-                </MudTooltip>
-            }
-            <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-                <MudIconButton Class="mt-1" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
-            </MudTooltip>
-            @if (BindingContext.SelectedWallet?.Source == WalletTypes.Explorer)
-            {
-                <MudTooltip Text="Add as readonly wallet" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Icon="@Icons.Material.Outlined.Grade" aria-label="add to wallets" OnClick="AddWalletAsReadonly"></MudIconButton>
-                </MudTooltip>
-            }
+
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem>
+                    @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.Jwk))
+                    {
+                        <MudButton StartIcon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet.Wallet); }">Save</MudButton>
+                    }
+                </MudMenuItem>
+                <MudMenuItem>
+                        <MudButton StartIcon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudButton>
+                </MudMenuItem>
+                <MudMenuItem>
+                    @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
+                        {
+                            <MudButton StartIcon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudButton>
+                        }
+                        else if(BindingContext.SelectedWallet?.Wallet != null)
+                        {
+                            <MudButton StartIcon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudButton>
+                        }
+                </MudMenuItem>
+            </MudMenu>
         </MudStack>
     </MudPaper>
 
-    @if (!(BindingContext.SelectedWallet?.IsReadOnly ?? true) && (BindingContext.SelectedWallet?.IsConnected ?? false))
+    @if (BindingContext.SelectedWallet?.IsConnected ?? false)
     {
         <MudPaper>
-            <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex mb-4 pr-4">
-                @if (BindingContext.UserSettings != null)
+            <MudContainer Width="100%" Class="d-flex mb-4 pr-4 d-max-w-100">
+                @if (MainViewModel.UserSettings != null)
                 {
                     <MudStack Row=true Justify="Justify.Center">
-                        @if (BindingContext.UserSettings.Claimed1 && BindingContext.UserSettings.Claimed2 && BindingContext.UserSettings.Claimed3)
+                        @if (MainViewModel.UserSettings.Claimed1 && MainViewModel.UserSettings.Claimed2 && MainViewModel.UserSettings.Claimed3)
                         {
                             <MudIcon Class="margin-rewards-button" Icon="@Icons.Material.Filled.Favorite" Title="Favorite" />
                             <MudText aria-label="claim token">All Rewards Claimed (3/3)</MudText>
@@ -60,25 +88,25 @@
                         else
                         {
 
-                            if (BindingContext.UserSettings.Claimed1)
+                            if (MainViewModel.UserSettings.Claimed1)
                             {
                                 <MudIcon Class="margin-rewards-button" Icon="@Icons.Material.Filled.Star" Title="Claim 1" />
                             }
                             else
                             {
-                                <MudButton aria-label="claim token" OnClick="Claim1" Disabled="!BindingContext.CanClaim1 || BindingContext.UserSettings.Claimed1">Claim Reward (1/3)</MudButton>
+                                <MudButton aria-label="claim token" OnClick="Claim1" Disabled="!BindingContext.CanClaim1 || MainViewModel.UserSettings.Claimed1">Claim Reward (1/3)</MudButton>
                             }
 
-                            if (BindingContext.UserSettings.Claimed2)
+                            if (MainViewModel.UserSettings.Claimed2)
                             {
                                 <MudIcon Class="margin-rewards-button" Icon="@Icons.Material.Filled.Star" Title="Claim 2" />
                             }
                             else
                             {
-                                <MudButton aria-label="claim token" OnClick="Claim2" Disabled="!BindingContext.CanClaim2 || BindingContext.UserSettings.Claimed2">Claim Reward (2/3)</MudButton>
+                                <MudButton aria-label="claim token" OnClick="Claim2" Disabled="!BindingContext.CanClaim2 || MainViewModel.UserSettings.Claimed2">Claim Reward (2/3)</MudButton>
                             }
 
-                            <MudButton aria-label="claim token" OnClick="Claim3" Disabled="!BindingContext.CanClaim3 || BindingContext.UserSettings.Claimed3">Claim Reward (3/3)</MudButton>
+                            <MudButton aria-label="claim token" OnClick="Claim3" Disabled="!BindingContext.CanClaim3 || MainViewModel.UserSettings.Claimed3">Claim Reward (3/3)</MudButton>
                         }
                     </MudStack>
                 }
@@ -87,61 +115,14 @@
 
     }
 
-    <MudContainer style="max-width: 100%;" Width="100%" Class="d-flex justify-end mb-4 pr-2">
-        @*         <MudTooltip Text="Refresh balances" Arrow="true" Placement="Placement.Left">
-        <MudIconButton Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudIconButton>
-        </MudTooltip> *@
-        <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
-            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
-        </MudTooltip>
-    </MudContainer>
-
-    <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
-    <DataLoaderProgress DataLoader="BindingContext.BalanceDataList.DataLoader" Title="Balances" />
+    <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
     <MudStack Class="mb-12">
-        @if (BindingContext.BalanceDataList.Data != null)
+        @if (BindingContext.BalanceDataList != null)
         {
-            @foreach (var balance in BindingContext.BalanceDataList.Data)
+            @foreach (var balance in BindingContext.BalanceDataList)
             {
-                if (balance.Data?.Token?.TokenData == null)
-                    continue;
-
-                <MudPaper Class="pa-4">
-                    <MudStack Row="true">
-
-                        <div style="width:222px; display:flex; flex-direction: row; align-items:center; max-height: 50px;">
-                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(balance.Data?.Token?.TokenData?.Logo)" Size="Size.Medium" title="@balance.Data?.Token?.TokenId" />
-                            <MudStack Class="ml-4" Justify="Justify.Center" Spacing="0">
-                                <MudText style="font-weight: 500;" Typo="Typo.body1">@balance.Data?.Token?.TokenData?.Name</MudText>
-                                <MudText Typo="Typo.body2">@balance.Data?.Token?.TokenData?.Ticker</MudText>
-                            </MudStack>
-                        </div>
-
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <DataLoaderProgress DataLoader="balance.DataLoader" Title="balance" />
-                            @if (balance.Data?.BalanceData != null)
-                            {
-                                <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(balance.Data.BalanceData.Balance, balance.Data.Token?.TokenData?.Denomination ?? 0)</MudText>
-                            }
-                        </MudStack>
-                        <MudSpacer />
-                        <MudSpacer />
-                        <MudStack Justify="Justify.Center" Spacing="0" Row="true">
-                            <MudTooltip Text="Deposit tokens" Arrow="true" Placement="Placement.Left">
-                                <MudIconButton Icon="@Icons.Material.Filled.South" aria-label="Receive" OnClick="()=>{Receive(balance.Data);}"></MudIconButton>
-                            </MudTooltip>
-
-                            @if ((BindingContext.SelectedWallet?.CanSend ?? false))
-                            {
-                                var hasBalance = balance.Data?.BalanceData?.Balance ?? 0;
-                                <MudTooltip Text="Withdraw tokens" Arrow="true" Placement="Placement.Left">
-                                    <MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" Disabled="hasBalance <= 0" aria-label="Send" OnClick="()=>{Send(balance.Data);}"></MudIconButton>
-                                </MudTooltip>
-                            }
-                        </MudStack>
-                    </MudStack>
-                </MudPaper>
+                <BalanceDataComponent CanSend="@(BindingContext.SelectedWallet?.CanSend ?? false)" BalanceDataVM="balance" />
             }
         }
 
@@ -165,9 +146,16 @@
                     <MudTimeline TimelinePosition="TimelinePosition.Left">
                         @foreach (var transfer in BindingContext.TokenTransferList.Data)
                         {
-                            <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedAddress" />
+                            <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedWallet?.Wallet.Address" />
                         }
                     </MudTimeline>
+
+                    @if (BindingContext.TokenTransferList.DataLoader.LoadingState == LoadingState.Finished && BindingContext.CanLoadMoreTransactions)
+                    {
+                        <MudButton OnClick="() => LoadMoreTransactions()">Load More</MudButton>
+                    }
+                    <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
+
                 }
             </MudStack>
         </MudItem>
@@ -207,44 +195,41 @@
 
 @code
 {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Wallet", href: null, disabled: true)
+        };
+
     [Parameter]
     public string? Address { get; set; }
 
     private void OpenAddTokenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddTokenDialog>("Add Token", options);
+        DialogService.Show<AddTokenToWalletDialog>("Add Token", options);
     }
 
-    private void Receive(BalanceDataViewModel? balanceDataVM)
+    private async void EditWallet(Wallet wallet)
     {
-        BindingContext.SelectedBalanceDataVM = balanceDataVM;
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<ReceiveTokenDialog>("Receive Token", options);
+        var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+
+        StateHasChanged();
     }
 
-    private void Send(BalanceDataViewModel? balanceDataVM)
-    {
-        BindingContext.SelectedBalanceDataVM = balanceDataVM;
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<SendTokenDialog>("Transfer Token", options);
-    }
+
 
     private async Task RefreshBalances()
     {
-        if (BindingContext.SelectedAddress != null)
-            await BindingContext.LoadBalanceDataList(BindingContext.SelectedAddress);
+        await BindingContext.RefreshBalanceDataList();
     }
 
     private async Task RefreshTransactions()
     {
-        if (BindingContext.SelectedAddress != null)
-            await BindingContext.LoadTokenTransferList(BindingContext.SelectedAddress);
-    }
-
-    private async Task AddWalletAsReadonly()
-    {
-        await BindingContext.AddWalletAsReadonly();
+        await BindingContext.RefreshTokenTransferList();
     }
 
     private async Task Claim1()
@@ -260,6 +245,11 @@
     private async Task Claim3()
     {
         await BindingContext.Claim3();
+    }
+
+    private Task LoadMoreTransactions()
+    {
+        return BindingContext.LoadMoreTransactions();
     }
 
 }

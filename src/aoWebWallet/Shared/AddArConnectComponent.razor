@@ -1,14 +1,12 @@
 ﻿@using aoWebWallet.Models
 @inherits MvvmComponentBase<MainViewModel>
-@inject TokenClient TokenClient
 @inject ISnackbar Snackbar
 @inject ArweaveService ArweaveService
+@inject NavigationManager NavigationManager
 
-<MudPaper Class="pa-8 mb-4">
+<MudPaper Elevation="0" Class="pa-8 mb-4 trigger-transparency">
     <MudStack Spacing="2">
-        <MudButton OnClick="OnExpandCollapseClick">@(IsExpanded ? "Connect wallet" : "Connect wallet")</MudButton>
-        <MudDivider />
-        <MudCollapse Expanded="IsExpanded">
+        <MudStack>
 
             @if (!BindingContext.HasArConnectExtension.HasValue)
             {
@@ -17,9 +15,9 @@
             else if (!BindingContext.HasArConnectExtension.Value)
             {
                 <MudButton Href="https://www.arconnect.io/" style="cursor:pointer;">
-                    <div style="width:100%; margin-left:5px; display: flex;  align-items:center; padding:8px;">
-                        <MudImage style="width:31px; height:31px;" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" Class="rounded-lg" />
-                        <MudText Typo="Typo.subtitle2" style="margin-left:10px;">Download ArConnect</MudText>
+                    <div Class="d-custom-4">
+                        <MudImage Class="d-custom-5 rounded-lg" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" />
+                        <MudText Typo="Typo.subtitle2" Class="ml-3">Download ArConnect</MudText>
                     </div>
                 </MudButton>
             }
@@ -27,10 +25,10 @@
             {
                 if (string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
                 {
-                    <MudButton style="border-radius:22px;width:100%; margin-top:5px; display: flex;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);" OnClick="Connect" Elevation="3">
-                        <div style="width:100%; margin-left:5px; display: flex;  align-items:center; padding:8px;">
-                            <MudImage style="width:31px; height:31px;" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" Class="rounded-lg" />
-                            <MudText Typo="Typo.subtitle2" style="margin-left:10px;">Connect with ArConnect</MudText>
+                    <MudButton Class="d-custom-6" OnClick="Connect" Elevation="3">
+                        <div Class="d-custom-4">
+                            <MudImage Class="d-custom-5 rounded-lg" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" />
+                            <MudText Typo="Typo.subtitle2" Class="ml-3">Connect with ArConnect</MudText>
                         </div>
                     </MudButton>
 
@@ -40,17 +38,12 @@
                     var wallet = BindingContext.WalletList.Data?.Where(x => x.Source == WalletTypes.ArConnect && x.Address == BindingContext.ActiveArConnectAddress).FirstOrDefault();
                     if (wallet == null)
                     {
-
-
-                        <MudButton style="border-radius:22px;width:100%; margin-top:5px; display: flex;  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.09);" OnClick="Connect" Elevation="3">
-                            <div style="width:100%; margin-left:5px; display: flex;  align-items:center; padding:8px;">
-                                <MudImage style="width:31px; height:31px;" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" Class="rounded-lg" />
-                                <MudText Typo="Typo.subtitle2" style="margin-left:10px;">Connect with ArConnect</MudText>
+                        <MudButton Class="d-custom-6" OnClick="Connect" Elevation="3">
+                            <div Class="d-custom-4">
+                                <MudImage Class="d-custom-5 rounded-lg" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" />
+                                <MudText Typo="Typo.subtitle2" Class="ml-3">Connect with ArConnect</MudText>
                             </div>
                         </MudButton>
-
-
-
                     }
                     else
                     {
@@ -64,7 +57,7 @@
             {
             <MudButton Color="Color.Primary" OnClick="Submit">Add</MudButton>
             } *@
-        </MudCollapse>
+        </MudStack>
     </MudStack>
 </MudPaper>
 
@@ -133,7 +126,14 @@
 
             Snackbar.Add($"Wallet added ({address})", Severity.Info);
 
-            MudDialog?.Close(true);
+            if (MudDialog != null)
+            {
+                MudDialog.Close();
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"/wallet/{wallet.Address}");
+            }
         }
     }
 

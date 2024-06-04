@@ -8,11 +8,11 @@ ao Web Wallet is a wallet for the [ao network](https://ao.arweave.dev) running o
 
 Features:
 - Add ArConnect Wallets
-- Add read-only wallets
+- Create new wallets and import wallet.json files
+- View your ao processes
+- Send tokens for your owned ao processes
 - View balances of a wallet
 - View all transactions for a wallet
-- Send tokens for ArConnect Wallets
-- Receive instructions for all wallets
 - Add custom tokens
 - Dark and Light theme
 

@@ -1,7 +1,9 @@
 ﻿@page "/transaction/{txid}"
 @using aoWebWallet.Models
-@inherits MvvmComponentBase<MainViewModel>
+@inherits MvvmComponentBase<TransactionDetailViewModel>
 @inject NavigationManager NavigationManager;
+@inject TokenDataService dataService
+@inject GatewayUrlHelper UrlHelper;
 
 <PageTitle>@TxId - @Program.PageTitlePostFix</PageTitle>
 
@@ -9,61 +11,66 @@
 <MudContainer Class="mt-8 px-8" MaxWidth="MaxWidth.False">
 
     <MudStack>
-        <DataLoaderProgress DataLoader="BindingContext.TokenList.DataLoader" Title="tokens" />
         <DataLoaderProgress DataLoader="BindingContext.SelectedTransaction.DataLoader" Title="transaction" />
+
+
 
         @if (BindingContext.SelectedTransaction.Data != null)
         {
             var transfer = BindingContext.SelectedTransaction.Data;
 
             <MudText Typo="Typo.h5">Transaction</MudText>
-            <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+            <MudText Class="KodeMono tx-wrap" Typo="Typo.h6">
                 @transfer.Id
             </MudText>
 
-            var tokenData = BindingContext.TokenList.Data?.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
+            var tokenData = dataService.TokenList.Where(x => x.TokenId == transfer.TokenId).Select(x => x.TokenData).FirstOrDefault();
 
-            <MudPaper Class="pa-4">
-                <MudStack Row=true>
-                    @if (transfer.BlockHeight.HasValue)
-                    {
-                        <MudText Typo="Typo.caption">@transfer.Timestamp.ToString("s")</MudText>
-                    }
-                    else
-                    {
-                        <MudText Typo="Typo.caption">unconfirmed</MudText>
-                    }
+            <MudTimeline TimelinePosition="TimelinePosition.Left">
+                <MudTimelineItem>
+                    <ItemDot>
+                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(tokenData?.Logo)" Size="Size.Medium" title="@tokenData?.TokenId" />
+                    </ItemDot>
+                    <ItemContent>
+                        @if (transfer.BlockHeight.HasValue)
+                        {
+                            <MudText Typo="Typo.caption">@transfer.Timestamp.ToString("s")</MudText>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.caption">unconfirmed</MudText>
+                        }
 
-                    @if (tokenData != null)
-                    {
-                        <MudAvatar Image="@UrlHelper.GetArweaveUrl(tokenData.Logo)" Size="Size.Large" title="@tokenData.TokenId" />
-                        <MudStack Justify="Justify.Center" Spacing="0">
-                            <MudText Typo="Typo.body1">@tokenData.Name</MudText>
-                            <MudText Typo="Typo.body2">@tokenData.Ticker</MudText>
-                        </MudStack>
-                    }
+                        @if (tokenData != null)
+                        {
+                            <MudStack Justify="Justify.Center" Spacing="0">
+                                <MudText Typo="Typo.body1">@tokenData.Name</MudText>
+                                <MudText Typo="Typo.body2">@tokenData.Ticker</MudText>
+                            </MudStack>
+                        }
 
-                    @{
-                    string detailUrlFrom = $"wallet/{transfer.From}";
-                    string detailUrlTo = $"wallet/{transfer.To}";
-                    }
+                        @{
+                            string detailUrlFrom = $"wallet/{transfer.From}";
+                            string detailUrlTo = $"wallet/{transfer.To}";
+                        }
 
-                    <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlFrom" Typo="Typo.h6">
-                        @transfer.From
-                    </MudLink>
-                    <MudIcon Icon="@Icons.Material.Filled.ArrowRight" aria-label="Receive"></MudIcon>
+                        <MudLink Class="KodeMono tx-wrap" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlFrom" Typo="Typo.h6">
+                            @transfer.From
+                        </MudLink>
 
-                    <MudLink Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlTo" Typo="Typo.h6">
-                        @transfer.To
-                    </MudLink>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowRight" aria-label="Receive"></MudIcon>
 
-                    @if (tokenData != null)
-                    {
-                        <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
-                    }
+                        <MudLink Class="KodeMono tx-wrap" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Href="@detailUrlTo" Typo="Typo.h6">
+                            @transfer.To
+                        </MudLink>
 
-                </MudStack>
-            </MudPaper>
+                        @if (tokenData != null)
+                        {
+                            <MudText Typo="Typo.h5">@BalanceHelper.FormatBalance(transfer.Quantity, tokenData.Denomination ?? 0)</MudText>
+                        }
+                    </ItemContent>
+                </MudTimelineItem>
+            </MudTimeline>
         }
 
     </MudStack>
