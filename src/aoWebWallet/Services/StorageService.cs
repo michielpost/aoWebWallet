@@ -28,15 +28,25 @@ namespace aoWebWallet.Services
 
         public static void AddSystemTokens(List<Token> result)
         {
-            AddSystemToken(result, "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
+            AddSystemToken(result, Constants.AoTokenId,
                 new TokenData
                 {
-                    TokenId = "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
-                    Denomination = 3,
-                    Logo = "eIOOJiqtJucxvB4k8a-sEKcKpKTh9qQgOV3Au7jlGYc",
-                    Name = "AOCRED",
-                    Ticker = "testnet-AOCRED"
-                }); //CRED
+                    TokenId = Constants.AoTokenId,
+                    Denomination = 12,
+                    Logo = "UkS-mdoiG8hcAClhKK8ch4ZhEzla0mCPDOix9hpdSFE",
+                    Name = "AO",
+                    Ticker = "AO"
+                }); //AO
+
+            AddSystemToken(result, "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
+               new TokenData
+               {
+                   TokenId = "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
+                   Denomination = 3,
+                   Logo = "eIOOJiqtJucxvB4k8a-sEKcKpKTh9qQgOV3Au7jlGYc",
+                   Name = "AOCRED",
+                   Ticker = "testnet-AOCRED"
+               }); //CRED
 
 
             AddSystemToken(result, "8p7ApPZxC_37M06QHVejCQrKsHbcJEerd3jWNkDUWPQ",
