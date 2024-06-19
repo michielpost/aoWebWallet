@@ -24,6 +24,7 @@ namespace aoww.ProcesModels.Metadata
 
         //Run on initialization
         public bool AutoRun { get; set; }
+        public bool IsHidden { get; set; }
     }
 
 

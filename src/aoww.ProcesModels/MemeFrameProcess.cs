@@ -10,12 +10,17 @@ using System.Threading.Tasks;
 
 namespace aoww.ProcesModels
 {
+    /// <summary>
+    /// https://github.com/permaweb/memeframes
+    /// </summary>
     public class MemeFrameProcess : Process
     {
         public string? MintTokenId { get; set; }
 
         public string? Name { get; set; }
         public string? Logo { get; set; }
+        public string? Description { get; set; }
+        public string? FrameId { get; set; }
 
         public MemeFrameProcess(string processId) : base(processId) { }
 
@@ -27,9 +32,19 @@ namespace aoww.ProcesModels
                 {
                     Name = "Info",
                     AutoRun = true,
+                    IsHidden = true,
                     ActionType = ActionType.DryRun,
-                    AoAction = CreateAoActionGetInfo(),
-                    ProcessResult = ProcessInfoResult
+                    AoAction = CreateAoActionGetInfoBasic(),
+                    ProcessResult = ProcessInfoBasicResult
+                },
+                new ActionMetadata
+                {
+                    Name = "Get Description",
+                    AutoRun = true,
+                    IsHidden = true,
+                    ActionType = ActionType.DryRun,
+                    AoAction = CreateAoActionGetInfoDescription(),
+                    ProcessResult = ProcessInfoDescriptionResult
                 },
                 new ActionMetadata
                 {
@@ -37,13 +52,6 @@ namespace aoww.ProcesModels
                     ActionType = ActionType.DryRun,
                     AoAction = CreateAoActionViewStakers()
                 },
-                //new ActionMetadata
-                //{
-                //    Name = "Get Frame",
-                //    ActionType = ActionType.DryRun,
-                //    AoAction = TokenProcess.CreateForTokenTransaction(this.ProcessId)
-                //},
-                
                 new ActionMetadata
                 {
                     Name = "Stake",
@@ -61,14 +69,25 @@ namespace aoww.ProcesModels
                     Name = "Vote nay",
                     ActionType = ActionType.Message,
                     AoAction = CreateAoActionVote("nay")
+                },
+                new ActionMetadata
+                {
+                    Name = "Get Votes",
+                    ActionType = ActionType.DryRun,
+                    AoAction = CreateAoActionGetVotes()
+                },
+                new ActionMetadata
+                {
+                    Name = "Get Frame",
+                    AutoRun = true,
+                    IsHidden = true,
+                    ActionType = ActionType.DryRun,
+                    AoAction = CreateAoActionGetFrame(),
+                    ProcessResult = (x) =>
+                    {
+                        this.FrameId = x?.Messages?.FirstOrDefault()?.Data;
+                    }
                 }
-                ,
-                //new ActionMetadata
-                //{
-                //    Name = "Get Votes",
-                //    ActionType = ActionType.DryRun,
-                //    AoAction = TokenProcess.CreateForTokenTransaction(this.ProcessId)
-                //}
             };
 
             if (MintTokenId != null)
@@ -86,7 +105,7 @@ namespace aoww.ProcesModels
             return actions;
         }
 
-        private void ProcessInfoResult(MessageResult? result)
+        private void ProcessInfoBasicResult(MessageResult? result)
         {
             if (result == null)
                 return;
@@ -94,6 +113,15 @@ namespace aoww.ProcesModels
             //Get name and logo
             this.Name = result.GetFirstTagValue("Name");
             this.Logo = result.GetFirstTagValue("Logo");
+        }
+
+        private void ProcessInfoDescriptionResult(MessageResult? result)
+        {
+            if (result == null)
+                return;
+
+            //Get name and logo
+            this.Description = result.Messages.FirstOrDefault()?.Data;
         }
 
         private AoAction CreateAoActionStake()
@@ -124,7 +152,7 @@ namespace aoww.ProcesModels
             };
         }
 
-        private AoAction CreateAoActionGetInfo()
+        private AoAction CreateAoActionGetInfoBasic()
         {
             return new AoAction
             {
@@ -132,6 +160,18 @@ namespace aoww.ProcesModels
                 {
                     new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
                     new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Info" },
+                }
+            };
+        }
+
+        private AoAction CreateAoActionGetInfoDescription()
+        {
+            return new AoAction
+            {
+                Params = new List<ActionParam>
+                {
+                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
+                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Get-Info" },
                 }
             };
         }
@@ -144,6 +184,30 @@ namespace aoww.ProcesModels
                 {
                     new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
                     new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Stakers" },
+                }
+            };
+        }
+
+        private AoAction CreateAoActionGetVotes()
+        {
+            return new AoAction
+            {
+                Params = new List<ActionParam>
+                {
+                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
+                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Votes" },
+                }
+            };
+        }
+
+        private AoAction CreateAoActionGetFrame()
+        {
+            return new AoAction
+            {
+                Params = new List<ActionParam>
+                {
+                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
+                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Get-Frame" },
                 }
             };
         }

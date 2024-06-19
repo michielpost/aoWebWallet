@@ -23,8 +23,8 @@
 
         @foreach (var memeProcess in memeList)
         {
-            var readActions = memeProcess.GetDryRunActions();
-            var messageActions = memeProcess.GetMessageActions();
+            var readActions = memeProcess.GetVisibleDryRunActions();
+            var messageActions = memeProcess.GetVisibleMessageActions();
 
             <MudItem xs="12" sm="4">
                 <MudCard>
@@ -45,15 +45,15 @@
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent Class="pb-0">
-                       @*  <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
-                            <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
-                                <b>25%</b>
-                            </MudText>
-                        </MudProgressLinear> *@
-                       @*  <MudText Class="mb-2" Typo="Typo.body2">
-                            Theme: The zeroth memecoin minted on ao: winner of hackathon prizes, poet of iframes, informer of votes, verifier of processes, pilgrim of the hyper parallel spaces between, believer in dreams, drafter of the dankest memes.
+                        @*  <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
+                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                    <b>25%</b>
+                    </MudText>
+                    </MudProgressLinear> *@
+                        <MudText Class="mb-2" Typo="Typo.body2">
+                            @memeProcess.Description
                         </MudText>
-                        <MudTextField Class="mt-0" T="string" Label="Amount" HelperText="The amount to perform below action" HelperTextOnFocus="true" Variant="Variant.Text" /> *@
+                        @*   <MudTextField Class="mt-0" T="string" Label="Amount" HelperText="The amount to perform below action" HelperTextOnFocus="true" Variant="Variant.Text" /> *@
                     </MudCardContent>
 
                     @if (readActions.Any())
@@ -64,7 +64,7 @@
                                 {
                                     <MudButton OnClick="() => DryRun(action)">@action.Name</MudButton>
                                 }
-                        </MudButtonGroup>
+                            </MudButtonGroup>
                         </MudCardActions>
                     }
 
@@ -81,13 +81,24 @@
                     }
 
                     <MudCardActions>
-                        <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
+                        @if (memeProcess.FrameId != null)
+                        {
+
+                            <MudButton Href="@UrlHelper.GetArweaveUrl(memeProcess.FrameId)"
+                                       Target="_blank"
+                                       Variant="Variant.Filled"
+                                       EndIcon="@Icons.Material.Outlined.Link"
+                                       Color="Color.Primary">
+                                View Current MemeFrame
+                            </MudButton>
+                        }
+
                     </MudCardActions>
                 </MudCard>
             </MudItem>
         }
 
-        
+
     </MudGrid>
 </MudContainer>
 
@@ -109,11 +120,11 @@
         {
             memeList = await StorageService.GetMemeFrames();
 
-            foreach(var meme in memeList)
+            foreach (var meme in memeList)
             {
                 var initActions = meme.GetAutoRunActions();
 
-                foreach(var initAction in initActions)
+                foreach (var initAction in initActions)
                 {
                     DryRun(initAction);
                 }
@@ -137,6 +148,8 @@
         var result = await TransactionService.DryRunAction(testWallet, aoAction);
 
         actionMetadata?.ProcessResult?.Invoke(result);
+
+        await StorageService.SaveMemeFrames(memeList);
 
         StateHasChanged();
     }

@@ -84,7 +84,7 @@ namespace aoWebWallet.ViewModels
         {
             VisibleTokenList = new();
             VisibleTokenList.Add(Constants.AoTokenId); //AO
-            VisibleTokenList.Add("Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc"); //TESTNET-CRED
+            VisibleTokenList.Add(Constants.CredTokenId); //TESTNET-CRED
 
             ResetTokenTransferlist();
 
