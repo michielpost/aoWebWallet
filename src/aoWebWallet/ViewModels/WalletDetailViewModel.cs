@@ -83,7 +83,8 @@ namespace aoWebWallet.ViewModels
         public async Task Initialize(string address)
         {
             VisibleTokenList = new();
-            VisibleTokenList.Add("Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc");
+            VisibleTokenList.Add(Constants.AoTokenId); //AO
+            VisibleTokenList.Add("Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc"); //TESTNET-CRED
 
             ResetTokenTransferlist();
 
