@@ -1,4 +1,5 @@
 ﻿using aoww.ProcesModels.Action;
+using ArweaveAO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,8 @@ namespace aoww.ProcesModels.Metadata
 
         public required AoAction AoAction { get; set; }
 
-        public Action<bool>? IsEnabled { get; set; }
+        public Action<MessageResult?>? ProcessResult { get; set; }
+        public Func<bool>? IsEnabled { get; set; }
 
         public string? LastResult { get; set; }
 

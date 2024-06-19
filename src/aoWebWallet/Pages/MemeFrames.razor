@@ -1,12 +1,14 @@
 ﻿@page "/meme-frames"
 @using aoWebWallet.Models
 @using aoww.ProcesModels
+@using aoww.ProcesModels.Metadata
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 @inject StorageService StorageService
 @inject TransactionService TransactionService
+@inject GatewayUrlHelper UrlHelper
 
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
@@ -21,32 +23,37 @@
 
         @foreach (var memeProcess in memeList)
         {
-            var readActions = memeProcess.GetActionMetadata().Where(x => x.ActionType == aoww.ProcesModels.Metadata.ActionType.DryRun).ToList();
-            var messageActions = memeProcess.GetActionMetadata().Where(x => x.ActionType == aoww.ProcesModels.Metadata.ActionType.Message).ToList();
+            var readActions = memeProcess.GetDryRunActions();
+            var messageActions = memeProcess.GetMessageActions();
 
             <MudItem xs="12" sm="4">
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">I</MudAvatar>
+                            @if (!string.IsNullOrEmpty(memeProcess.Logo))
+                            {
+                                <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(memeProcess.Logo)" Size="Size.Large" />
+                            }
+                            else
+                            {
+                                <MudAvatar Color="Color.Secondary">@memeProcess.ProcessId</MudAvatar>
+                            }
                         </CardHeaderAvatar>
                         <CardHeaderContent>
                             <MudText Typo="Typo.body1">Id: @memeProcess.ProcessId</MudText>
-                            <MudText Typo="Typo.body1">Name: MEME</MudText>
-                            <MudText Typo="Typo.body2">Creator: Andy Tudhope</MudText>
-                            <MudText Typo="Typo.body2">  Mint cap: 1,000,000 CRED   </MudText>
+                            <MudText Typo="Typo.body1">Name: @memeProcess.Name</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent Class="pb-0">
-                        <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
+                       @*  <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
                             <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
                                 <b>25%</b>
                             </MudText>
-                        </MudProgressLinear>
-                        <MudText Class="mb-2" Typo="Typo.body2">
+                        </MudProgressLinear> *@
+                       @*  <MudText Class="mb-2" Typo="Typo.body2">
                             Theme: The zeroth memecoin minted on ao: winner of hackathon prizes, poet of iframes, informer of votes, verifier of processes, pilgrim of the hyper parallel spaces between, believer in dreams, drafter of the dankest memes.
                         </MudText>
-                        <MudTextField Class="mt-0" T="string" Label="Amount" HelperText="The amount to perform below action" HelperTextOnFocus="true" Variant="Variant.Text" />
+                        <MudTextField Class="mt-0" T="string" Label="Amount" HelperText="The amount to perform below action" HelperTextOnFocus="true" Variant="Variant.Text" /> *@
                     </MudCardContent>
 
                     @if (readActions.Any())
@@ -55,7 +62,7 @@
                             <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
                                 @foreach (var action in readActions)
                                 {
-                                    <MudButton OnClick="() => DryRun(action.AoAction)">@action.Name</MudButton>
+                                    <MudButton OnClick="() => DryRun(action)">@action.Name</MudButton>
                                 }
                         </MudButtonGroup>
                         </MudCardActions>
@@ -101,20 +108,37 @@
         if (firstRender)
         {
             memeList = await StorageService.GetMemeFrames();
+
+            foreach(var meme in memeList)
+            {
+                var initActions = meme.GetAutoRunActions();
+
+                foreach(var initAction in initActions)
+                {
+                    DryRun(initAction);
+                }
+            }
+
             StateHasChanged();
         }
 
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task DryRun(AoAction aoAction)
+    private async Task DryRun(ActionMetadata actionMetadata)
     {
-        if (BindingContext.ActiveWalletAddress == null)
-            return;
+        AoAction aoAction = actionMetadata.AoAction;
 
-        var testWallet = new Wallet() { Address = BindingContext.ActiveWalletAddress };
+        var senderAddress = BindingContext.ActiveWalletAddress;
+        if (senderAddress == null)
+            senderAddress = aoAction.Target?.Value ?? string.Empty;
+
+        var testWallet = new Wallet() { Address = senderAddress };
         var result = await TransactionService.DryRunAction(testWallet, aoAction);
-        Console.WriteLine(result?.Messages.FirstOrDefault()?.Data);
+
+        actionMetadata?.ProcessResult?.Invoke(result);
+
+        StateHasChanged();
     }
 
     private void GoToSend(AoAction aoAction)

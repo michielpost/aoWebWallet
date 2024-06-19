@@ -1,5 +1,7 @@
 ﻿using aoww.ProcesModels.Action;
 using aoww.ProcesModels.Metadata;
+using ArweaveAO.Extensions;
+using ArweaveAO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,8 @@ namespace aoww.ProcesModels
     {
         public string? MintTokenId { get; set; }
 
-        public Dictionary<string, string>? InfoResult { get; set; }
+        public string? Name { get; set; }
+        public string? Logo { get; set; }
 
         public MemeFrameProcess(string processId) : base(processId) { }
 
@@ -25,7 +28,8 @@ namespace aoww.ProcesModels
                     Name = "Info",
                     AutoRun = true,
                     ActionType = ActionType.DryRun,
-                    AoAction = CreateAoActionGetInfo()
+                    AoAction = CreateAoActionGetInfo(),
+                    ProcessResult = ProcessInfoResult
                 },
                 new ActionMetadata
                 {
@@ -80,6 +84,16 @@ namespace aoww.ProcesModels
             }
 
             return actions;
+        }
+
+        private void ProcessInfoResult(MessageResult? result)
+        {
+            if (result == null)
+                return;
+
+            //Get name and logo
+            this.Name = result.GetFirstTagValue("Name");
+            this.Logo = result.GetFirstTagValue("Logo");
         }
 
         private AoAction CreateAoActionStake()
