@@ -1,4 +1,5 @@
 ﻿@using aoWebWallet.Models
+@using aoww.ProcesModels
 @inject GatewayUrlHelper UrlHelper
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
@@ -60,7 +61,7 @@
         if (balanceDataVM?.Token == null)
             return;
 
-        var aoAction = AoAction.CreateForTokenTransaction(balanceDataVM.Token.TokenId);
+        var aoAction = TokenProcess.CreateForTokenTransaction(balanceDataVM.Token.TokenId);
 
         NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
     }

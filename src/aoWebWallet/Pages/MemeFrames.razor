@@ -1,8 +1,13 @@
 ﻿@page "/meme-frames"
 @using aoWebWallet.Models
+@using aoww.ProcesModels
 @inherits MvvmComponentBase<MainViewModel>
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject StorageService StorageService
+@inject TransactionService TransactionService
+
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
@@ -11,54 +16,106 @@
     <MudText Class="mb-4" Typo="Typo.h5">Meme Frames</MudText>
 
     <MudGrid Spacing="2" Justify="Justify.Center">
-        <MudItem xs="12" sm="4">
-            <MudCard>
-                <MudCardHeader>
-                    <CardHeaderAvatar>
-                        <MudAvatar Color="Color.Secondary">I</MudAvatar>
-                    </CardHeaderAvatar>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.body1">Name: MEME</MudText>
-                        <MudText Typo="Typo.body2">Creator: Andy Tudhope</MudText>
-                        <MudText Typo="Typo.body2">  Mint cap: 1,000,000 CRED   </MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent Class="pb-0">
-                    <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
-                        <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
-                            <b>25%</b>
-                        </MudText>
-                    </MudProgressLinear>
-                    <MudText Class="mb-2" Typo="Typo.body2">
-                     Theme: The zeroth memecoin minted on ao: winner of hackathon prizes, poet of iframes, informer of votes, verifier of processes, pilgrim of the hyper parallel spaces between, believer in dreams, drafter of the dankest memes.
-                    </MudText>
-                    <MudTextField Class="mt-0" T="string" Label="Amount" HelperText="The amount to perform below action" HelperTextOnFocus="true" Variant="Variant.Text" />
-                </MudCardContent>
 
-                 <MudCardActions>
-                    <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                        <MudButton>Mint</MudButton>
-                        <MudButton Disabled="true">Stake</MudButton>
-                        <MudButton Disabled="true">Yay</MudButton>
-                        <MudButton Disabled="true">Nay</MudButton>
-                    </MudButtonGroup>
-                </MudCardActions>
-                <MudCardActions>
-                    <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12" sm="4">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">.</MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="4">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">.</MudPaper>
-        </MudItem>
+        @foreach (var meme in memeList)
+        {
+            var memeProcess = new MemeFrameProcess(meme);
+            var readActions = memeProcess.GetActionMetadata().Where(x => x.ActionType == aoww.ProcesModels.Metadata.ActionType.DryRun).ToList();
+            var messageActions = memeProcess.GetActionMetadata().Where(x => x.ActionType == aoww.ProcesModels.Metadata.ActionType.Message).ToList();
+
+            <MudItem xs="12" sm="4">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderAvatar>
+                            <MudAvatar Color="Color.Secondary">I</MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Id: @meme</MudText>
+                            <MudText Typo="Typo.body1">Name: MEME</MudText>
+                            <MudText Typo="Typo.body2">Creator: Andy Tudhope</MudText>
+                            <MudText Typo="Typo.body2">  Mint cap: 1,000,000 CRED   </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent Class="pb-0">
+                        <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
+                            <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                                <b>25%</b>
+                            </MudText>
+                        </MudProgressLinear>
+                        <MudText Class="mb-2" Typo="Typo.body2">
+                            Theme: The zeroth memecoin minted on ao: winner of hackathon prizes, poet of iframes, informer of votes, verifier of processes, pilgrim of the hyper parallel spaces between, believer in dreams, drafter of the dankest memes.
+                        </MudText>
+                        <MudTextField Class="mt-0" T="string" Label="Amount" HelperText="The amount to perform below action" HelperTextOnFocus="true" Variant="Variant.Text" />
+                    </MudCardContent>
+
+                    @if (readActions.Any())
+                    {
+                        <MudCardActions>
+                            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                                @foreach (var action in readActions)
+                                {
+                                    <MudButton OnClick="() => DryRun(action.AoAction)">@action.Name</MudButton>
+                                }
+                        </MudButtonGroup>
+                        </MudCardActions>
+                    }
+
+                    @if (messageActions.Any())
+                    {
+                        <MudCardActions>
+                            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                                @foreach (var action in messageActions)
+                                {
+                                    <MudButton OnClick="() => GoToSend(action.AoAction)">@action.Name</MudButton>
+                                }
+                            </MudButtonGroup>
+                        </MudCardActions>
+                    }
+
+                    <MudCardActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+
+        
     </MudGrid>
 </MudContainer>
 
 @code
 {
+    private List<string> memeList = new();
 
+    protected override void OnInitialized()
+    {
+        //WatchCollection(dataService.TokenList);
+        //WatchObject(dataService.TokenDataLoader);
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            memeList = await StorageService.GetMemeFrames();
+            StateHasChanged();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task DryRun(AoAction aoAction)
+    {
+        var testWallet = new Wallet() { Address = "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww" };
+        var result = await TransactionService.DryRunAction(testWallet, aoAction);
+        Console.WriteLine(result?.Messages.FirstOrDefault()?.Data);
+    }
+
+    private void GoToSend(AoAction aoAction)
+    {
+        NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
+    }
 
 }

@@ -16,6 +16,18 @@ namespace aoWebWallet.Services
             this.localStorage = localStorage;
         }
 
+        public async ValueTask<List<string>> GetMemeFrames()
+        {
+            var result = new List<string>();
+
+            result.Add("OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww"); //TRUNK
+            result.Add("2gM9n9QO6JG1_bZhCWr3fuEKJtzRgx1xvYUB92nVFAs"); //AORTA
+            result.Add("-a4T7XLMDGTcu8_preKXdUT6__4sJkMhYLEJZkXUYd0"); //MEME
+            result.Add("rik3eCayInKVNzSMdoxeSEfpxNd5U7tx1H8NAveg4o8"); //FINCH-MEME
+
+            return result;
+        }
+
         public async ValueTask<List<Token>> GetTokenIds()
         {
             var result = await localStorage.GetItemAsync<List<Token>>(TOKEN_LIST_KEY);

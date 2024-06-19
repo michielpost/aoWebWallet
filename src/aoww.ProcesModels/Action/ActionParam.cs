@@ -1,7 +1,6 @@
-﻿
-using System.Text;
+﻿using System.Text;
 
-namespace aoWebWallet.Models
+namespace aoww.ProcesModels.Action
 {
     public class AoAction
     {
@@ -10,7 +9,7 @@ namespace aoWebWallet.Models
         public ActionParam? Target => Params.Where(x => x.ParamType == ActionParamType.Target).FirstOrDefault();
         public IEnumerable<ActionParam> AllWithoutTarget => Params.Where(x => x.ParamType != ActionParamType.Target);
         public IEnumerable<ActionParam> Filled => Params.Where(x => x.ParamType == ActionParamType.Filled);
-        public IEnumerable<ActionParam> AllInputs => Params.Where(x => 
+        public IEnumerable<ActionParam> AllInputs => Params.Where(x =>
                                                         x.ParamType != ActionParamType.Filled
                                                         && x.ParamType != ActionParamType.Target);
 
@@ -19,7 +18,7 @@ namespace aoWebWallet.Models
             if (Target == null)
                 return "No Target process specified.";
 
-            foreach(var input in AllInputs)
+            foreach (var input in AllInputs)
             {
                 if (string.IsNullOrEmpty(input.Value))
                     return $"Please enter a value for {input.Key}";
@@ -27,22 +26,6 @@ namespace aoWebWallet.Models
 
             return null;
         }
-
-        public List<ArweaveBlazor.Models.Tag> ToEvalTags()
-        {
-            return Params.Select(x => new ArweaveBlazor.Models.Tag { Name = x.Key, Value = x.Value ?? string.Empty }).ToList();
-        }
-
-        public List<ArweaveBlazor.Models.Tag> ToTags()
-        {
-            return AllWithoutTarget.Select(x => new ArweaveBlazor.Models.Tag { Name = x.Key, Value = x.Value ?? string.Empty }).ToList();
-        }
-
-        public List<ArweaveAO.Models.Tag> ToDryRunTags()
-        {
-            return AllWithoutTarget.Select(x => new ArweaveAO.Models.Tag { Name = x.Key, Value = x.Value ?? string.Empty }).ToList();
-        }
-
 
         public string ToQueryString()
         {
@@ -53,12 +36,12 @@ namespace aoWebWallet.Models
 
             sb.Append($"{Target.Key}={Target.Value}&");
 
-            foreach (var param in this.Filled)
+            foreach (var param in Filled)
             {
                 sb.Append($"{param.Key}={param.Value}&");
             }
 
-            foreach (var param in this.AllInputs)
+            foreach (var param in AllInputs)
             {
                 var args = string.Join(';', param.Args);
                 if (args.Length > 0)
@@ -134,35 +117,7 @@ namespace aoWebWallet.Models
             return action;
         }
 
-        public static AoAction CreateForTokenTransaction(string recipient, string tokenId)
-        {
-            return new AoAction
-            {
-                Params = new List<ActionParam>
-                {
-                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= tokenId },
-                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Transfer" },
-                    new ActionParam { Key= "Recipient", ParamType = ActionParamType.Filled, Value = recipient },
-                    new ActionParam { Key= "Quantity", ParamType = ActionParamType.Balance, Args = new List<string> { tokenId } }
-                }
 
-            };
-        }
-
-        public static AoAction CreateForTokenTransaction(string tokenId)
-        {
-            return new AoAction
-            {
-                Params = new List<ActionParam>
-                {
-                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= tokenId },
-                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Transfer" },
-                    new ActionParam { Key= "Recipient", ParamType = ActionParamType.Process },
-                    new ActionParam { Key= "Quantity", ParamType = ActionParamType.Balance, Args = new List<string> { tokenId } }
-                }
-
-            };
-        }
     }
 
     public class ActionParam

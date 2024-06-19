@@ -1,5 +1,7 @@
 ﻿using aoWebWallet.Models;
 using aoWebWallet.Services;
+using aoww.ProcesModels;
+using aoww.ProcesModels.Action;
 using aoww.Services;
 using aoww.Services.Models;
 using ArweaveAO;
@@ -41,7 +43,7 @@ namespace aoWebWallet.ViewModels
             {
                 if (!string.IsNullOrWhiteSpace(TokenId))
                 {
-                    return "/action?" + AoAction.CreateForTokenTransaction(Address, TokenId).ToQueryString();
+                    return "/action?" + TokenProcess.CreateForTokenTransaction(Address, TokenId).ToQueryString();
                 }
                 else
                     return $"/wallet/{Address}";
