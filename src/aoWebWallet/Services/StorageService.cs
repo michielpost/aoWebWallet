@@ -1,4 +1,5 @@
 ﻿using aoWebWallet.Models;
+using aoww.ProcesModels;
 using ArweaveAO.Models.Token;
 using Blazored.LocalStorage;
 
@@ -8,6 +9,7 @@ namespace aoWebWallet.Services
     {
         private readonly ILocalStorageService localStorage;
 
+        private const string MEMFRAME_LIST_KEY = "MEMFRAME_LIST";
         private const string TOKEN_LIST_KEY = "TOKEN_LIST";
         private const string WALLET_LIST_KEY = "WALLET_LIST";
         private const string USER_SETTINGS_KEY = "USER_SETTINGS";
@@ -16,16 +18,32 @@ namespace aoWebWallet.Services
             this.localStorage = localStorage;
         }
 
-        public async ValueTask<List<string>> GetMemeFrames()
+        public async ValueTask<List<MemeFrameProcess>> GetMemeFrames()
         {
-            var result = new List<string>();
+            var result = await localStorage.GetItemAsync<List<MemeFrameProcess>>(MEMFRAME_LIST_KEY);
+            result = result ?? new();
 
-            result.Add("OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww"); //TRUNK
-            result.Add("2gM9n9QO6JG1_bZhCWr3fuEKJtzRgx1xvYUB92nVFAs"); //AORTA
-            result.Add("-a4T7XLMDGTcu8_preKXdUT6__4sJkMhYLEJZkXUYd0"); //MEME
-            result.Add("rik3eCayInKVNzSMdoxeSEfpxNd5U7tx1H8NAveg4o8"); //FINCH-MEME
+            AddSystemMemeFrames(result,"OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww"); //TRUNK
+            AddSystemMemeFrames(result,"2gM9n9QO6JG1_bZhCWr3fuEKJtzRgx1xvYUB92nVFAs"); //AORTA
+            AddSystemMemeFrames(result,"-a4T7XLMDGTcu8_preKXdUT6__4sJkMhYLEJZkXUYd0"); //MEME
+            AddSystemMemeFrames(result,"rik3eCayInKVNzSMdoxeSEfpxNd5U7tx1H8NAveg4o8"); //FINCH-MEME
 
             return result;
+           
+        }
+
+        private static void AddSystemMemeFrames(List<MemeFrameProcess> list, string processId)
+        {
+            var existing = list.Where(x => x.ProcessId == processId).FirstOrDefault();
+            if (existing == null)
+                list.Add(new MemeFrameProcess(processId));
+        }
+
+        public ValueTask SaveMemeFrames(List<MemeFrameProcess> list)
+        {
+            var uniqueItems = list.GroupBy(i => i.ProcessId).Select(g => g.First());
+
+            return localStorage.SetItemAsync(MEMFRAME_LIST_KEY, uniqueItems);
         }
 
         public async ValueTask<List<Token>> GetTokenIds()

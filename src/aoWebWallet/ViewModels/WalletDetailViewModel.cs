@@ -49,7 +49,7 @@ namespace aoWebWallet.ViewModels
 
         [ObservableProperty]
         public bool? hasArConnectExtension;
-
+               
         public WalletDetailsViewModel? SelectedWallet { get; set; }
 
 
@@ -190,6 +190,8 @@ namespace aoWebWallet.ViewModels
                 var current = all.Where(x => x.Address == address).FirstOrDefault();
                 if (current != null)
                 {
+                    mainViewModel.ActiveWallet = current;
+                    mainViewModel.ActiveWalletAddress = address;
                     SelectedWallet = new WalletDetailsViewModel(current);
                 }
                 else

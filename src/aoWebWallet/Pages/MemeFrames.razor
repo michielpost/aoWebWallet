@@ -15,11 +15,12 @@
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudText Class="mb-4" Typo="Typo.h5">Meme Frames</MudText>
 
+    <SelectActiveWalletComponent />
+
     <MudGrid Spacing="2" Justify="Justify.Center">
 
-        @foreach (var meme in memeList)
+        @foreach (var memeProcess in memeList)
         {
-            var memeProcess = new MemeFrameProcess(meme);
             var readActions = memeProcess.GetActionMetadata().Where(x => x.ActionType == aoww.ProcesModels.Metadata.ActionType.DryRun).ToList();
             var messageActions = memeProcess.GetActionMetadata().Where(x => x.ActionType == aoww.ProcesModels.Metadata.ActionType.Message).ToList();
 
@@ -30,7 +31,7 @@
                             <MudAvatar Color="Color.Secondary">I</MudAvatar>
                         </CardHeaderAvatar>
                         <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Id: @meme</MudText>
+                            <MudText Typo="Typo.body1">Id: @memeProcess.ProcessId</MudText>
                             <MudText Typo="Typo.body1">Name: MEME</MudText>
                             <MudText Typo="Typo.body2">Creator: Andy Tudhope</MudText>
                             <MudText Typo="Typo.body2">  Mint cap: 1,000,000 CRED   </MudText>
@@ -85,7 +86,7 @@
 
 @code
 {
-    private List<string> memeList = new();
+    private List<MemeFrameProcess> memeList = new();
 
     protected override void OnInitialized()
     {
@@ -108,7 +109,10 @@
 
     private async Task DryRun(AoAction aoAction)
     {
-        var testWallet = new Wallet() { Address = "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww" };
+        if (BindingContext.ActiveWalletAddress == null)
+            return;
+
+        var testWallet = new Wallet() { Address = BindingContext.ActiveWalletAddress };
         var result = await TransactionService.DryRunAction(testWallet, aoAction);
         Console.WriteLine(result?.Messages.FirstOrDefault()?.Data);
     }
