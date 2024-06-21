@@ -82,12 +82,20 @@
         {
             <MudItem xs="12">
                 <MudPaper Class="pa-4">
-
+                    @{
+                        var itemName = "AOS Command";
+                    var aosCommandText = "Send({ Target = \"" + BindingContext.Token.TokenId + "\", Action = \"Transfer\", Recipient = \"" + Address + "\", Quantity = \"TOKEN_AMOUNT\"})";
+                    }
                     <MudStack>
                         <MudText Typo="Typo.h6">aos command</MudText>
-                        <MudText Class="KodeMono" Typo="Typo.subtitle1">
-                            Send({ Target = "@BindingContext.Token.TokenId", Action = "Transfer", Recipient = "@Address", Quantity = "TOKEN_AMOUNT"})
-                        </MudText>
+                        <MudStack Row="true">
+                            <MudText Class="KodeMono" Typo="Typo.subtitle1">
+                                @aosCommandText
+                            </MudText>
+                            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(aosCommandText, itemName); }" />
+
+                        </MudStack>
+                        
                     </MudStack>
                 </MudPaper>
             </MudItem>
