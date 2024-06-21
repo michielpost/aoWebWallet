@@ -15,7 +15,7 @@
 
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
-    <MudText Class="mb-4" Typo="Typo.h5">Meme Frames</MudText>
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <SelectActiveWalletComponent />
 
@@ -30,9 +30,9 @@
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderAvatar>
-                            @if (!string.IsNullOrEmpty(memeProcess.Logo))
+                            @if (!string.IsNullOrEmpty(memeProcess.TokenProcess.Logo))
                             {
-                                <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(memeProcess.Logo)" Size="Size.Large" />
+                                <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(memeProcess.TokenProcess.Logo)" Size="Size.Large" />
                             }
                             else
                             {
@@ -41,15 +41,16 @@
                         </CardHeaderAvatar>
                         <CardHeaderContent>
                             <MudText Typo="Typo.body1">Id: @memeProcess.ProcessId</MudText>
-                            <MudText Typo="Typo.body1">Name: @memeProcess.Name</MudText>
+                            <MudText Typo="Typo.body1">Name: @memeProcess.TokenProcess.Name</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent Class="pb-0">
-                        @*  <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="25" Class="mb-2">
-                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
-                    <b>25%</b>
-                    </MudText>
-                    </MudProgressLinear> *@
+                        @if (memeProcess.TokenProcess.balance.HasValue)
+                        {
+                            <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                                <b>Balance: @memeProcess.TokenProcess.balance</b>
+                            </MudText>
+                        }
                         <MudText Class="mb-2" Typo="Typo.body2">
                             @memeProcess.Description
                         </MudText>
@@ -59,12 +60,19 @@
                     @if (readActions.Any())
                     {
                         <MudCardActions>
-                            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                                @foreach (var action in readActions)
-                                {
-                                    <MudButton OnClick="() => DryRun(action)">@action.Name</MudButton>
-                                }
-                            </MudButtonGroup>
+                            @if (BindingContext.ActiveWalletAddress != null)
+                            {
+                                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                                    @foreach (var action in readActions)
+                                    {
+                                        <MudButton OnClick="() => DryRun(action)">@action.Name</MudButton>
+                                    }
+                                </MudButtonGroup>
+                            }
+                            else
+                            {
+                                <MudText>Please select a wallet to enable more actions.</MudText>
+                            }
                         </MudCardActions>
                     }
 
@@ -104,12 +112,20 @@
 
 @code
 {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Meme Frames", href: null, disabled: true)
+    };
+
     private List<MemeFrameProcess> memeList = new();
 
     protected override void OnInitialized()
     {
         //WatchCollection(dataService.TokenList);
         //WatchObject(dataService.TokenDataLoader);
+
+        WatchProp(nameof(BindingContext.ActiveWalletAddress));
 
         base.OnInitialized();
     }

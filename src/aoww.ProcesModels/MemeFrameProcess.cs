@@ -17,78 +17,21 @@ namespace aoww.ProcesModels
     {
         public string? MintTokenId { get; set; }
 
-        public string? Name { get; set; }
-        public string? Logo { get; set; }
         public string? Description { get; set; }
         public string? FrameId { get; set; }
 
-        public MemeFrameProcess(string processId) : base(processId) { }
+        public TokenProcess TokenProcess { get; set; }
+        public StakingProcess StakingProcess { get; set; }
+
+        public MemeFrameProcess(string processId) : base(processId) {
+        
+            TokenProcess = new TokenProcess(processId);
+            StakingProcess = new StakingProcess(processId);
+        }
 
         public override List<ActionMetadata> GetActionMetadata()
         {
-            var actions = new List<ActionMetadata>()
-            {
-                new ActionMetadata
-                {
-                    Name = "Info",
-                    AutoRun = true,
-                    IsHidden = true,
-                    ActionType = ActionType.DryRun,
-                    AoAction = CreateAoActionGetInfoBasic(),
-                    ProcessResult = ProcessInfoBasicResult
-                },
-                new ActionMetadata
-                {
-                    Name = "Get Description",
-                    AutoRun = true,
-                    IsHidden = true,
-                    ActionType = ActionType.DryRun,
-                    AoAction = CreateAoActionGetInfoDescription(),
-                    ProcessResult = ProcessInfoDescriptionResult
-                },
-                new ActionMetadata
-                {
-                    Name = "View Stakers",
-                    ActionType = ActionType.DryRun,
-                    AoAction = CreateAoActionViewStakers()
-                },
-                new ActionMetadata
-                {
-                    Name = "Stake",
-                    ActionType = ActionType.Message,
-                    AoAction = CreateAoActionStake()
-                },
-                new ActionMetadata
-                {
-                    Name = "Vote yay",
-                    ActionType = ActionType.Message,
-                    AoAction = CreateAoActionVote("yay")
-                },
-                new ActionMetadata
-                {
-                    Name = "Vote nay",
-                    ActionType = ActionType.Message,
-                    AoAction = CreateAoActionVote("nay")
-                },
-                new ActionMetadata
-                {
-                    Name = "Get Votes",
-                    ActionType = ActionType.DryRun,
-                    AoAction = CreateAoActionGetVotes()
-                },
-                new ActionMetadata
-                {
-                    Name = "Get Frame",
-                    AutoRun = true,
-                    IsHidden = true,
-                    ActionType = ActionType.DryRun,
-                    AoAction = CreateAoActionGetFrame(),
-                    ProcessResult = (x) =>
-                    {
-                        this.FrameId = x?.Messages?.FirstOrDefault()?.Data;
-                    }
-                }
-            };
+            var actions = new List<ActionMetadata>();
 
             if (MintTokenId != null)
             {
@@ -102,18 +45,59 @@ namespace aoww.ProcesModels
                     );
             }
 
+            actions.AddRange(TokenProcess.GetActionMetadata());
+            actions.AddRange(StakingProcess.GetActionMetadata());
+
+            actions.AddRange(new List<ActionMetadata>()
+            {
+                new ActionMetadata
+                {
+                    Name = "Get Description",
+                    AutoRun = Description == null,
+                    IsHidden = true,
+                    ActionType = ActionType.DryRun,
+                    AoAction = CreateAoActionGetInfoDescription(),
+                    ProcessResult = ProcessInfoDescriptionResult
+                },
+                
+                new ActionMetadata
+                {
+                    Name = "Vote yay",
+                    ActionType = ActionType.Message,
+                    AoAction = CreateAoActionVote("yay")
+                },
+                new ActionMetadata
+                {
+                    Name = "Vote nay",
+                    ActionType = ActionType.Message,
+                    AoAction = CreateAoActionVote("nay")
+                },
+                //new ActionMetadata
+                //{
+                //    Name = "Get Votes",
+                //    ActionType = ActionType.DryRun,
+                //    AoAction = CreateAoActionGetVotes()
+                //},
+                new ActionMetadata
+                {
+                    Name = "Get Frame",
+                    AutoRun = true,
+                    IsHidden = true,
+                    ActionType = ActionType.DryRun,
+                    AoAction = CreateAoActionGetFrame(),
+                    ProcessResult = (x) =>
+                    {
+                        this.FrameId = x?.Messages?.FirstOrDefault()?.Data;
+                    }
+                }
+            });
+
+            
+
             return actions;
         }
 
-        private void ProcessInfoBasicResult(MessageResult? result)
-        {
-            if (result == null)
-                return;
-
-            //Get name and logo
-            this.Name = result.GetFirstTagValue("Name");
-            this.Logo = result.GetFirstTagValue("Logo");
-        }
+        
 
         private void ProcessInfoDescriptionResult(MessageResult? result)
         {
@@ -124,19 +108,7 @@ namespace aoww.ProcesModels
             this.Description = result.Messages.FirstOrDefault()?.Data;
         }
 
-        private AoAction CreateAoActionStake()
-        {
-            return new AoAction
-            {
-                Params = new List<ActionParam>
-                {
-                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
-                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Stake" },
-                    new ActionParam { Key= "Quantity", ParamType = ActionParamType.Balance, Args = new List<string> { this.ProcessId } },
-                    new ActionParam { Key= "UnstakeDelay", ParamType = ActionParamType.Integer },
-                }
-            };
-        }
+       
 
         private AoAction CreateAoActionVote(string vote)
         {
@@ -152,17 +124,7 @@ namespace aoww.ProcesModels
             };
         }
 
-        private AoAction CreateAoActionGetInfoBasic()
-        {
-            return new AoAction
-            {
-                Params = new List<ActionParam>
-                {
-                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
-                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Info" },
-                }
-            };
-        }
+       
 
         private AoAction CreateAoActionGetInfoDescription()
         {
@@ -175,18 +137,7 @@ namespace aoww.ProcesModels
                 }
             };
         }
-
-        private AoAction CreateAoActionViewStakers()
-        {
-            return new AoAction
-            {
-                Params = new List<ActionParam>
-                {
-                    new ActionParam { Key= "Target", ParamType = ActionParamType.Target, Value= this.ProcessId },
-                    new ActionParam { Key= "Action", ParamType = ActionParamType.Filled, Value= "Stakers" },
-                }
-            };
-        }
+               
 
         private AoAction CreateAoActionGetVotes()
         {
