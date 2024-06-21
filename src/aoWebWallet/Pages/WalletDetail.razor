@@ -35,7 +35,11 @@
                     <MudText Typo="Typo.body2">@BindingContext.SelectedWallet?.Wallet.Name</MudText>
                     @if (BindingContext.SelectedWallet?.Wallet.OwnerAddress != null)
                     {
-                        <MudChip>owner: @BindingContext.SelectedWallet?.Wallet.OwnerAddress</MudChip>
+                        string ownerUrl = $"/wallet/{BindingContext.SelectedWallet.Wallet.OwnerAddress}";
+
+                        <MudLink Href="@ownerUrl">
+                            <MudChip>owner: @BindingContext.SelectedWallet?.Wallet.OwnerAddress</MudChip>
+                        </MudLink>
                     }
                 </MudStack>
                 @if (BindingContext.SelectedWallet?.Wallet.NeedsBackup ?? false)
