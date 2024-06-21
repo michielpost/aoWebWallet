@@ -6,7 +6,7 @@ namespace aoWebWallet.Services
 {
     public class ClipboardService(IClipLazor clipboard, ISnackbar snackbar)
     {
-        public async Task CopyToClipboard(string? text)
+        public async Task CopyToClipboard(string? text, string? itemName = "Address")
         {
             bool isSupported = await clipboard.IsClipboardSupported();
             bool isWritePermitted = await clipboard.IsPermitted(PermissionCommand.Write);
@@ -17,7 +17,7 @@ namespace aoWebWallet.Services
                     var isCopied = await clipboard.WriteTextAsync(text.AsMemory());
                     if (isCopied)
                     {
-                        snackbar.Add("Address copied to clipboard", Severity.Success);
+                        snackbar.Add($"{itemName} copied to clipboard", Severity.Success);
                     }
                 }
             }
