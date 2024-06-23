@@ -1,4 +1,6 @@
 ﻿@page "/meme-frames"
+@using System.Text.Json
+@using System.Text.Json.Serialization
 @using aoWebWallet.Models
 @using aoww.ProcesModels
 @using aoww.ProcesModels.Metadata
@@ -18,6 +20,43 @@
     <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <SelectActiveWalletComponent />
+
+    <MudDrawer @bind-Open="@_isOpen" Width="100%" Height="80%" Anchor="Anchor.Top" Elevation="1" Variant="@DrawerVariant.Temporary">
+       <MudPaper Elevation="0" Class="pa-4 border-radius-25 first-wallet">
+        <MudSimpleTable Style="overflow-x: auto;">
+            <thead>
+                <tr>
+                    <th>Address</th>
+                    <th>Amount</th>
+                    <th>Unstake At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var orderedItems = stakers?.Items.OrderByDescending(kvp => int.Parse(kvp.Value.GetProperty("amount").GetString() ?? "0")).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                }
+
+                @foreach (var row in orderedItems ?? new())
+                {
+                    int? unstakeValue = row.Value.TryGetProperty("unstake_at", out JsonElement prop) ? prop.GetInt32() : null;
+                        string detailUrl = $"/wallet/{row.Key}";
+                        <tr>
+                            <td>
+                                <MudLink Class="KodeMono tx-wrap" Href="@detailUrl" Typo="Typo.h6">
+                                    @row.Key
+                                </MudLink>
+                            </td>
+                        <td>@row.Value.GetProperty("amount").GetString()</td>
+                        <td>@unstakeValue</td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+            <MudButton OnClick="@ToggleOpen" Class="ml-auto mr-n3 mb-1" Color="Color.Error">Close</MudButton>
+
+        </MudPaper>
+    </MudDrawer>
 
     <MudGrid Spacing="2" Justify="Justify.Center">
 
@@ -119,6 +158,17 @@
     };
 
     private List<MemeFrameProcess> memeList = new();
+    private StakeResult? stakers = null;
+
+    public bool _isOpen;
+
+    public void ToggleOpen()
+    {
+        if (_isOpen)
+            _isOpen = false;
+        else
+            _isOpen = true;
+    }
 
     protected override void OnInitialized()
     {
@@ -160,14 +210,25 @@
         if (senderAddress == null)
             senderAddress = aoAction.Target?.Value ?? string.Empty;
 
-        var testWallet = new Wallet() { Address = senderAddress };
-        var result = await TransactionService.DryRunAction(testWallet, aoAction);
+        var dryRunWallet = new Wallet() { Address = senderAddress };
+        var result = await TransactionService.DryRunAction(dryRunWallet, aoAction);
 
-        actionMetadata?.ProcessResult?.Invoke(result);
+        actionMetadata.ProcessResult?.Invoke(result);
 
         await StorageService.SaveMemeFrames(memeList);
 
         StateHasChanged();
+
+        if (actionMetadata.Name == "View Stakers" && result?.Messages.FirstOrDefault()?.Data != null)
+        {
+            var data = result.Messages.First().Data;
+
+            stakers = JsonSerializer.Deserialize<StakeResult>(data!);
+
+            _isOpen = true;
+
+            StateHasChanged();
+        }
     }
 
     private void GoToSend(AoAction aoAction)
@@ -175,4 +236,9 @@
         NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
     }
 
+    public class StakeResult
+    {
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> Items { get; set; } = new Dictionary<string, JsonElement>();
+    }
 }
