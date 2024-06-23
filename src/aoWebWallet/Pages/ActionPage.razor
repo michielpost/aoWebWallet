@@ -7,6 +7,8 @@
 @inject TokenDataService dataService
 @inject TransactionService transactionService;
 @inject WalletDetailViewModel WalletDetailViewModel
+@using Soenneker.Blazor.Utils.Navigation.Abstract
+@inject INavigationUtil NavigationUtil
 
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
@@ -16,7 +18,7 @@
 
     <SelectActiveWalletComponent ReadOnly="readOnly" />
 
-    @if(readOnly)
+    @if (readOnly)
     {
         <MudText>Please review your transaction:</MudText>
     }
@@ -25,6 +27,10 @@
 
     @if (!readOnly && !string.IsNullOrEmpty(BindingContext.ActiveWalletAddress))
     {
+        if (NavigationUtil.CanNavigateBack)
+        {
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack" Class="mt-8">Back</MudButton>
+        }
         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview" Class="mt-8">Preview</MudButton>
         <MudText Color="Color.Error">@validation</MudText>
     }
@@ -47,14 +53,26 @@
                     }
                 </MudCardContent>
                 @* <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-                </MudCardActions> *@
+        <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+        </MudCardActions> *@
             </MudCard>
         }
 
+        if (NavigationUtil.CanNavigateBack)
+        {
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack" Class="mt-8">Back</MudButton>
+        }
         <MudButton Class="px-12 mt-8 mr-2" Color="Color.Default" Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
         <MudButton Class="px-12 mt-8" Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
     }
+    else if (transactionService.LastTransaction.DataLoader.LoadingState == LoadingState.None && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
+    {
+        if (NavigationUtil.CanNavigateBack)
+        {
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack" Class="mt-8">Back</MudButton>
+        }
+    }
+
 
     @if (transactionService.LastTransaction.DataLoader != null)
     {
@@ -69,7 +87,14 @@
                 </MudText>
             </MudStack>
 
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ReturnToWallet">Return to wallet</MudButton>
+            if (NavigationUtil.CanNavigateBack)
+            {
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack" Class="mt-8">Back</MudButton>
+            }
+            else
+            {
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ReturnToWallet">Return to wallet</MudButton>
+            }
             @* <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ViewTransaction">View Transaction</MudButton> *@
         }
     }
@@ -80,7 +105,7 @@
 @code
 {
     private string? validation;
-   
+
     private bool readOnly = false;
     private bool started = false;
 
@@ -144,7 +169,7 @@
             return;
 
         var wallet = BindingContext.WalletList.Data.Where(x => x.Address == BindingContext.ActiveWallet?.Address).FirstOrDefault();
-        if(wallet == null)
+        if (wallet == null)
         {
             if (BindingContext.ActiveWallet?.Address == BindingContext.ActiveWalletAddress)
             {
@@ -162,6 +187,6 @@
         await transactionService.SendAction(wallet, ownerWallet, AoAction);
     }
 
-    
+
 
 }
