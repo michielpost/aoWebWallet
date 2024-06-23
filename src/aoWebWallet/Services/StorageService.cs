@@ -1,4 +1,5 @@
 ﻿using aoWebWallet.Models;
+using aoww.ProcesModels;
 using ArweaveAO.Models.Token;
 using Blazored.LocalStorage;
 
@@ -8,12 +9,41 @@ namespace aoWebWallet.Services
     {
         private readonly ILocalStorageService localStorage;
 
+        private const string MEMFRAME_LIST_KEY = "MEMFRAME_LIST";
         private const string TOKEN_LIST_KEY = "TOKEN_LIST";
         private const string WALLET_LIST_KEY = "WALLET_LIST";
         private const string USER_SETTINGS_KEY = "USER_SETTINGS";
         public StorageService(ILocalStorageService localStorage)
         {
             this.localStorage = localStorage;
+        }
+
+        public async ValueTask<List<MemeFrameProcess>> GetMemeFrames()
+        {
+            var result = await localStorage.GetItemAsync<List<MemeFrameProcess>>(MEMFRAME_LIST_KEY);
+            result = result ?? new();
+
+            AddSystemMemeFrames(result,"OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww", Constants.CredTokenId); //TRUNK
+            AddSystemMemeFrames(result,"2gM9n9QO6JG1_bZhCWr3fuEKJtzRgx1xvYUB92nVFAs", Constants.CredTokenId); //AORTA
+            AddSystemMemeFrames(result,"-a4T7XLMDGTcu8_preKXdUT6__4sJkMhYLEJZkXUYd0", Constants.CredTokenId); //MEME
+            AddSystemMemeFrames(result,"rik3eCayInKVNzSMdoxeSEfpxNd5U7tx1H8NAveg4o8", Constants.CredTokenId); //FINCH-MEME
+
+            return result;
+           
+        }
+
+        private static void AddSystemMemeFrames(List<MemeFrameProcess> list, string processId, string mintTokenId)
+        {
+            var existing = list.Where(x => x.ProcessId == processId).FirstOrDefault();
+            if (existing == null)
+                list.Add(new MemeFrameProcess(processId) {  MintTokenId = mintTokenId });
+        }
+
+        public ValueTask SaveMemeFrames(List<MemeFrameProcess> list)
+        {
+            var uniqueItems = list.GroupBy(i => i.ProcessId).Select(g => g.First());
+
+            return localStorage.SetItemAsync(MEMFRAME_LIST_KEY, uniqueItems);
         }
 
         public async ValueTask<List<Token>> GetTokenIds()
@@ -38,10 +68,10 @@ namespace aoWebWallet.Services
                     Ticker = "AO"
                 }); //AO
 
-            AddSystemToken(result, "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
+            AddSystemToken(result, Constants.CredTokenId,
                new TokenData
                {
-                   TokenId = "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc",
+                   TokenId = Constants.CredTokenId,
                    Denomination = 3,
                    Logo = "eIOOJiqtJucxvB4k8a-sEKcKpKTh9qQgOV3Au7jlGYc",
                    Name = "AOCRED",
@@ -84,7 +114,7 @@ namespace aoWebWallet.Services
                 {
                     TokenId = "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
                     Denomination = 12,
-                    Logo = "nvx7DgTR8ws_k6VNCSe8vhwbZLx5jNbfNLJS0IKTTHA",
+                    Logo = "quMiswyIjELM0FZtjVSiUtg9_-pvQ8K25yfxrp1TgnQ",
                     Name = "0rbit Points",
                     Ticker = "0RBT"
                 });  //0rbit

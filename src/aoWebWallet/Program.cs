@@ -16,6 +16,7 @@ using aoww.Services.Models;
 using aoWebWallet.Models;
 using ArweaveAO.Models;
 using MudExtensions.Services;
+using Soenneker.Blazor.Utils.Navigation.Registrars;
 
 namespace aoWebWallet
 {
@@ -72,7 +73,11 @@ namespace aoWebWallet
 
             ConfigureServices(builder.Services, builder.HostEnvironment.BaseAddress);
 
-            await builder.Build().RunAsync();
+            WebAssemblyHost host = builder.Build();
+
+            host.Services.WarmupNavigation();
+
+            await host.RunAsync();
         }
 
         private static void ConfigureServices(IServiceCollection services, string baseAddress)
@@ -121,6 +126,8 @@ namespace aoWebWallet
             services.AddBlazoredLocalStorage();
 
             services.AddClipboard();
+
+            services.AddNavigationUtil();
 
             //Options
             services.AddSingleton(new GraphqlConfig());

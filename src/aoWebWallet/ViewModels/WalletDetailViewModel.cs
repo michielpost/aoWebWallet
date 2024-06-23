@@ -49,7 +49,7 @@ namespace aoWebWallet.ViewModels
 
         [ObservableProperty]
         public bool? hasArConnectExtension;
-
+               
         public WalletDetailsViewModel? SelectedWallet { get; set; }
 
 
@@ -84,7 +84,7 @@ namespace aoWebWallet.ViewModels
         {
             VisibleTokenList = new();
             VisibleTokenList.Add(Constants.AoTokenId); //AO
-            VisibleTokenList.Add("Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc"); //TESTNET-CRED
+            VisibleTokenList.Add(Constants.CredTokenId); //TESTNET-CRED
 
             ResetTokenTransferlist();
 
@@ -191,6 +191,8 @@ namespace aoWebWallet.ViewModels
                 var current = all.Where(x => x.Address == address).FirstOrDefault();
                 if (current != null)
                 {
+                    mainViewModel.ActiveWallet = current;
+                    mainViewModel.ActiveWalletAddress = address;
                     SelectedWallet = new WalletDetailsViewModel(current);
                 }
                 else

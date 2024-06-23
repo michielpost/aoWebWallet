@@ -1,6 +1,7 @@
 ﻿@page "/scan-qr"
 @using ReactorBlazorQRCodeScanner
 @using aoWebWallet.Models
+@using aoww.ProcesModels
 @inherits MvvmComponentBase<MainViewModel>
 @inject GatewayUrlHelper UrlHelper;
 @inject ISnackbar Snackbar
@@ -59,7 +60,7 @@
         {
             string tokenId = code.Substring(tokenStart + 9, 43);
 
-            var aoAction = AoAction.CreateForTokenTransaction(address, tokenId);
+            var aoAction = TokenProcess.CreateForTokenTransaction(address, tokenId);
 
             NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
         }

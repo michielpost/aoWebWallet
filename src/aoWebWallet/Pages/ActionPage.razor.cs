@@ -1,5 +1,6 @@
 ﻿using aoWebWallet.Models;
 using aoWebWallet.ViewModels;
+using aoww.ProcesModels.Action;
 using Microsoft.AspNetCore.Components.Routing;
 
 namespace aoWebWallet.Pages
@@ -14,17 +15,18 @@ namespace aoWebWallet.Pages
 
             GetQueryStringValues();
             //WatchDataLoaderVM(BindingContext.TokenList);
+            WatchProp(nameof(BindingContext.ActiveWalletAddress));
             WatchDataLoaderVM(BindingContext.WalletList);
             WatchDataLoaderVM(transactionService.LastTransaction);
             WatchDataLoaderVM(transactionService.DryRunResult);
 
             //Auto select wallet
-            if (!string.IsNullOrEmpty(WalletDetailViewModel.SelectedWallet?.Wallet.Address))
-            {
-                selectedWalletObj = WalletDetailViewModel.SelectedWallet?.Wallet;
-                selectedWallet = selectedWalletObj?.Address;
+            //if (!string.IsNullOrEmpty(WalletDetailViewModel.SelectedWallet?.Wallet.Address))
+            //{
+            //    selectedWalletObj = WalletDetailViewModel.SelectedWallet?.Wallet;
+            //    selectedWallet = selectedWalletObj?.Address;
 
-            }
+            //}
 
             NavigationManager.LocationChanged += NavigationManager_LocationChanged;
 

@@ -10,12 +10,13 @@ namespace aoWebWallet.Pages
         [Inject]
         public T BindingContext { get; set; } = default!;
 
+        public List<string> PropWatch { get; set; } = new();
         public List<INotifyPropertyChanged> ObjWatch { get; set; } = new();
         public List<INotifyCollectionChanged> CollectionWatch { get; set; } = new();
 
         protected  override void OnInitialized()
         {
-            //BindingContext.PropertyChanged += BindingContext_PropertyChanged;
+            BindingContext.PropertyChanged += BindingContext_PropertyChanged;
 
             foreach (var obj in ObjWatch)
             {
@@ -30,11 +31,17 @@ namespace aoWebWallet.Pages
             base.OnInitialized();
         }
 
-        //private void BindingContext_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        //{
-        //    Console.WriteLine("Changed! " + e.PropertyName);
-        //    this.StateHasChanged();
-        //}
+        private void BindingContext_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == null)
+                return;
+
+            if (PropWatch.Contains(e.PropertyName))
+            {
+                Console.WriteLine("Changed! " + e.PropertyName);
+                this.StateHasChanged();
+            }
+        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -81,9 +88,14 @@ namespace aoWebWallet.Pages
             ObjWatch.Add(vm.DataLoader);
         }
 
+        protected void WatchProp(string propName)
+        {
+            PropWatch.Add(propName);
+        }
+
         public virtual void Dispose()
         {
-            //BindingContext.PropertyChanged -= BindingContext_PropertyChanged;
+            BindingContext.PropertyChanged -= BindingContext_PropertyChanged;
 
             foreach (var obj in ObjWatch)
             {
