@@ -11,17 +11,5 @@ namespace aoWebWallet.ViewModels
 
         public required string Address { get; set; }
 
-        //public void Load()
-        //{
-        //    BalanceDataLoader.DataLoader.LoadAsync(async () =>
-        //    {
-        //        var balanceData = await tokenClient.GetBalance(token.TokenId, address);
-        //        return balanceData;
-        //    }, (x) =>
-        //    {
-        //        balanceData.BalanceDataLoader.Data = x;
-        //        TokenTransferList.ForcePropertyChanged();
-        //    });
-        //}
     }
 }

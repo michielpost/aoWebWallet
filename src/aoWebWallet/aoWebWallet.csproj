@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ArweaveAO" Version="0.0.5" />
+		<PackageReference Include="ArweaveAO" Version="0.0.6" />
 		<PackageReference Include="ArweaveBlazor" Version="0.0.9" />
 		<PackageReference Include="ClipLazor" Version="2.1.1" />
 		<PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="6.9.2" />

@@ -3,6 +3,7 @@
     public static class Constants
     {
         public static string AoTokenId => "m3PaWzK4PTG9lAaqYQPaPdOcXdO8hYqi5Fe9NWqXd0w";
+        public static string AoProxyTokenId => "Pi-WmAQp2-mh-oWH9lWpz5EthlUDj_W0IusAv-RXhRk";
         public static string CredTokenId => "Sa0iBLPNyJQrwpTTG-tWLQU-1QeUAJA73DdxGGiKoJc";
     }
 }

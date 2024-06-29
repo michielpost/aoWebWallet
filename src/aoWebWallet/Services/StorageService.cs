@@ -66,7 +66,8 @@ namespace aoWebWallet.Services
                     Logo = "UkS-mdoiG8hcAClhKK8ch4ZhEzla0mCPDOix9hpdSFE",
                     Name = "AO",
                     Ticker = "AO"
-                }); //AO
+                },
+                proxyTokenId:Constants.AoProxyTokenId); //AO
 
             AddSystemToken(result, Constants.CredTokenId,
                new TokenData
@@ -160,13 +161,17 @@ namespace aoWebWallet.Services
                });
         }
 
-        private static void AddSystemToken(List<Token> list, string tokenId, TokenData tokenData)
+        private static void AddSystemToken(List<Token> list, string tokenId, TokenData tokenData, string? proxyTokenId = null)
         {
             var existing = list.Where(x => x.TokenId == tokenId).FirstOrDefault();
             if (existing != null)
-               existing.IsSystemToken = true;
+            {
+                existing.IsSystemToken = true;
+                existing.TokenData = tokenData;
+                existing.ProxyTokenId = proxyTokenId;
+            }
             else
-                list.Add(new Token { TokenId = tokenId, IsSystemToken = true, TokenData = tokenData });
+                list.Add(new Token { TokenId = tokenId, ProxyTokenId = proxyTokenId, IsSystemToken = true, TokenData = tokenData });
         }
 
         public async ValueTask<Token> AddToken(string tokenId, TokenData data, bool isUserAdded, bool? isVisible)

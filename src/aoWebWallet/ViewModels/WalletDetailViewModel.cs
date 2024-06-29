@@ -282,7 +282,11 @@ namespace aoWebWallet.ViewModels
 
                 balanceData.BalanceDataLoader.DataLoader.LoadAsync(async () =>
                 {
-                    var balanceData = await tokenClient.GetBalance(token.TokenId, address);
+                    var tokenForBalance = token.ProxyTokenId;
+                    if(string.IsNullOrEmpty(tokenForBalance))
+                        tokenForBalance = token.TokenId;
+
+                    var balanceData = await tokenClient.GetBalance(tokenForBalance, address);
                     return balanceData;
                 }, (x) =>
                 {
