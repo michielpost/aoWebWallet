@@ -411,7 +411,7 @@ body {
     height: 24px !important;
 }
 
-.mud-paper, .mud-tabs-toolbar {
+.mud-paper, .mud-tabs-tabbar {
     background-color: rgba(16,16,67,0.33) !important;
 }
 
@@ -424,6 +424,10 @@ body {
 }
 
 .mud-list.mud-list-padding, .mud-dialog {
+    background-color: rgba(16,16,67,1) !important;
+}
+
+.mud-list {
     background-color: rgba(16,16,67,1) !important;
 }
 
