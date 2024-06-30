@@ -38,7 +38,7 @@
                         string ownerUrl = $"/wallet/{BindingContext.SelectedWallet.Wallet.OwnerAddress}";
 
                         <MudLink Href="@ownerUrl">
-                            <MudChip>owner: @BindingContext.SelectedWallet?.Wallet.OwnerAddress</MudChip>
+                            <MudChip T="string">owner: @BindingContext.SelectedWallet?.Wallet.OwnerAddress</MudChip>
                         </MudLink>
                     }
                 </MudStack>

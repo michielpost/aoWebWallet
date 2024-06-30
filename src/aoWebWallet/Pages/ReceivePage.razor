@@ -34,7 +34,7 @@
                     @if (BindingContext.Token?.TokenData != null)
                     {
                         <MudStack Row=true>
-                            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BindingContext.Token.TokenData?.Logo)" Size="Size.Large" title="@BindingContext.Token.TokenId" />
+                            <MudAvatar Size="Size.Large" title="@BindingContext.Token.TokenId"><MudImage Src="@UrlHelper.GetArweaveUrl(BindingContext.Token.TokenData?.Logo)" /></MudAvatar>
                             <MudStack Justify="Justify.Center" Spacing="0">
                                 <MudText Typo="Typo.body1">@BindingContext.Token.TokenData?.Name</MudText>
                                 <MudText Typo="Typo.body2">@BindingContext.Token.TokenData?.Ticker</MudText>

@@ -34,7 +34,7 @@
                                 <WalletAvatar Address="@wallet.Address" />
                                 @if(BindingContext.ProcessesDataList?.Data?.Where(x => x.Data?.Address == wallet.Address && (x.Data?.Processes?.Any() ?? false)).Any() ?? false)
                                     {
-                                       <MudChip Class="aos-chip" Variant="Variant.Outlined" Color="Color.Dark">AOS</MudChip>
+                                    <MudChip T="string" Class="aos-chip" Variant="Variant.Outlined" Color="Color.Dark">AOS</MudChip>
                                     }
                             </div>
                             <MudStack Class="d-overflow-hidden" Justify="Justify.Center" Spacing="0">

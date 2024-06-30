@@ -19,7 +19,7 @@
                                @ondragenter="@SetDragClass"
                                @ondragleave="@ClearDragClass"
                                @ondragend="@ClearDragClass">
-                    <ButtonTemplate>
+                <ActivatorContent>
                         <MudPaper Height="100%"
                                   Outlined="true"
                                   Class="@_dragClass">
@@ -31,15 +31,14 @@
                             </MudText>
                             @foreach (var file in _fileNames)
                             {
-                                <MudChip Color="Color.Dark" Text="@file.Name" />
+                            <MudChip T="string" Color="Color.Dark" Text="@file.Name" />
                             }
                         </MudPaper>
-                        <MudToolBar DisableGutters="true"
+                        <MudToolBar Gutters="false"
                                     Class="relative d-flex justify-center gap-4 z-30">
                                 <MudButton HtmlTag="label"
                                            Class="text-transform-none"
                                            Color="Color.Primary"
-                                           for="@context.Id"
                                            Variant="Variant.Filled">
                                     Load .json wallet
                                 </MudButton>
@@ -56,7 +55,7 @@
                                 Clear
                             </MudButton> *@
                         </MudToolBar>
-                    </ButtonTemplate>
+                    </ActivatorContent>
                 </MudFileUpload>
             </MudStack>
     </MudStack>

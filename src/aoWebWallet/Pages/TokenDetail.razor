@@ -22,7 +22,7 @@
 
             <MudPaper Class="pa-4 mb-14 mt-4 d-overflow-hidden">
                 <MudStack Row="true">
-                    <MudAvatar Image="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" Size="Size.Large" />
+                    <MudAvatar Size="Size.Large"><MudImage Src="@UrlHelper.GetArweaveUrl(token.TokenData?.Logo)" /></MudAvatar>
                     <MudStack Justify="Justify.Center" Spacing="0">
                         <MudText Typo="Typo.body1">@token.TokenData?.Name</MudText>
                         <MudText Typo="Typo.body2">@token.TokenData?.Ticker</MudText>

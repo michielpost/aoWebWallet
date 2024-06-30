@@ -11,7 +11,7 @@
     string txUrl = $"transaction/{transfer.Id}";
     <MudTimelineItem>
         <ItemDot>
-            <MudAvatar Image="@UrlHelper.GetArweaveUrl(tokenData?.Logo)" Size="Size.Medium" title="@tokenData?.TokenId" />
+            <MudAvatar Size="Size.Medium" title="@tokenData?.TokenId"><MudImage Src="@UrlHelper.GetArweaveUrl(tokenData?.Logo)" /></MudAvatar>
         </ItemDot>
         <ItemContent>
             @if (transfer.BlockHeight.HasValue)
