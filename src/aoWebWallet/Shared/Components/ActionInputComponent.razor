@@ -5,7 +5,7 @@
 <MudItem>
 @if(ReadOnly)
 {
-    <MudChip>@ActionParam.Key</MudChip> <MudChip Style="border-radius:0; margin-top:0;" Variant="Variant.Text" Color="Color.Primary">@ActionParam.Value</MudChip>
+        <MudChip T="string">@ActionParam.Key</MudChip> <MudChip T="string" Style="border-radius:0; margin-top:0;" Variant="Variant.Text" Color="Color.Primary">@ActionParam.Value</MudChip>
 }
 else
 {
@@ -40,10 +40,10 @@ else
 
 
             <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
-                <MudChip Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@(ActionParam.Value?.ToShortAddress() ?? "Not selected")</MudChip>
+                <MudChip T="string" Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@(ActionParam.Value?.ToShortAddress() ?? "Not selected")</MudChip>
             </MudHidden>
             <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
-                <MudChip Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@(ActionParam.Value ?? "Not selected")</MudChip>
+                <MudChip T="string" Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@(ActionParam.Value ?? "Not selected")</MudChip>
             </MudHidden>
         @* <MudTextField @ref="mudProcessField" T="string" MaxLength=43 Label="@ActionParam.Key" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" Variant="Variant.Text" ValueChanged="UpdateStringValue" /> *@
     }
@@ -165,7 +165,7 @@ else
         StateHasChanged();
     }
 
-    private async Task<IEnumerable<Wallet>> WalletSearch(string value)
+    private async Task<IEnumerable<Wallet>> WalletSearch(string value, CancellationToken cancellationToken)
     {
         // if text is null or empty, don't return values (drop-down will not open)
         if (string.IsNullOrEmpty(value))

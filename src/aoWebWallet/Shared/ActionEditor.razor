@@ -3,12 +3,12 @@
 
 <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
     <MudItem>
-        <MudChip>Token ID</MudChip> <MudChip Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@AoAction.Target?.Value?.ToShortAddress()</MudChip>
+        <MudChip T="string">Token ID</MudChip> <MudChip T="string" Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@AoAction.Target?.Value?.ToShortAddress()</MudChip>
     </MudItem>
 </MudHidden>
 <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
 	<MudItem>
-        <MudChip>Token ID</MudChip> <MudChip Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@AoAction.Target?.Value</MudChip>
+        <MudChip T="string">Token ID</MudChip> <MudChip T="string" Style="border-radius:0; margin-top:0;" Class="KodeMono tx-wrap" Variant="Variant.Text" Color="Color.Primary">@AoAction.Target?.Value</MudChip>
     </MudItem>
 </MudHidden>
 
@@ -16,7 +16,7 @@
     @foreach (var ActionParam in AoAction.Filled)
     {
         <MudItem>
-            <MudChip>@ActionParam.Key</MudChip> <MudChip Style="border-radius:0; margin-top:0;" Variant="Variant.Text" Color="Color.Success" SelectedColor="Color.Error">@ActionParam.Value</MudChip>
+            <MudChip T="string">@ActionParam.Key</MudChip> <MudChip T="string" Style="border-radius:0; margin-top:0;" Variant="Variant.Text" Color="Color.Success" SelectedColor="Color.Error">@ActionParam.Value</MudChip>
         </MudItem>
     }
 

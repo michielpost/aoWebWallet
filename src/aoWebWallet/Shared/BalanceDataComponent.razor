@@ -12,7 +12,7 @@
 <MudPaper Class="py-2 pl-2">
     <MudStack Row="true">
         <div Class="d-custom-1">
-            <MudAvatar Image="@UrlHelper.GetArweaveUrl(BalanceDataVM.Token.TokenData?.Logo)" Size="Size.Medium" title="@BalanceDataVM.Token.TokenId" />
+            <MudAvatar Size="Size.Medium" title="@BalanceDataVM.Token.TokenId"><MudImage Src="@UrlHelper.GetArweaveUrl(BalanceDataVM.Token.TokenData?.Logo)" /></MudAvatar>
             <MudStack Class="ml-4" Justify="Justify.Center" Spacing="0">
                 <MudText Class="d-font-weight-500" Typo="Typo.body1"><span Class="d-none d-sm-flex">@BalanceDataVM.Token.TokenData?.Name</span></MudText>
                 <MudText Typo="Typo.body2">@BalanceDataVM.Token.TokenData?.Ticker</MudText>

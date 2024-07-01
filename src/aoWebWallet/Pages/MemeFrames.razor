@@ -71,7 +71,7 @@
                         <CardHeaderAvatar>
                             @if (!string.IsNullOrEmpty(memeProcess.TokenProcess.Logo))
                             {
-                                <MudAvatar Class="mr-3" Image="@UrlHelper.GetArweaveUrl(memeProcess.TokenProcess.Logo)" Size="Size.Large" />
+                                <MudAvatar Class="mr-3" Size="Size.Large"><MudImage Src="@UrlHelper.GetArweaveUrl(memeProcess.TokenProcess.Logo)" /></MudAvatar>
                             }
                             else
                             {

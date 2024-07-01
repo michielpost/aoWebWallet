@@ -25,7 +25,7 @@
 
     @if (ReadOnly)
     {
-        <MudChip>@ActionParam.Key</MudChip> <MudChip Color="Color.Secondary"> @BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token?.TokenData?.Denomination ?? 0) @Token?.TokenData?.Ticker</MudChip>
+        <MudChip T="string">@ActionParam.Key</MudChip> <MudChip T="string" Color="Color.Secondary"> @BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token?.TokenData?.Denomination ?? 0) @Token?.TokenData?.Ticker</MudChip>
     }
     else
     {
@@ -41,7 +41,7 @@
 
             if (ActionParam.ParamType == ActionParamType.Balance)
             {
-                <MudChip style="border-radius:0;" Variant="Variant.Text" Color="Color.Success" OnClick="SetBalance">Balance available: <br /> @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
+                <MudChip T="string" style="border-radius:0;" Variant="Variant.Text" Color="Color.Success" OnClick="SetBalance">Balance available: <br /> @BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1) @Token?.TokenData?.Ticker</MudChip>
             }
         }
     }
