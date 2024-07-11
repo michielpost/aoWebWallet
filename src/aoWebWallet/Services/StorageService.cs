@@ -160,6 +160,16 @@ namespace aoWebWallet.Services
                    Name = "Lava",
                    Ticker = "FIRE-EARTH"
                });
+
+            AddSystemToken(result, "GcFxqTQnKHcr304qnOcq00ZqbaYGDn4Wbb0DHAM-wvU",
+              new TokenData
+              {
+                  TokenId = "GcFxqTQnKHcr304qnOcq00ZqbaYGDn4Wbb0DHAM-wvU",
+                  Denomination = 12,
+                  Logo = "K8nurc9H0_ZQm17jbs3ryEs6MrlX-oIK_krpprWlQ-Q",
+                  Name = "Astro USD (Test)",
+                  Ticker = "USDA-TST"
+              });
         }
 
         private static void AddSystemToken(List<Token> list, string tokenId, TokenData tokenData, string? proxyTokenId = null)
