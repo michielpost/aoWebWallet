@@ -1,4 +1,5 @@
-﻿using aoww.Services.Models;
+﻿using aoww.Services.Extensions;
+using aoww.Services.Models;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 
@@ -69,7 +70,7 @@ namespace aoww.Services
         }
 
 
-        public async Task<List<TokenTransfer>> GetTokenTransfersIn(string address, string? cursor = null)
+        public async Task<List<TokenTransfer>> GetTokenTransfers(string address, string? cursor = null)
         {
             string query = $$"""
                                 query {
@@ -77,10 +78,10 @@ namespace aoww.Services
                                     first: 50
                                     after: "{{cursor}}"
                                     sort: HEIGHT_DESC
+                                    recipients: ["{{address}}"]
                                     tags: [
                                       { name: "Data-Protocol", values: ["ao"] }
-                                      { name: "Action", values: ["Transfer", "Mint-Token"] }
-                                      { name: "Recipient", values: ["{{address}}"] }
+                                      { name: "Action", values: ["Credit-Notice", "Debit-Notice", "Mint", "Mint-Token"] }
                                     ]
                                   ) {
                                     edges {
@@ -140,12 +141,12 @@ namespace aoww.Services
             else
                 transaction.Timestamp = DateTimeOffset.UtcNow;
 
-            var fromProcess = edge.Node.Tags.Where(x => x.Name == "From-Process").Select(x => x.Value).FirstOrDefault();
+            var fromProcess = edge.GetFirstTagValue("From-Process");
             if (!string.IsNullOrEmpty(fromProcess))
                 transaction.From = fromProcess;
 
            
-            transaction.To = edge.Node.Tags.Where(x => x.Name == "Recipient").Select(x => x.Value).FirstOrDefault();
+            transaction.To = edge.GetFirstTagValue("Recipient");
 
             return transaction;
         }
@@ -155,9 +156,83 @@ namespace aoww.Services
             if (edge == null || edge.Node == null)
                 return null;
 
-            var isTransfer = edge.Node.Tags.Where(x => x.Name == "Action" && x.Value == "Transfer").Any();
-            var isMint = edge.Node.Tags.Where(x => x.Name == "Action" && x.Value == "Mint-Token").Any();
-            if (!isTransfer && !isMint)
+            var action = edge.GetFirstTagValue("Action");
+
+            if (action == "Transfer")
+                return GetTransferAction(edge);
+            if (action == "Mint")
+                return GetMintAction(edge);
+            if (action == "Credit-Notice")
+                return GetCreditNoticeAction(edge);
+            if (action == "Debit-Notice")
+                return GetDebitNoticeAction(edge);
+
+            return null;
+        }
+
+        private static TokenTransfer? GetCreditNoticeAction(Edge edge)
+        {
+            if (edge == null || edge.Node == null)
+                return null;
+
+            var transaction = new TokenTransfer()
+            {
+                Id = edge.Node.Id,
+                Cursor = edge.Cursor,
+                TokenId = edge.GetFirstTagValue("From-Process") ?? string.Empty,
+                From = edge.GetFirstTagValue("Sender") ?? string.Empty,
+                To = edge.Node.Recipient ?? string.Empty,
+                TokenTransferType = Enums.TokenTransferType.Transfer
+            };
+
+            if (edge.Node.Block != null)
+            {
+                transaction.Timestamp = DateTimeOffset.FromUnixTimeSeconds(edge.Node.Block.Timestamp);
+                transaction.BlockHeight = edge.Node.Block.Height;
+            }
+            else
+                transaction.Timestamp = DateTimeOffset.UtcNow;
+
+            string? quantity = edge.GetFirstTagValue("Quantity");
+            if (!string.IsNullOrWhiteSpace(quantity) && long.TryParse(quantity, out long quantityLong))
+                transaction.Quantity = quantityLong;
+
+            return transaction;
+        }
+
+        private static TokenTransfer? GetDebitNoticeAction(Edge edge)
+        {
+            if (edge == null || edge.Node == null)
+                return null;
+
+            var transaction = new TokenTransfer()
+            {
+                Id = edge.Node.Id,
+                Cursor = edge.Cursor,
+                TokenId = edge.GetFirstTagValue("From-Process") ?? string.Empty,
+                From = edge.Node.Recipient ?? string.Empty,
+                To = edge.GetFirstTagValue("Recipient") ?? string.Empty,
+                TokenTransferType = Enums.TokenTransferType.Transfer
+            };
+
+            if (edge.Node.Block != null)
+            {
+                transaction.Timestamp = DateTimeOffset.FromUnixTimeSeconds(edge.Node.Block.Timestamp);
+                transaction.BlockHeight = edge.Node.Block.Height;
+            }
+            else
+                transaction.Timestamp = DateTimeOffset.UtcNow;
+
+            string? quantity = edge.GetFirstTagValue("Quantity");
+            if (!string.IsNullOrWhiteSpace(quantity) && long.TryParse(quantity, out long quantityLong))
+                transaction.Quantity = quantityLong;
+
+            return transaction;
+        }
+
+        private static TokenTransfer? GetMintAction(Edge edge)
+        {
+            if (edge == null || edge.Node == null)
                 return null;
 
             var transaction = new TokenTransfer()
@@ -165,11 +240,8 @@ namespace aoww.Services
                 Id = edge.Node.Id,
                 Cursor = edge.Cursor,
                 From = edge.Node.Owner?.Address ?? string.Empty,
-                TokenTransferType = Enums.TokenTransferType.Transfer
+                TokenTransferType = Enums.TokenTransferType.Mint
             };
-
-            if (isMint)
-                transaction.TokenTransferType = Enums.TokenTransferType.Mint;
 
 
             if (edge.Node.Block != null)
@@ -180,18 +252,51 @@ namespace aoww.Services
             else
                 transaction.Timestamp = DateTimeOffset.UtcNow;
 
-            var fromProcess = edge.Node.Tags.Where(x => x.Name == "From-Process").Select(x => x.Value).FirstOrDefault();
+            var fromProcess = edge.GetFirstTagValue("From-Process");
             if (!string.IsNullOrEmpty(fromProcess))
                 transaction.From = fromProcess;
 
-            if (isMint)
-                transaction.TokenId = edge.Node.Tags.Where(x => x.Name == "TokenId").Select(x => x.Value).FirstOrDefault();
+            transaction.TokenId = edge.GetFirstTagValue("TokenId");
+
+            transaction.To = edge.GetFirstTagValue("Recipient");
+
+            string? quantity = edge.GetFirstTagValue("Quantity");
+            if (!string.IsNullOrWhiteSpace(quantity) && long.TryParse(quantity, out long quantityLong))
+                transaction.Quantity = quantityLong;
+            return transaction;
+        }
+
+        private static TokenTransfer? GetTransferAction(Edge edge)
+        {
+            if (edge == null || edge.Node == null)
+                return null;
+
+            var transaction = new TokenTransfer()
+            {
+                Id = edge.Node.Id,
+                Cursor = edge.Cursor,
+                From = edge.Node.Owner?.Address ?? string.Empty,
+                TokenTransferType = Enums.TokenTransferType.Transfer
+            };
+
+
+            if (edge.Node.Block != null)
+            {
+                transaction.Timestamp = DateTimeOffset.FromUnixTimeSeconds(edge.Node.Block.Timestamp);
+                transaction.BlockHeight = edge.Node.Block.Height;
+            }
             else
-                transaction.TokenId = edge.Node.Recipient;
+                transaction.Timestamp = DateTimeOffset.UtcNow;
 
-            transaction.To = edge.Node.Tags.Where(x => x.Name == "Recipient").Select(x => x.Value).FirstOrDefault();
+            var fromProcess = edge.GetFirstTagValue("From-Process");
+            if (!string.IsNullOrEmpty(fromProcess))
+                transaction.From = fromProcess;
 
-            string? quantity = edge.Node.Tags.Where(x => x.Name == "Quantity").Select(x => x.Value).FirstOrDefault();
+            transaction.TokenId = edge.Node.Recipient;
+
+            transaction.To = edge.GetFirstTagValue("Recipient");
+
+            string? quantity = edge.GetFirstTagValue("Quantity");
             if (!string.IsNullOrWhiteSpace(quantity) && long.TryParse(quantity, out long quantityLong))
                 transaction.Quantity = quantityLong;
             return transaction;
@@ -203,7 +308,7 @@ namespace aoww.Services
                 return null;
 
 
-            var name = edge.Node.Tags.Where(x => x.Name == "Name").Select(x => x.Value).FirstOrDefault();
+            var name = edge.GetFirstTagValue("Name");
             if (string.IsNullOrEmpty(name))
                 return null;
 
@@ -214,59 +319,9 @@ namespace aoww.Services
                 Name = name,
             };
 
-            processInfo.Version = edge.Node.Tags.Where(x => x.Name == "Version").Select(x => x.Value).FirstOrDefault();
+            processInfo.Version = edge.GetFirstTagValue("Version");
 
             return processInfo;
-        }
-
-        public async Task<List<TokenTransfer>> GetTransactionsOut(string address, string? cursor = null)
-        {
-            string query = $$"""
-                                query {
-                                  transactions(
-                                    first: 50
-                                    after: "{{cursor}}"
-                                    sort: HEIGHT_DESC
-                                    owners: ["{{address}}"]
-                                    tags: [
-                                      { name: "Data-Protocol", values: ["ao"] }
-                                      { name: "Action", values: ["Transfer"] }
-                                    ]
-                                  ) {
-                                    edges {
-                                      cursor
-                                      node {
-                                        id
-                                        recipient
-                                        owner {
-                                          address
-                                        }
-                                        block {
-                                          timestamp
-                                          height
-                                        }
-                                        tags {
-                                          name
-                                          value
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                                """;
-            var queryResult = await PostQueryAsync(query);
-
-            var result = new List<TokenTransfer>();
-
-            foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
-            {
-                TokenTransfer? transaction = GetTokenTransfer(edge);
-
-                if (transaction != null)
-                    result.Add(transaction);
-            }
-
-            return result;
         }
 
         public async Task<List<TokenTransfer>> GetTransactionsOutFromProcess(string address, string? cursor = null)
@@ -330,7 +385,6 @@ namespace aoww.Services
                     ids: ["{{txId}}"]
                     tags: [
                       { name: "Data-Protocol", values: ["ao"] }
-                      { name: "Action", values: ["Transfer"] }
                     ]
                   ) {
                     edges {

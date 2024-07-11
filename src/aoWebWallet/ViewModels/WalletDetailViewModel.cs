@@ -23,9 +23,7 @@ namespace aoWebWallet.ViewModels
         private readonly ISnackbar snackbar;
         private readonly MemoryDataCache memoryDataCache;
 
-        private List<TokenTransfer> incoming = new();
-        private List<TokenTransfer> outgoing = new();
-        private List<TokenTransfer> outgoingProcess = new();
+        private List<TokenTransfer> allTransactions = new();
 
 
         [ObservableProperty]
@@ -133,9 +131,7 @@ namespace aoWebWallet.ViewModels
 
         private void ResetTokenTransferlist()
         {
-            incoming = new();
-            outgoing = new();
-            outgoingProcess = new();
+            allTransactions = new();
             TokenTransferList.Data = new();
         }
 
@@ -225,11 +221,9 @@ namespace aoWebWallet.ViewModels
 
         public Task LoadTokenTransferList(string address) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
-            incoming = await graphqlClient.GetTokenTransfersIn(address, GetCursor(incoming));
-            outgoing = await graphqlClient.GetTransactionsOut(address, GetCursor(outgoing));
-            outgoingProcess = await graphqlClient.GetTransactionsOutFromProcess(address, GetCursor(outgoingProcess));
+            allTransactions = await graphqlClient.GetTokenTransfers(address, GetCursor(allTransactions));
 
-            var allNew = incoming.Concat(outgoing).Concat(outgoingProcess).OrderByDescending(x => x.Timestamp).ToList();
+            var allNew = allTransactions.OrderByDescending(x => x.Timestamp).ToList();
             CanLoadMoreTransactions = allNew.Any();
 
             var existing = TokenTransferList.Data ?? new();

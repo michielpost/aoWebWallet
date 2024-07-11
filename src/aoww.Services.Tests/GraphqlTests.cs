@@ -11,7 +11,7 @@ namespace aoww.Services.Tests
         {
             var graph = new GraphqlClient(new HttpClient(), Options.Create<GraphqlConfig>(new()));
 
-            var result = await graph.GetTokenTransfersIn("4NdFkWsgFQIEmJnzFSYrO88UmRPf0ABfVh_fRc2u130");
+            var result = await graph.GetTokenTransfers("aGeRSnWykicBEGESPbTXPQ0_q2IiMLBBMyemu2pBYoA");
 
             Assert.IsNotNull(result);
         }
@@ -21,7 +21,7 @@ namespace aoww.Services.Tests
         {
             var graph = new GraphqlClient(new HttpClient(), Options.Create<GraphqlConfig>(new()));
 
-            var result = await graph.GetTokenTransfersIn("CeiYr2VjUVAFXmPJvfj-Pfk6zmprBzeqNeRWAbImbOo");
+            var result = await graph.GetTokenTransfers("CeiYr2VjUVAFXmPJvfj-Pfk6zmprBzeqNeRWAbImbOo");
 
             Assert.IsNotNull(result);
         }
