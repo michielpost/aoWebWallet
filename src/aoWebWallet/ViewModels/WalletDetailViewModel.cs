@@ -47,7 +47,7 @@ namespace aoWebWallet.ViewModels
 
         [ObservableProperty]
         public bool? hasArConnectExtension;
-               
+
         public WalletDetailsViewModel? SelectedWallet { get; set; }
 
 
@@ -58,8 +58,8 @@ namespace aoWebWallet.ViewModels
         public DataLoaderViewModel<List<TokenTransfer>> TokenTransferList { get; set; } = new();
 
 
-        public WalletDetailViewModel(MainViewModel mainViewModel, 
-            GraphqlClient graphqlClient, 
+        public WalletDetailViewModel(MainViewModel mainViewModel,
+            GraphqlClient graphqlClient,
             TokenDataService dataService,
             TokenClient tokenClient,
             StorageService storageService,
@@ -83,6 +83,7 @@ namespace aoWebWallet.ViewModels
             VisibleTokenList = new();
             VisibleTokenList.Add(Constants.AoTokenId); //AO
             VisibleTokenList.Add(Constants.CredTokenId); //TESTNET-CRED
+            VisibleTokenList.Add(Constants.LlamaTokenId); //Llama Coin
 
             ResetTokenTransferlist();
 
@@ -368,7 +369,7 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-       
+
 
 
         public async Task SetClaims()
@@ -452,6 +453,6 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-        
+
     }
 }

@@ -30,7 +30,7 @@ namespace aoWebWallet.Services
             //AddSystemMemeFrames(result, "kqvDWqWWJIaEWqarff3-Ux15sRG8sToh7X3b4SYh5Sc", "c2fBkprpp46V-PVn5ZdoevuKGz-Pt28EsqEkWMfnfrM"); //Test Meme
 
             return result;
-           
+
         }
 
         private static void AddSystemMemeFrames(List<MemeFrameProcess> list, string processId, string mintTokenId)
@@ -79,6 +79,16 @@ namespace aoWebWallet.Services
                    Name = "AOCRED",
                    Ticker = "testnet-AOCRED"
                }); //CRED
+
+            AddSystemToken(result, Constants.LlamaTokenId,
+              new TokenData
+              {
+                  TokenId = Constants.LlamaTokenId,
+                  Denomination = 12,
+                  Logo = "9FSEgmUsrug7kTdZJABDekwTGJy7YG7KaN5khcbwcX4",
+                  Name = "Llama Coin",
+                  Ticker = "LLAMA"
+              }); //LLAMA
 
 
             AddSystemToken(result, "8p7ApPZxC_37M06QHVejCQrKsHbcJEerd3jWNkDUWPQ",
