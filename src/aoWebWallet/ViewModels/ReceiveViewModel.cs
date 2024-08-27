@@ -70,7 +70,7 @@ namespace aoWebWallet.ViewModels
         {
             var address = Address;
 
-            var incoming = await graphqlClient.GetTokenTransfers(address);
+            var incoming = await graphqlClient.GetTokenTransfersIn(address);
 
             incoming = incoming.Where(x => x.Timestamp > StartTime).OrderByDescending(x => x.Timestamp).ToList();
 

@@ -23,7 +23,9 @@ namespace aoWebWallet.ViewModels
         private readonly ISnackbar snackbar;
         private readonly MemoryDataCache memoryDataCache;
 
-        private List<TokenTransfer> allTransactions = new();
+        private List<TokenTransfer> incoming = new();
+        private List<TokenTransfer> outgoing = new();
+        private List<TokenTransfer> outgoingProcess = new();
 
 
         [ObservableProperty]
@@ -47,7 +49,7 @@ namespace aoWebWallet.ViewModels
 
         [ObservableProperty]
         public bool? hasArConnectExtension;
-
+               
         public WalletDetailsViewModel? SelectedWallet { get; set; }
 
 
@@ -58,8 +60,8 @@ namespace aoWebWallet.ViewModels
         public DataLoaderViewModel<List<TokenTransfer>> TokenTransferList { get; set; } = new();
 
 
-        public WalletDetailViewModel(MainViewModel mainViewModel,
-            GraphqlClient graphqlClient,
+        public WalletDetailViewModel(MainViewModel mainViewModel, 
+            GraphqlClient graphqlClient, 
             TokenDataService dataService,
             TokenClient tokenClient,
             StorageService storageService,
@@ -83,7 +85,6 @@ namespace aoWebWallet.ViewModels
             VisibleTokenList = new();
             VisibleTokenList.Add(Constants.AoTokenId); //AO
             VisibleTokenList.Add(Constants.CredTokenId); //TESTNET-CRED
-            VisibleTokenList.Add(Constants.LlamaTokenId); //Llama Coin
 
             ResetTokenTransferlist();
 
@@ -132,7 +133,9 @@ namespace aoWebWallet.ViewModels
 
         private void ResetTokenTransferlist()
         {
-            allTransactions = new();
+            incoming = new();
+            outgoing = new();
+            outgoingProcess = new();
             TokenTransferList.Data = new();
         }
 
@@ -222,9 +225,11 @@ namespace aoWebWallet.ViewModels
 
         public Task LoadTokenTransferList(string address) => TokenTransferList.DataLoader.LoadAsync(async () =>
         {
-            allTransactions = await graphqlClient.GetTokenTransfers(address, GetCursor(allTransactions));
+            incoming = await graphqlClient.GetTokenTransfersIn(address, GetCursor(incoming));
+            outgoing = await graphqlClient.GetTransactionsOut(address, GetCursor(outgoing));
+            outgoingProcess = await graphqlClient.GetTransactionsOutFromProcess(address, GetCursor(outgoingProcess));
 
-            var allNew = allTransactions.OrderByDescending(x => x.Timestamp).ToList();
+            var allNew = incoming.Concat(outgoing).Concat(outgoingProcess).OrderByDescending(x => x.Timestamp).ToList();
             CanLoadMoreTransactions = allNew.Any();
 
             var existing = TokenTransferList.Data ?? new();
@@ -369,7 +374,7 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-
+       
 
 
         public async Task SetClaims()
@@ -453,6 +458,6 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-
+        
     }
 }
