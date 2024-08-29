@@ -53,7 +53,7 @@
             return;
         }
 
-        var address = code.Substring(3, 43);
+        var address = code.Substring(3).Trim();
 
         int tokenStart = code.IndexOf("?tokenId=");
         if (tokenStart > 0)

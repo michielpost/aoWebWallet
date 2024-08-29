@@ -1,5 +1,6 @@
 ﻿using aoWebWallet.Models;
 using aoWebWallet.ViewModels;
+using ArweaveAO;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -40,7 +41,7 @@ namespace aoWebWallet.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-            if (Address != null && Address.Length != 43)
+            if (Address != null && !AddressValidator.IsValidAddress(Address))
             {
                 NavigationManager.NavigateTo("");
             }

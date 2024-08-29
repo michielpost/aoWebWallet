@@ -4,7 +4,7 @@
 
 <MudPaper Class="pa-8">
     <MudStack Spacing="2">
-        <MudTextField @bind-Value="Address" ReadOnly="@IsReadOnly" Required="true" RequiredError="Input a wallet address" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
+        <MudTextField @bind-Value="Address" ReadOnly="@IsReadOnly" Required="true" RequiredError="Input a wallet address" Label="Wallet Address" Variant="Variant.Text"></MudTextField>
         <MudText Color="Color.Secondary">@Progress</MudText>
         <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
 
@@ -54,9 +54,9 @@
         //     return false;
         // }
 
-        if (string.IsNullOrWhiteSpace(Address) || Address.Length != 43)
+        if (string.IsNullOrWhiteSpace(Address) || !AddressValidator.IsValidAddress(Address))
         {
-            Progress = "Length must be 43 characters.";
+            Progress = "Provide a valid Arweave or Ethereum address.";
             StateHasChanged();
             return false;
         }

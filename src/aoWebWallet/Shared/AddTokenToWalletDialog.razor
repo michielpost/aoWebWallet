@@ -6,7 +6,7 @@
     <DialogContent>
         Add a token to view your balance. Provide a process-id that implements the token standard.
         <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
-            <MudTextField @bind-Value="TokenId" Label="Token Id" Mask="@(new RegexMask("^[a-zA-Z0-9_\\-]{0,43}$"))" MaxLength="43" Variant="Variant.Text"></MudTextField>
+            <MudTextField @bind-Value="TokenId" Label="Token Id" MaxLength="43" Variant="Variant.Text"></MudTextField>
         </MudFocusTrap>
         <MudText Color="Color.Secondary">@Progress</MudText>
     </DialogContent>
@@ -28,7 +28,7 @@
             Progress = "Input the process-id of an ao-process implementing the token standard.";
             return;
         }
-        if(TokenId.Length != 43)
+        if (!AddressValidator.IsValidArweaveAddress(TokenId))
         {
             Progress = "Length must be 43 characters.";
             return;

@@ -146,9 +146,9 @@ else
 
     public IEnumerable<string> ValidateProcess(Wallet? input)
     {
-        if (input == null || input.Address.Length != 43)
+        if (input == null || !AddressValidator.IsValidAddress(input.Address))
         {
-            yield return "Address must have length of 43 characters.";
+            yield return "Invalid address.";
         }
     }
 
@@ -179,7 +179,7 @@ else
 
         if (contacts.Any())
             return contacts;
-        else if(value.Length == 43)
+        else if (AddressValidator.IsValidAddress(value))
             return new Wallet[1] { new Wallet() { Address = value } };
         else
             return new Wallet[0];

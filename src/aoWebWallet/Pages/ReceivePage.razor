@@ -171,7 +171,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Address != null && Address.Length != 43)
+        if (Address != null && !AddressValidator.IsValidAddress(Address))
         {
             NavigationManager.NavigateTo("");
         }
