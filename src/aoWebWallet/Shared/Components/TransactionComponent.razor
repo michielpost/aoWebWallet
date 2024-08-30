@@ -11,7 +11,14 @@
     string txUrl = $"transaction/{transfer.Id}";
     <MudTimelineItem>
         <ItemDot>
-            <MudAvatar Size="Size.Medium" title="@tokenData?.TokenId"><MudImage Src="@UrlHelper.GetArweaveUrl(tokenData?.Logo)" /></MudAvatar>
+            @if (!string.IsNullOrWhiteSpace(tokenData?.Logo))
+            {
+                <MudAvatar Size="Size.Medium" title="@tokenData?.TokenId"><MudImage Src="@UrlHelper.GetArweaveUrl(tokenData?.Logo)" /></MudAvatar>
+            }
+            else if(tokenData?.TokenType == ArweaveAO.Models.Token.TokenType.AtomicAsset)
+            {
+                <MudAvatar Size="Size.Medium" title="@tokenData?.TokenId" Color="Color.Info" Variant="Variant.Outlined">AA</MudAvatar>
+            }
         </ItemDot>
         <ItemContent>
             @if (transfer.BlockHeight.HasValue)
@@ -22,7 +29,11 @@
             {
                 <MudText Typo="Typo.caption">unconfirmed</MudText>
             }
-            @*<MudText Typo="Typo.body1">@tokenData.Name</MudText>*@
+            @if (string.IsNullOrWhiteSpace(tokenData?.Logo))
+            {
+                <br />
+                <MudText Typo="Typo.caption">Process: @transfer?.TokenId</MudText>
+            }
             <MudText style="font-weight:500;" Typo="Typo.body2">@tokenData?.Ticker</MudText>
             <MudStack Row=true>
                 <MudText>txId: </MudText>

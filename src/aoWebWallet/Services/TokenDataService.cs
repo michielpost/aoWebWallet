@@ -1,6 +1,7 @@
 ﻿
 using aoWebWallet.Models;
 using aoWebWallet.Pages;
+using aoww.Services.Models;
 using ArweaveAO;
 using ArweaveAO.Models.Token;
 using System.Collections.ObjectModel;
@@ -42,16 +43,18 @@ namespace aoWebWallet.Services
                     return data;
                 }, async data =>
                 {
-                    if (data != null)
+                    if (data != null && data.IsValidToken())
                     {
                         await storageService.AddToken(tokenId, data, isUserAdded: false, null);
 
                         await LoadTokenList(force: true);
                     }
+                    
                 });
 
                 
             }
+
         }
 
         public async Task<Token> LoadTokenAsync(string tokenId)
@@ -75,9 +78,8 @@ namespace aoWebWallet.Services
                     return data;
                 });
 
-                if (data != null)
+                if (data != null && data.IsValidToken())
                 {
-
                     token.TokenData = data;
 
                     var existing = TokenList.Where(x => x.TokenId.Equals(tokenId, StringComparison.OrdinalIgnoreCase)).Any();
@@ -86,7 +88,6 @@ namespace aoWebWallet.Services
 
                     await storageService.AddToken(tokenId, data, false, null);
                 }
-               
             }
 
             return token;
@@ -128,7 +129,7 @@ namespace aoWebWallet.Services
                     catch { }
                 }
 
-                if (token.TokenData != null)
+                if (token.TokenData != null && token.TokenData.IsValidToken())
                     yield return token;
             }
 
