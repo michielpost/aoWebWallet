@@ -17,6 +17,7 @@ using aoWebWallet.Models;
 using ArweaveAO.Models;
 using MudExtensions.Services;
 using Soenneker.Blazor.Utils.Navigation.Registrars;
+using Append.Blazor.WebShare;
 
 namespace aoWebWallet
 {
@@ -128,6 +129,8 @@ namespace aoWebWallet
             services.AddClipboard();
 
             services.AddNavigationUtil();
+
+            services.AddWebShare();
 
             //Options
             services.AddSingleton(new GraphqlConfig());

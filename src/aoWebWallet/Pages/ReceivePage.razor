@@ -2,6 +2,7 @@
 @using ZXing;
 @using aoWebWallet.Models
 @using MudExtensions
+@using Append.Blazor.WebShare
 @inherits MvvmComponentBase<ReceiveViewModel>
 @inject GatewayUrlHelper UrlHelper;
 @inject IDialogService DialogService
@@ -11,7 +12,7 @@
 @inject TransactionService transactionService;
 @inject WalletDetailViewModel WalletDetailViewModel
 @inject ClipboardService ClipboardService
-
+@inject IWebShareService WebShareService
 
 <PageTitle>Receive Tokens - @Program.PageTitlePostFix</PageTitle>
 
@@ -70,10 +71,11 @@
                         <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(shareUrl); }" />
                     </MudStack>
                     <MudStack Spacing="0" Row="true">
-                        <MudLink Href="@NavigationManager.Uri" Target="_blank" Typo="Typo.subtitle1">
-                            Share this page
-                        </MudLink>
-                        <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(NavigationManager.Uri); }" />
+                        <MudStack Spacing="0" Row="true">
+                            <MudText Typo="Typo.subtitle1">Share this page</MudText>
+                            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Default" OnClick="async () => { await ClipboardService.CopyToClipboard(NavigationManager.Uri); }" />
+                            <MudIconButton Class="copy-clipboard" Icon="@Icons.Material.Filled.Share" Color="Color.Default" OnClick="SharePage" />
+                        </MudStack>
                     </MudStack>
                 </MudStack>
             </MudPaper>
@@ -165,6 +167,20 @@
 
             StateHasChanged();
         });
+    }
+
+    private async Task SharePage()
+    {
+        bool IsSupported = await WebShareService.IsSupportedAsync();
+        if (IsSupported)
+        {
+            await WebShareService.ShareAsync($"Send tokens to {@Address}", $"Use this page to send tokens to {@Address}", NavigationManager.Uri);
+        }
+        else
+        {
+            await ClipboardService.CopyToClipboard(NavigationManager.Uri);
+            //Snackbar.Add("Sharing not supported on this device.", Severity.Warning);
+        }
     }
 
 

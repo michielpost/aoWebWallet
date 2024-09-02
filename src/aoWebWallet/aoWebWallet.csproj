@@ -12,6 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Append.Blazor.WebShare" Version="7.0.0" />
 		<PackageReference Include="ArweaveAO" Version="0.0.8" />
 		<PackageReference Include="ArweaveBlazor" Version="0.0.10" />
 		<PackageReference Include="ClipLazor" Version="2.1.1" />
