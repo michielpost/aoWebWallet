@@ -21,7 +21,8 @@ namespace aoww.Services.Tests
         {
             var graph = new GraphqlClient(new HttpClient(), Options.Create<GraphqlConfig>(new()));
 
-            var result = await graph.GetTokenTransfers("CeiYr2VjUVAFXmPJvfj-Pfk6zmprBzeqNeRWAbImbOo");
+            //var result = await graph.GetTokenTransfers("CeiYr2VjUVAFXmPJvfj-Pfk6zmprBzeqNeRWAbImbOo");
+            var result = await graph.GetTokenTransfersIn("YCH7ugqKwIo_bQebG_eT_7QY0sxVXbnv7BTgmRi7FZk");
 
             Assert.IsNotNull(result);
         }

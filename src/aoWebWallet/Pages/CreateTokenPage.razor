@@ -1,0 +1,74 @@
+@page "/create-token"
+@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@inject TokenDataService dataService
+@inject WalletDetailViewModel WalletDetailViewModel
+@using Soenneker.Blazor.Utils.Navigation.Abstract
+@inject INavigationUtil NavigationUtil
+
+<PageTitle>Create Token @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww mb-4" Items="_items"></MudBreadcrumbs>
+
+    <SelectActiveWalletComponent ReadOnly="readOnly" />
+
+    <MudText Typo="Typo.h5">Create a new token</MudText>
+
+    <MudForm @ref="form" Model="tokenModel" Validated="OnValidated">
+        <MudTextField @bind-Value="tokenModel.Name" Label="Token Name" Required="true" />
+        <MudTextField @bind-Value="tokenModel.Ticker" Label="Ticker Symbol" MaxLength="5" Required="true" />
+        <MudTextField @bind-Value="tokenModel.LogoUrl" Label="Logo URL" />
+        <MudNumericField @bind-Value="tokenModel.Denomination" Label="Denomination" Required="true" />
+        <MudNumericField @bind-Value="tokenModel.TotalSupply" Label="Total Number of Tokens" Required="true" />
+
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Class="mt-8">Submit</MudButton>
+    </MudForm>
+</MudContainer>
+
+@code {
+    private bool readOnly = false;
+    private MudForm? form;
+    private TokenModel tokenModel = new TokenModel();
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Create Token", href: null, disabled: true)
+    };
+
+    private async void Submit()
+    {
+        if(form != null)
+            await form.Validate();
+
+        Snackbar.Add("TEST", Severity.Success);
+
+    }
+
+    private async void OnValidated()
+    {
+        if (form?.IsValid ?? false)
+        {
+            // Create a new process and load token code
+            //await dataService.CreateTokenProcess(tokenModel);
+            Snackbar.Add("Token created successfully!", Severity.Success);
+            NavigationManager.NavigateTo("/wallet");
+        }
+        else
+        {
+            Snackbar.Add("Please fill in all required fields.", Severity.Error);
+        }
+    }
+
+    private class TokenModel
+    {
+        public string? Name { get; set; }
+        public string? Ticker { get; set; }
+        public string? LogoUrl { get; set; }
+        public int Denomination { get; set; }
+        public int TotalSupply { get; set; }
+    }
+}

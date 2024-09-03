@@ -359,7 +359,7 @@ namespace aoww.Services
             if (!string.IsNullOrEmpty(fromProcess))
                 transaction.From = fromProcess;
 
-            transaction.TokenId = edge.GetFirstTagValue("TokenId");
+            transaction.TokenId = edge.GetFirstTagValue("TokenId") ?? transaction.From;
 
             transaction.To = edge.GetFirstTagValue("Recipient");
 
