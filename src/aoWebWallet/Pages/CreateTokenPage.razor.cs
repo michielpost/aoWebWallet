@@ -1,4 +1,5 @@
-﻿using aoWebWallet.ViewModels;
+﻿using aoWebWallet.Services;
+using aoWebWallet.ViewModels;
 using aoww.ProcesModels.Action;
 using Microsoft.AspNetCore.Components.Routing;
 
@@ -8,6 +9,8 @@ namespace aoWebWallet.Pages
     {
         protected override void OnInitialized()
         {
+            CreateTokenService.Reset();
+
             WatchProp(nameof(BindingContext.ActiveWalletAddress));
             WatchDataLoaderVM(BindingContext.WalletList);
             WatchDataLoaderVM(CreateTokenService.CreateTokenProgress);

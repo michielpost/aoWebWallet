@@ -10,6 +10,11 @@ namespace aoWebWallet.Services
     {
         public DataLoaderViewModel<string> CreateTokenProgress { get; set; } = new();
 
+        public void Reset()
+        {
+            CreateTokenProgress = new();
+        }
+
         public Task<string?> CreateToken(Wallet wallet, CreateTokenModel tokenModel)
             => CreateTokenProgress.DataLoader.LoadAsync(async () =>
             {
@@ -45,7 +50,8 @@ namespace aoWebWallet.Services
 
                 if (string.IsNullOrWhiteSpace(newProcessId))
                 {
-                    return "Failed to create new process";
+                    CreateTokenProgress.DataLoader.ProgressMsg = "Failed to create new process";
+                    return null;
                 }
                 else
                 {
@@ -80,7 +86,8 @@ namespace aoWebWallet.Services
 
                 if (dataId == null)
                 {
-                   return $"Failed to reach process after maximum retries ({maxRetries})";
+                    CreateTokenProgress.DataLoader.ProgressMsg = $"Failed to reach process after maximum retries ({maxRetries})";
+                    return null;
                 }
 
                 if (dataId != null)
@@ -92,13 +99,14 @@ namespace aoWebWallet.Services
                     {
                         new ArweaveBlazor.Models.Tag { Name = "Target", Value = newProcessId},
                         new ArweaveBlazor.Models.Tag { Name = "Action", Value = "Mint"},
-                        new ArweaveBlazor.Models.Tag { Name = "Quantity", Value = tokenModel.TotalSupply.ToString()}
+                        new ArweaveBlazor.Models.Tag { Name = "Quantity", Value = tokenModel.MintQuantityForTag}
                     });
                     Console.WriteLine("mintResult: " + mintResult);
 
                 }
 
-                return "Token created successfully!";
+                CreateTokenProgress.DataLoader.ProgressMsg = "Token created successfully!";
+                return newProcessId;
             }, x => CreateTokenProgress.Data = x);
     }
 }

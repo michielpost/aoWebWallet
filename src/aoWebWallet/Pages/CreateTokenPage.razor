@@ -24,26 +24,28 @@
         <MudForm Model="tokenModel">
             <MudTextField @bind-Value="tokenModel.Name" Label="Token Name" Required="true" />
             <MudTextField @bind-Value="tokenModel.Ticker" Label="Ticker Symbol" MaxLength="5" Required="true" />
-            <MudTextField @bind-Value="tokenModel.LogoUrl" Label="Logo URL" />
+            <MudTextField @bind-Value="tokenModel.LogoUrl" Label="ArweaveId of logo" MaxLength="43"/>
             <MudNumericField @bind-Value="tokenModel.Denomination" Label="Denomination" Required="true" />
+            <MudNumericField @bind-Value="tokenModel.TotalSupply" Format="@DenominationFormat" Label="Initial mint amount" Required="true" />
 
-            <MudNumericField @bind-Value="tokenModel.TotalSupply" Label="Initial mint amount" Required="true" />
-
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Class="mt-8">Submit</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="Submit" Class="mt-8">Submit</MudButton>
         </MudForm>
     }
     else
     {
         <SendTransactionProgress DataLoader="CreateTokenService.CreateTokenProgress.DataLoader" Title="Creating token..." />
 
-        @if (!string.IsNullOrEmpty(CreateTokenService.CreateTokenProgress.Data))
-        {
-            <MudText Class="mt-4">@CreateTokenService.CreateTokenProgress.Data</MudText>
-        }
-
         @if (CreateTokenService.CreateTokenProgress.DataLoader.LoadingState == LoadingState.Finished)
         {
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ReturnToWallet" Class="mt-8">Return to Wallet</MudButton>
+            if (!string.IsNullOrEmpty(CreateTokenService.CreateTokenProgress.Data))
+            {
+            
+                <br />
+                <MudText Class="mt-4">New tokenId: @CreateTokenService.CreateTokenProgress.Data</MudText>
+                <br />
+            }
+
+            <MudButton Color="Color.Primary" Variant="Variant.Filled"  OnClick="ReturnToWallet" Class="mt-8">Return to Wallet</MudButton>
         }
     }
 </MudContainer>
@@ -57,6 +59,9 @@
         new BreadcrumbItem("Home", href: "/"),
         new BreadcrumbItem("Create Token", href: null, disabled: true)
     };
+
+    public string DenominationFormat => "F" + (tokenModel.Denomination).ToString();
+    public bool IsDisabled => string.IsNullOrWhiteSpace(tokenModel.Name) || string.IsNullOrWhiteSpace(tokenModel.Ticker);
 
     private async Task Submit()
     {
