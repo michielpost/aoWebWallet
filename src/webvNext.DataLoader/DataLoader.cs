@@ -39,6 +39,9 @@ namespace webvNext.DataLoader
         [ObservableProperty]
         private LoadingState loadingState;
 
+        [ObservableProperty]
+        private string? progressMsg;
+
         public DateTimeOffset? LoadedDateTime { get; set; }
 
         /// <summary>

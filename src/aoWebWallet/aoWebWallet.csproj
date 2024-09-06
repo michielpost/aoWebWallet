@@ -12,6 +12,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="ProcessTemplates\token.lua" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Append.Blazor.WebShare" Version="7.0.0" />
 		<PackageReference Include="ArweaveAO" Version="0.0.8" />
 		<PackageReference Include="ArweaveBlazor" Version="0.0.11" />
@@ -24,7 +28,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" PrivateAssets="all" />
 		<PackageReference Include="ReactorBlazorQRCodeScanner" Version="1.0.7" />
-		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="2.1.299" />
+		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="2.1.307" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -45,6 +49,10 @@
 
 	<ItemGroup>
 	  <_ContentIncludedByDefault Remove="Pages\ReceivePage.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="ProcessTemplates\token.lua" />
 	</ItemGroup>
 
 </Project>

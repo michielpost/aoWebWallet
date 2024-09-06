@@ -96,51 +96,51 @@ namespace aoWebWallet.Services
             return output;
         }
 
-        public async Task SendAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
+        public async Task<Transaction?> SendAction(Wallet wallet, Wallet? ownerWallet, AoAction action)
         {
             if (wallet.Source == WalletTypes.ArConnect)
             {
                 var activeAddress = await GetActiveArConnectAddress();
                 if(activeAddress == wallet.Address)
-                    await SendActionWithArConnect(action);
+                    return await SendActionWithArConnect(action);
             }
 
             if (ownerWallet?.Source == WalletTypes.ArConnect)
             {
                 var activeAddress = await GetActiveArConnectAddress();
                 if (activeAddress == ownerWallet.Address)
-                    await SendActionWithEvalWithArConnect(wallet.Address, action);
+                    return await SendActionWithEvalWithArConnect(wallet.Address, action);
             }
 
             if (!string.IsNullOrEmpty(wallet.OwnerAddress) && ownerWallet?.Address == wallet.OwnerAddress
                 && !string.IsNullOrEmpty(ownerWallet?.Jwk))
             {
-                await SendActionWithEval(ownerWallet.Jwk, wallet.Address, action);
+                return await SendActionWithEval(ownerWallet.Jwk, wallet.Address, action);
             }
 
             if (!string.IsNullOrEmpty(wallet.Jwk))
-                await SendActionWithJwk(wallet.Jwk, action);
+                return await SendActionWithJwk(wallet.Jwk, action);
 
             //Console.WriteLine("No Wallet to send");
-            return;
+            return null;
         }
 
-        private async Task SendActionWithEvalWithArConnect(string processId, AoAction action)
+        private async Task<Transaction?> SendActionWithEvalWithArConnect(string processId, AoAction action)
         {
             var activeAddress = await GetActiveArConnectAddress();
             if (string.IsNullOrEmpty(activeAddress))
-                return;
+                return null;
 
-            await SendActionWithEval(null, processId, action);
+            return await SendActionWithEval(null, processId, action);
         }
 
-        private async Task SendActionWithArConnect(AoAction action)
+        private async Task<Transaction?> SendActionWithArConnect(AoAction action)
         {
             var activeAddress = await GetActiveArConnectAddress();
             if (string.IsNullOrEmpty(activeAddress))
-                return;
+                return null;
 
-            await SendActionWithJwk(null, action);
+            return await SendActionWithJwk(null, action);
         }
 
         private Task<Transaction?> SendActionWithEval(string? jwk, string processId, AoAction action)

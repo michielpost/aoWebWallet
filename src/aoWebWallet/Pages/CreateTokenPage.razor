@@ -8,6 +8,7 @@
 @inject WalletDetailViewModel WalletDetailViewModel
 @using Soenneker.Blazor.Utils.Navigation.Abstract
 @inject INavigationUtil NavigationUtil
+@inject CreateTokenService CreateTokenService
 
 <PageTitle>Create Token @Program.PageTitlePostFix</PageTitle>
 
@@ -18,57 +19,73 @@
 
     <MudText Typo="Typo.h5">Create a new token</MudText>
 
-    <MudForm @ref="form" Model="tokenModel" Validated="OnValidated">
-        <MudTextField @bind-Value="tokenModel.Name" Label="Token Name" Required="true" />
-        <MudTextField @bind-Value="tokenModel.Ticker" Label="Ticker Symbol" MaxLength="5" Required="true" />
-        <MudTextField @bind-Value="tokenModel.LogoUrl" Label="Logo URL" />
-        <MudNumericField @bind-Value="tokenModel.Denomination" Label="Denomination" Required="true" />
-        <MudNumericField @bind-Value="tokenModel.TotalSupply" Label="Total Number of Tokens" Required="true" />
+    @if (!isSubmitting && !string.IsNullOrEmpty(BindingContext.ActiveWalletAddress))
+    {
+        <MudForm Model="tokenModel">
+            <MudTextField @bind-Value="tokenModel.Name" Label="Token Name" Required="true" />
+            <MudTextField @bind-Value="tokenModel.Ticker" Label="Ticker Symbol" MaxLength="5" Required="true" />
+            <MudTextField @bind-Value="tokenModel.LogoUrl" Label="Logo URL" />
+            <MudNumericField @bind-Value="tokenModel.Denomination" Label="Denomination" Required="true" />
 
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Class="mt-8">Submit</MudButton>
-    </MudForm>
+            <MudNumericField @bind-Value="tokenModel.TotalSupply" Label="Initial mint amount" Required="true" />
+
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit" Class="mt-8">Submit</MudButton>
+        </MudForm>
+    }
+    else
+    {
+        <SendTransactionProgress DataLoader="CreateTokenService.CreateTokenProgress.DataLoader" Title="Creating token..." />
+
+        @if (!string.IsNullOrEmpty(CreateTokenService.CreateTokenProgress.Data))
+        {
+            <MudText Class="mt-4">@CreateTokenService.CreateTokenProgress.Data</MudText>
+        }
+
+        @if (CreateTokenService.CreateTokenProgress.DataLoader.LoadingState == LoadingState.Finished)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ReturnToWallet" Class="mt-8">Return to Wallet</MudButton>
+        }
+    }
 </MudContainer>
 
 @code {
     private bool readOnly = false;
-    private MudForm? form;
-    private TokenModel tokenModel = new TokenModel();
+    private bool isSubmitting = false;
+    private CreateTokenModel tokenModel = new CreateTokenModel();
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
     {
         new BreadcrumbItem("Home", href: "/"),
         new BreadcrumbItem("Create Token", href: null, disabled: true)
     };
 
-    private async void Submit()
+    private async Task Submit()
     {
-        if(form != null)
-            await form.Validate();
+        isSubmitting = true;
 
-        Snackbar.Add("TEST", Severity.Success);
+        if (BindingContext.WalletList.Data == null)
+            return;
 
-    }
-
-    private async void OnValidated()
-    {
-        if (form?.IsValid ?? false)
+        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == BindingContext.ActiveWalletAddress).FirstOrDefault();
+        if (wallet == null)
         {
-            // Create a new process and load token code
-            //await dataService.CreateTokenProcess(tokenModel);
-            Snackbar.Add("Token created successfully!", Severity.Success);
-            NavigationManager.NavigateTo("/wallet");
+            if (BindingContext.ActiveWallet?.Address == BindingContext.ActiveWalletAddress)
+            {
+                wallet = BindingContext.ActiveWallet;
+            }
         }
-        else
-        {
-            Snackbar.Add("Please fill in all required fields.", Severity.Error);
-        }
+
+        if (wallet == null)
+            return;
+
+        await CreateTokenService.CreateToken(wallet, tokenModel);
+        //Snackbar.Add("Token created successfully!", Severity.Success);
+
     }
 
-    private class TokenModel
+    private void ReturnToWallet()
     {
-        public string? Name { get; set; }
-        public string? Ticker { get; set; }
-        public string? LogoUrl { get; set; }
-        public int Denomination { get; set; }
-        public int TotalSupply { get; set; }
+        NavigationManager.NavigateTo($"/wallet/{BindingContext.ActiveWalletAddress}");
     }
+
+
 }

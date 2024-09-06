@@ -18,6 +18,7 @@ namespace webvNext.DataLoader
         public void ForcePropertyChanged()
         {
             OnPropertyChanged(nameof(Data));
+            OnPropertyChanged(nameof(DataLoader));
         }
     }
 }

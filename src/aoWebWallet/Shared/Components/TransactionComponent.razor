@@ -32,7 +32,7 @@
             @if (string.IsNullOrWhiteSpace(tokenData?.Logo))
             {
                 <br />
-                <MudText Typo="Typo.caption">Process: @transfer?.TokenId</MudText>
+                <MudText Typo="Typo.caption">Process: @transfer.TokenId</MudText>
             }
             <MudText style="font-weight:500;" Typo="Typo.body2">@tokenData?.Ticker</MudText>
             <MudStack Row=true>
