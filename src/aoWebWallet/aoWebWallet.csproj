@@ -28,7 +28,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" PrivateAssets="all" />
 		<PackageReference Include="ReactorBlazorQRCodeScanner" Version="1.0.7" />
-		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="2.1.307" />
+		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="2.1.317" />
 	</ItemGroup>
 
 	<ItemGroup>

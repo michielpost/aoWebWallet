@@ -575,6 +575,58 @@ namespace aoww.Services
             return result;
         }
 
+        public async Task<List<string>> GetActionsForProcess(string processId, string? cursor = null)
+        {
+            string query = $$"""
+                query {
+                  transactions(
+                    first: 50
+                    after: "{{cursor}}"
+                    sort: HEIGHT_DESC
+                    recipients: ["{{processId}}"]
+                    tags: [
+                      { name: "Data-Protocol", values: ["ao"] }
+                    ]
+                  ) {
+                    edges {
+                      cursor
+                      node {
+                        id
+                        recipient
+                        owner {
+                          address
+                        }
+                        block {
+                          timestamp
+                          height
+                        }
+                        tags {
+                          name
+                          value
+                        }
+                      }
+                    }
+                  }
+                }                
+                """;
+            var queryResult = await PostQueryAsync(query);
+
+            var result = new List<string>();
+
+            foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
+            {
+                string? action = edge.GetFirstTagValue("Action");
+
+                if (action != null && !result.Where(x => x == action).Any())
+                    result.Add(action);
+            }
+
+            Console.WriteLine("Actions: " + result.Count);
+
+            return result;
+        }
+
+
         public async Task<List<AoProcessInfo>> GetAoProcessesForAddress(string address)
         {
             string query = $$"""
@@ -660,6 +712,7 @@ namespace aoww.Services
 
         protected async Task<GraphqlResponse?> PostQueryAsync(string query)
         {
+            query = query.Replace("after: \"\"", null);
             var request = new GraphqlRequest { Query = query };
 
             HttpResponseMessage res = await httpClient.PostAsJsonAsync(config.ApiUrl, request);

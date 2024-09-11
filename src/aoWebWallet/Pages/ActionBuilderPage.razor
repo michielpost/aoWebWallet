@@ -1,0 +1,65 @@
+@page "/action-builder"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Action Builder @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    <MudText Typo="Typo.h5">Action Builder</MudText>
+
+    <MudText>Process ID: @ProcessId</MudText>
+    <MudText>Action Name: @ActionName</MudText>
+
+    <MudButton Color="Color.Primary" OnClick="AddTag">Add Tag</MudButton>
+
+    <MudList T="Tag">
+        @foreach (var actionParam in actionParams)
+        {
+            <MudListItem>
+                <MudTextField @bind-Value="actionParam.Key" Label="Tag Name" Required="true" />
+                <MudSelect @bind-Value="actionParam.ParamType" Label="Type">
+                    @foreach (ActionParamType key in Enum.GetValues(typeof(ActionParamType)))
+                    {
+                        <MudSelectItem Value="@key">@key</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudListItem>
+        }
+    </MudList>
+
+    <MudButton Color="Color.Primary" OnClick="UseThisAction">Use This Action</MudButton>
+</MudContainer>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ProcessId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ActionName { get; set; }
+
+    private List<ActionParam> actionParams = new List<ActionParam>();
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Action Builder", href: null, disabled: true)
+        };
+
+    private void AddTag()
+    {
+        actionParams.Add(new ActionParam() { Key = "" });
+    }
+
+    private void UseThisAction()
+    {
+        var aoAction = new AoAction();
+        aoAction.Params = actionParams.Where(x => !string.IsNullOrWhiteSpace(x.Key)).ToList();
+        aoAction.Params.Add(new ActionParam() { Key = "Target", Value = ProcessId, ParamType = ActionParamType.Target });
+        aoAction.Params.Add(new ActionParam() { Key = "Action", Value = ActionName, ParamType = ActionParamType.Filled });
+        
+        NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
+    }
+}
