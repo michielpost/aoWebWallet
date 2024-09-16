@@ -2,6 +2,7 @@
 using aoww.Services.Models;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
+using System.Reflection;
 
 namespace aoww.Services
 {
@@ -575,7 +576,7 @@ namespace aoww.Services
             return result;
         }
 
-        public async Task<List<string>> GetActionsForProcess(string processId, string? cursor = null)
+        public async Task<List<AoActionInfo>> GetActionsForProcess(string processId, string? cursor = null)
         {
             string query = $$"""
                 query {
@@ -611,17 +612,51 @@ namespace aoww.Services
                 """;
             var queryResult = await PostQueryAsync(query);
 
-            var result = new List<string>();
+            var result = new List<AoActionInfo>();
+
+            var tagIgnoreList = new List<string>()
+            {
+                "Action",
+                "Content-Type",
+                "SDK",
+                "Data-Protocol",
+                "X-Wallet",
+                "Variant",
+                "Type",
+                "Ref_",
+                "From-Process",
+                "From-Module",
+                "Pushed-For"
+            };
 
             foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
             {
                 string? action = edge.GetFirstTagValue("Action");
 
-                if (action != null && !result.Where(x => x == action).Any())
-                    result.Add(action);
-            }
+                if (action != null)
+                {
+                    var existing = result.Where(x => x.Name == action).FirstOrDefault();
+                    if(existing == null)
+                    {
+                        existing = new AoActionInfo() { Name = action };
+                        result.Add(existing);
+                    }
 
-            Console.WriteLine("Actions: " + result.Count);
+                    foreach(var tag in edge.Node?.Tags ?? new())
+                    {
+                        if (tagIgnoreList.Contains(tag.Name))
+                            continue;
+
+                        var existingTag = existing.Tags.Where(x => x.Name == tag.Name).FirstOrDefault();
+                        if (existingTag == null)
+                        {
+                            existingTag = new AoTagInfo() { Name = tag.Name };
+                            existing.Tags.Add(existingTag);
+                        }
+                    }
+
+                }
+            }
 
             return result;
         }

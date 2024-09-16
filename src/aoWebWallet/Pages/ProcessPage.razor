@@ -11,28 +11,70 @@
 
     @if (string.IsNullOrEmpty(ProcessId))
     {
-        <MudText Typo="Typo.h5">Find a process</MudText>
+         <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h5">Find a process</MudText>
+                <MudText Typo="Typo.body1">Effortlessly call any process on AO. Simply input the process ID, and aoWebWallet will assist in constructing the call to the process.</MudText>
 
-        <MudTextField @bind-Value="inputProcessId" Label="Enter Process ID" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" />
-        <MudButton Color="Color.Primary" Disabled="string.IsNullOrWhiteSpace(inputProcessId)" OnClick="NavigateToProcess">Go to Process</MudButton>
+                <MudTextField @bind-Value="inputProcessId" Label="Enter Process ID" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" />
+                <MudButton Color="Color.Primary" Disabled="string.IsNullOrWhiteSpace(inputProcessId)" OnClick="NavigateToProcess">Go to Process</MudButton>
+
+            </MudPaper>
+        </MudItem>
+
     }
     else
     {
-        <MudText Typo="Typo.h5">Process</MudText>
+         <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h5">Process</MudText>
 
-        <MudText>Process ID: @ProcessId</MudText>
+                <MudText>Process ID: <b>@ProcessId</b></MudText>
+            </MudPaper>
+        </MudItem>
+       
+
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText>List of common actions for this process:</MudText>
+
+                @if(isLoading)
+                {
+                    <MudText>Loading...</MudText>
+                }
+                else
+                {
+                    if(actions.Any())
+                    {
+                        <MudList T="string">
+                            @foreach (var action in actions)
+                            {
+                                <MudListItem OnClick="@(() => NavigateToActionBuilder(action.Name))">
+                                    @action.Name
+                                </MudListItem>
+                            }
+                        </MudList>
+                    }
+                    else
+                    {
+                        <MudText>No previous calls to process found</MudText>
+                    }
+                }
+
+            </MudPaper>
+        </MudItem>
+
         
-        <MudList T="string">
-            @foreach (var action in actions)
-            {
-                <MudListItem OnClick="@(() => NavigateToActionBuilder(action))">
-                    @action
-                </MudListItem>
-            }
-        </MudList>
+          <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h5">Input your own action name</MudText>
 
-        <MudTextField @bind-Value="newActionName" Label="New Action Name" />
-        <MudButton Color="Color.Primary" OnClick="@(() => NavigateToActionBuilder(null))">Create New Action</MudButton>
+                <MudTextField @bind-Value="newActionName" Label="New Action Name" />
+                <MudButton Color="Color.Primary" OnClick="@(() => NavigateToActionBuilder(null))">Create New Action</MudButton>
+            </MudPaper>
+        </MudItem>
+
+       
     }
 </MudContainer>
 
@@ -42,7 +84,9 @@
 
     private string? inputProcessId;
     private string? newActionName;
-    private List<string> actions = new List<string>();
+    private bool isLoading;
+
+    private List<AoActionInfo> actions = new List<AoActionInfo>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
         {
@@ -85,7 +129,9 @@
     {
         if (ProcessId != null)
         {
+            isLoading = true;
             actions = await GraphqlClient.GetActionsForProcess(ProcessId);
+            isLoading = false;
         }
     }
 
