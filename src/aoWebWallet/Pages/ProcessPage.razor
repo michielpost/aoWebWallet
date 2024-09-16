@@ -16,8 +16,8 @@
                 <MudText Typo="Typo.h5">Find a process</MudText>
                 <MudText Typo="Typo.body1">Effortlessly call any process on AO. Simply input the process ID, and aoWebWallet will assist in constructing the call to the process.</MudText>
 
-                <MudTextField @bind-Value="inputProcessId" Label="Enter Process ID" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" />
-                <MudButton Color="Color.Primary" Disabled="string.IsNullOrWhiteSpace(inputProcessId)" OnClick="NavigateToProcess">Go to Process</MudButton>
+                <MudTextField @bind-Value="inputProcessId" Immediate="true" Label="Enter Process ID" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" />
+                <MudButton Color="Color.Primary" Disabled="!IsButtonEnabled(inputProcessId)" OnClick="NavigateToProcess">Go to Process</MudButton>
 
             </MudPaper>
         </MudItem>
@@ -119,10 +119,20 @@
 
     public IEnumerable<string> ValidateProcess(string? input)
     {
-        if (input == null || !AddressValidator.IsValidAddress(input))
+        if (input != null && !AddressValidator.IsValidAddress(input))
         {
             yield return "Invalid address.";
         }
+    }
+
+    public bool IsButtonEnabled(string? input)
+    {
+        if (input != null && AddressValidator.IsValidAddress(input))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private async Task LoadActions()
