@@ -61,17 +61,17 @@
                     }
                 </MudMenuItem>
                 <MudMenuItem>
-                        <MudButton StartIcon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshBalances"></MudButton>
                 </MudMenuItem>
                 <MudMenuItem>
                     @if (BindingContext.SelectedWallet?.Wallet.Source == WalletTypes.Explorer)
-                        {
-                            <MudButton StartIcon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudButton>
-                        }
-                        else if(BindingContext.SelectedWallet?.Wallet != null)
-                        {
-                            <MudButton StartIcon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudButton>
-                        }
+                    {
+                        <MudButton StartIcon="@Icons.Material.Outlined.Star" aria-label="add to wallets" OnClick="BindingContext.SaveExplorerWallet"></MudButton>
+                    }
+                    else if (BindingContext.SelectedWallet?.Wallet != null)
+                    {
+                        <MudButton StartIcon="@Icons.Material.Outlined.Edit" aria-label="edit wallet" OnClick="() => EditWallet(BindingContext.SelectedWallet.Wallet)"></MudButton>
+                    }
                 </MudMenuItem>
             </MudMenu>
         </MudStack>
@@ -208,6 +208,17 @@
                 }
             </MudTabPanel>
             <MudTabPanel Text="Action Builder">
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <ActionList ProcessId="@Address" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        @if (BindingContext.SelectedWallet?.Wallet.OwnerAddress != null)
+                        {
+                            <HandlerList ProcessId="@Address" OwnerId="@BindingContext.SelectedWallet?.Wallet.OwnerAddress" />
+                        }
+                    </MudItem>
+                </MudGrid>
             </MudTabPanel>
         </MudTabs>
     </MudGrid>
