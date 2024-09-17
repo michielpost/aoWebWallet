@@ -133,70 +133,83 @@
     </MudStack>
 
     <MudGrid Spacing="2">
-        <MudItem xs="12" sm="6">
-            <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Transactions">
+                <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
 
-            <MudStack>
-                @if (BindingContext.TokenTransferList.Data != null)
-                {
-                    <MudStack Row="true" style="display: block !important;">
-                        <MudText Typo="Typo.h5">Transactions</MudText>
-                        <MudSpacer />
-                        <MudTooltip Text="Refresh transactions" Arrow="true" Placement="Placement.Right">
-                            <MudIconButton Class="ml-6" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
-                        </MudTooltip>
-                    </MudStack>
-
-                    <MudTimeline TimelinePosition="TimelinePosition.Left">
-                        @foreach (var transfer in BindingContext.TokenTransferList.Data)
-                        {
-                            <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedWallet?.Wallet.Address" />
-                        }
-                    </MudTimeline>
-
-                    @if (BindingContext.TokenTransferList.DataLoader.LoadingState == LoadingState.Finished && BindingContext.CanLoadMoreTransactions)
-                    {
-                        <MudButton OnClick="() => LoadMoreTransactions()">Load More</MudButton>
-                    }
-                    <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
-
-                }
-            </MudStack>
-        </MudItem>
-
-        @if (BindingContext.SelectedProcessData?.Data?.Processes.Any() ?? false)
-        {
-            <MudItem xs="12" sm="6">
                 <MudStack>
-                    <MudText Typo="Typo.h5">AOS</MudText>
-                    <MudText Typo="Typo.subtitle1">List of owned AOS processes</MudText>
-                    <MudTimeline TimelinePosition="TimelinePosition.Left">
-                        @foreach (var process in BindingContext.SelectedProcessData.Data.Processes)
+                    @if (BindingContext.TokenTransferList.Data != null)
+                    {
+                        <MudStack Row="true" style="display: block !important;">
+                            <MudText Typo="Typo.h5">Transactions</MudText>
+                            <MudSpacer />
+                            <MudTooltip Text="Refresh transactions" Arrow="true" Placement="Placement.Right">
+                                <MudIconButton Class="ml-6" Icon="@Icons.Material.Filled.Refresh" aria-label="refresh transactions" OnClick="RefreshTransactions"></MudIconButton>
+                            </MudTooltip>
+                        </MudStack>
+
+                        <MudTimeline TimelinePosition="TimelinePosition.Left">
+                            @foreach (var transfer in BindingContext.TokenTransferList.Data)
+                            {
+                                <TransactionComponent transfer="transfer" SelectedAddress="@BindingContext.SelectedWallet?.Wallet.Address" />
+                            }
+                        </MudTimeline>
+
+                        @if (BindingContext.TokenTransferList.DataLoader.LoadingState == LoadingState.Finished && BindingContext.CanLoadMoreTransactions)
                         {
-                            var linkUrl = $"/wallet/{process.Id}";
-                            var processLinkUrl = $"/process/{process.Id}";
-                            <MudTimelineItem>
-                                <ItemDot>
-                                    <MudAvatar Color="Color.Secondary" Variant="Variant.Outlined">
-                                        <MudImage title="AO Process"  class="aos-process" Src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTEuOTciIHZpZXdCb3g9IjAgMCA0MjkgMjE0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMCAyMTRINzEuMzc2M0w4NS45NDI5IDE3NC42MUw1My4xNjgxIDEwNy41TDAgMjE0WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTE4OS4zNjYgMTYwLjc1TDEwOS45NzggMUw4NS45NDI5IDU1LjcwODlMMTYwLjk2MSAyMTRIMjE1TDE4OS4zNjYgMTYwLjc1WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zMjIgMjE0QzM4MS4wOTQgMjE0IDQyOSAxNjYuMDk0IDQyOSAxMDdDNDI5IDQ3LjkwNTUgMzgxLjA5NCAwIDMyMiAwQzI2Mi45MDYgMCAyMTUgNDcuOTA1NSAyMTUgMTA3QzIxNSAxNjYuMDk0IDI2Mi45MDYgMjE0IDMyMiAyMTRaTTMyMiAxNzJDMzU3Ljg5OSAxNzIgMzg3IDE0Mi44OTkgMzg3IDEwN0MzODcgNzEuMTAxNSAzNTcuODk5IDQyIDMyMiA0MkMyODYuMTAxIDQyIDI1NyA3MS4xMDE1IDI1NyAxMDdDMjU3IDE0Mi44OTkgMjg2LjEwMSAxNzIgMzIyIDE3MloiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPg==" Elevation="25" />
-                                    </MudAvatar>
-                                </ItemDot>
-                                <ItemContent>
-                                    <MudStack Row=true>
-                                        <MudText>@process.Name</MudText>
-                                        <MudSpacer /><br />
-                                        <MudLink Href="@linkUrl">@process.Id.ToShortAddress()</MudLink>
-                                        <MudLink Href="@processLinkUrl">
-                                            <MudIcon Icon="@Icons.Material.Filled.Apps" Title="Call Actions" />
-                                        </MudLink>
-                                    </MudStack>
-                                </ItemContent>
-                            </MudTimelineItem>
+                            <MudButton OnClick="() => LoadMoreTransactions()">Load More</MudButton>
                         }
-                    </MudTimeline>
+                        <DataLoaderProgress DataLoader="BindingContext.TokenTransferList.DataLoader" Title="transactions" />
+
+                    }
                 </MudStack>
-            </MudItem>
-        }
+            </MudTabPanel>
+            @{
+                string processTabName = $"Processes ({BindingContext.SelectedProcessData?.Data?.Processes?.Count.ToString() ?? "Loading..."})";
+            }
+            <MudTabPanel Text="@processTabName">
+                @if (BindingContext.SelectedProcessData?.Data?.Processes.Any() ?? false)
+                {
+                    <MudStack>
+                        <MudText Typo="Typo.h5">AOS</MudText>
+                        <MudText Typo="Typo.subtitle1">List of owned AOS processes</MudText>
+                        <MudTimeline TimelinePosition="TimelinePosition.Left">
+                            @foreach (var process in BindingContext.SelectedProcessData.Data.Processes)
+                            {
+                                var linkUrl = $"/wallet/{process.Id}";
+                                var processLinkUrl = $"/process/{process.Id}";
+                                <MudTimelineItem>
+                                    <ItemDot>
+                                        <MudAvatar Color="Color.Secondary" Variant="Variant.Outlined">
+                                            <MudImage title="AO Process" class="aos-process" Src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTEuOTciIHZpZXdCb3g9IjAgMCA0MjkgMjE0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMCAyMTRINzEuMzc2M0w4NS45NDI5IDE3NC42MUw1My4xNjgxIDEwNy41TDAgMjE0WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTE4OS4zNjYgMTYwLjc1TDEwOS45NzggMUw4NS45NDI5IDU1LjcwODlMMTYwLjk2MSAyMTRIMjE1TDE4OS4zNjYgMTYwLjc1WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zMjIgMjE0QzM4MS4wOTQgMjE0IDQyOSAxNjYuMDk0IDQyOSAxMDdDNDI5IDQ3LjkwNTUgMzgxLjA5NCAwIDMyMiAwQzI2Mi45MDYgMCAyMTUgNDcuOTA1NSAyMTUgMTA3QzIxNSAxNjYuMDk0IDI2Mi45MDYgMjE0IDMyMiAyMTRaTTMyMiAxNzJDMzU3Ljg5OSAxNzIgMzg3IDE0Mi44OTkgMzg3IDEwN0MzODcgNzEuMTAxNSAzNTcuODk5IDQyIDMyMiA0MkMyODYuMTAxIDQyIDI1NyA3MS4xMDE1IDI1NyAxMDdDMjU3IDE0Mi44OTkgMjg2LjEwMSAxNzIgMzIyIDE3MloiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPg==" Elevation="25" />
+                                        </MudAvatar>
+                                    </ItemDot>
+                                    <ItemContent>
+                                        <MudStack Row=true>
+                                            @if (process.AppName == "aoww")
+                                            {
+                                                <MudText><b>@process.Name</b></MudText>
+                                            }
+                                            else
+                                            {
+                                                <MudText>@process.Name</MudText>
+                                            }
+                                            <MudSpacer /><br />
+                                            <MudLink Href="@linkUrl">@process.Id.ToShortAddress()</MudLink>
+                                            <MudLink Href="@processLinkUrl">
+                                                <MudIcon Icon="@Icons.Material.Filled.Apps" Title="Call Actions" />
+                                            </MudLink>
+                                        </MudStack>
+                                    </ItemContent>
+                                </MudTimelineItem>
+                            }
+                        </MudTimeline>
+                    </MudStack>
+                }
+            </MudTabPanel>
+            <MudTabPanel Text="Action Builder">
+            </MudTabPanel>
+        </MudTabs>
     </MudGrid>
 </MudContainer>
 

@@ -421,6 +421,7 @@ namespace aoww.Services
                 Id = edge.Node.Id,
                 Owner = edge.Node.Owner?.Address,
                 Name = name,
+                AppName = edge.GetFirstTagValue("App-Name")
             };
 
             processInfo.Version = edge.GetFirstTagValue("Version");
@@ -672,7 +673,7 @@ namespace aoww.Services
                     tags: [
                       { name: "Data-Protocol", values: ["ao"] }
                       { name: "Type", values: ["Process"] }
-                      { name: "App-Name", values: ["aos"] }
+                      { name: "App-Name", values: ["aos", "aoww"] }
                     ]
                   ) {
                     edges {
@@ -712,7 +713,7 @@ namespace aoww.Services
                     tags: [
                       { name: "Data-Protocol", values: ["ao"] }
                       { name: "Type", values: ["Process"] }
-                      { name: "App-Name", values: ["aos"] }
+                      { name: "App-Name", values: ["aos", "aoww"] }
                     ]
                   ) {
                     edges {

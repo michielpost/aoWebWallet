@@ -19,18 +19,15 @@ namespace aoWebWallet.Services
             => CreateTokenProgress.DataLoader.LoadAsync(async () =>
             {
 
-                Console.WriteLine("test");
                 var address = wallet.Address;
                 string? jwk = wallet.Jwk;
 
                 string data = EmbeddedResourceReader.ReadResource("aoWebWallet.ProcessTemplates.token.lua");
-                Console.WriteLine(data.Length);
                 
                 data = data.Replace("ao.id", $"\"{address}\"");
                 data = data.Replace("$Denomination$", tokenModel.Denomination.ToString());
                 data = data.Replace("$Ticker$", tokenModel.Ticker);
                 data = data.Replace("$Logo$", tokenModel.LogoUrl);
-                Console.WriteLine(data.Length);
 
                 string moduleId = "zx6_08gJzKNXxLCplINj6TPv9-ElRgeRqr9F6riRBK8";
                 //string previewModuleId = "PSPMkkFrJzYI2bQbkmeEQ5ONmeR-FJZu0fNQoSCU1-I";
@@ -39,7 +36,7 @@ namespace aoWebWallet.Services
                 CreateTokenProgress.ForcePropertyChanged();
 
                 string newProcessId = await arweaveService.CreateProcess(jwk, moduleId, new List<Tag> {
-                new Tag { Name = "App-Name", Value  = "aos" },
+                new Tag { Name = "App-Name", Value  = "aoww" },
                 new Tag() { Name = "Name", Value = tokenModel.Name ?? string.Empty},
 
             }
