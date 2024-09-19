@@ -39,13 +39,16 @@
         {
             if (!string.IsNullOrEmpty(CreateTokenService.CreateTokenProgress.Data))
             {
-            
+                var walletUrl = $"/wallet/{CreateTokenService.CreateTokenProgress.Data}";
+
                 <br />
-                <MudText Class="mt-4">New tokenId: @CreateTokenService.CreateTokenProgress.Data</MudText>
+                <MudText Class="mt-4">New tokenId: <a href="@walletUrl">@CreateTokenService.CreateTokenProgress.Data</a></MudText>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GoToProcess" Class="mt-8">View Token</MudButton>
+
                 <br />
             }
 
-            <MudButton Color="Color.Primary" Variant="Variant.Filled"  OnClick="ReturnToWallet" Class="mt-8">Return to Wallet</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled"  OnClick="ReturnToWallet" Class="mt-8">Return to Wallet</MudButton>
         }
     }
 </MudContainer>
@@ -92,5 +95,10 @@
         NavigationManager.NavigateTo($"/wallet/{BindingContext.ActiveWalletAddress}");
     }
 
+    private void GoToProcess()
+    {
+        NavigationManager.NavigateTo($"/wallet/{CreateTokenService.CreateTokenProgress.Data}");
+    }
 
+    
 }
