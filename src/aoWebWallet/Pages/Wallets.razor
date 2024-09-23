@@ -90,9 +90,11 @@
         }
         else
         {
-            <MudText Typo="Typo.h6">Loading wallets...</MudText>
+             <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h6">Loading wallets...</MudText>
 
-            <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="wallets" />
+                <DataLoaderProgress DataLoader="BindingContext.WalletList.DataLoader" Title="wallets" />
+            </MudPaper>
         }
 
     </MudStack>
