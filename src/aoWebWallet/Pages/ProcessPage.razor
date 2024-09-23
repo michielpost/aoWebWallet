@@ -35,33 +35,7 @@
        
 
         <MudItem xs="12" md="6">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText>List of common actions for this process:</MudText>
-
-                @if(isLoading)
-                {
-                    <MudText>Loading...</MudText>
-                }
-                else
-                {
-                    if(actions.Any())
-                    {
-                        <MudList T="string">
-                            @foreach (var action in actions)
-                            {
-                                <MudListItem OnClick="@(() => NavigateToActionBuilder(action.Name))">
-                                    @action.Name
-                                </MudListItem>
-                            }
-                        </MudList>
-                    }
-                    else
-                    {
-                        <MudText>No previous calls to process found</MudText>
-                    }
-                }
-
-            </MudPaper>
+            <ActionList ProcessId="@ProcessId" />
         </MudItem>
 
         

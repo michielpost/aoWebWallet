@@ -123,27 +123,21 @@
         validation = AoAction.IsValid();
         readOnly = string.IsNullOrEmpty(validation);
 
-        if (BindingContext.WalletList.Data == null)
-            return;
+        var wallet = GetSelectedWallet();
 
-        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == BindingContext.ActiveWallet?.Address).FirstOrDefault();
         if (wallet == null)
         {
-            if (BindingContext.ActiveWallet?.Address == BindingContext.ActiveWalletAddress)
-            {
-                wallet = BindingContext.ActiveWallet;
-            }
-        }
-
-        if (wallet == null)
+            Console.WriteLine("No wallet selected");
             return;
+        }
 
         //Do we need the owner wallet?
         //Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
 
-        transactionService.DryRunAction(wallet, AoAction);
+        await transactionService.DryRunAction(wallet, AoAction);
 
     }
+
     private void Cancel()
     {
         readOnly = false;
@@ -165,10 +159,24 @@
 
     private async Task Submit()
     {
-        if (BindingContext.WalletList.Data == null)
+        var wallet = GetSelectedWallet();
+
+        if (wallet == null)
             return;
 
-        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == BindingContext.ActiveWallet?.Address).FirstOrDefault();
+        //Do we need the owner wallet?
+        Wallet? ownerWallet = BindingContext.WalletList.Data?.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+
+        started = true;
+        await transactionService.SendAction(wallet, ownerWallet, AoAction);
+    }
+
+    private Wallet? GetSelectedWallet()
+    {
+        if (BindingContext.WalletList.Data == null)
+            return null;
+
+        var wallet = BindingContext.WalletList.Data.Where(x => x.Address == BindingContext.ActiveWalletAddress).FirstOrDefault();
         if (wallet == null)
         {
             if (BindingContext.ActiveWallet?.Address == BindingContext.ActiveWalletAddress)
@@ -177,16 +185,7 @@
             }
         }
 
-        if (wallet == null)
-            return;
-
-        //Do we need the owner wallet?
-        Wallet? ownerWallet = BindingContext.WalletList.Data.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
-
-        started = true;
-        await transactionService.SendAction(wallet, ownerWallet, AoAction);
+        return wallet;
     }
-
-
 
 }

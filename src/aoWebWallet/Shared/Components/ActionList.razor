@@ -1,0 +1,51 @@
+@using aoww.Services
+@inject GraphqlClient GraphqlClient
+@inject NavigationManager NavigationManager
+
+<MudPaper Elevation="2"  Class="pa-4">
+    <MudText Typo="Typo.h6">Actions</MudText>
+    <MudText>List of common actions for this process:</MudText>
+
+    @if (actions == null)
+    {
+        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+    }
+    else if (actions.Count == 0)
+    {
+        <MudText>No actions found.</MudText>
+    }
+    else
+    {
+        <MudList T="string">
+            @foreach (var action in actions)
+            {
+                <MudListItem OnClick="@(() => NavigateToActionBuilder(action.Name))">
+                    @action.Name
+                </MudListItem>
+            }
+        </MudList>
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public required string ProcessId { get; set; }
+
+    private List<AoActionInfo>? actions;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        actions = null;
+        actions = await GraphqlClient.GetActionsForProcess(ProcessId);
+        StateHasChanged();
+    }
+
+    private void NavigateToActionBuilder(string? actionName = null)
+    {
+        string? action = actionName;
+        if (!string.IsNullOrEmpty(action))
+        {
+            NavigationManager.NavigateTo($"/action-builder?processId={ProcessId}&actionName={Uri.EscapeDataString(action)}");
+        }
+    }
+}
