@@ -1,0 +1,136 @@
+@page "/process"
+@page "/process/{ProcessId}"
+@using aoww.Services
+@inject NavigationManager NavigationManager
+@inject GraphqlClient GraphqlClient
+
+<PageTitle>Call a process - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    @if (string.IsNullOrEmpty(ProcessId))
+    {
+         <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h5">Find a process</MudText>
+                <MudText Typo="Typo.body1">Effortlessly call any process on AO. Simply input the process ID, and aoWebWallet will assist in constructing the call to the process.</MudText>
+
+                <MudTextField @bind-Value="inputProcessId" Immediate="true" Label="Enter Process ID" Validation="@(new Func<string, IEnumerable<string>>(ValidateProcess))" />
+                <MudButton Color="Color.Primary" Disabled="!IsButtonEnabled(inputProcessId)" OnClick="NavigateToProcess">Go to Process</MudButton>
+
+            </MudPaper>
+        </MudItem>
+
+    }
+    else
+    {
+         <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h5">Process</MudText>
+
+                <MudText>Process ID: <b>@ProcessId</b></MudText>
+            </MudPaper>
+        </MudItem>
+       
+
+        <MudItem xs="12" md="6">
+            <ActionList ProcessId="@ProcessId" />
+        </MudItem>
+
+        
+          <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h5">Input your own action name</MudText>
+
+                <MudTextField @bind-Value="newActionName" Label="New Action Name" />
+                <MudButton Color="Color.Primary" OnClick="@(() => NavigateToActionBuilder(null))">Create New Action</MudButton>
+            </MudPaper>
+        </MudItem>
+
+       
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string? ProcessId { get; set; }
+
+    private string? inputProcessId;
+    private string? newActionName;
+    private bool isLoading;
+
+    private List<AoActionInfo> actions = new List<AoActionInfo>();
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Processes", href: null, disabled: true)
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(ProcessId))
+        {
+            await LoadActions();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ProcessId != null && !AddressValidator.IsValidAddress(ProcessId))
+        {
+            NavigationManager.NavigateTo("/process");
+        }
+
+        if (ProcessId != null)
+        {
+            await LoadActions();
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+    public IEnumerable<string> ValidateProcess(string? input)
+    {
+        if (input != null && !AddressValidator.IsValidAddress(input))
+        {
+            yield return "Invalid address.";
+        }
+    }
+
+    public bool IsButtonEnabled(string? input)
+    {
+        if (input != null && AddressValidator.IsValidAddress(input))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task LoadActions()
+    {
+        if (ProcessId != null)
+        {
+            isLoading = true;
+            actions = await GraphqlClient.GetActionsForProcess(ProcessId);
+            isLoading = false;
+        }
+    }
+
+    private void NavigateToProcess()
+    {
+        if (!ValidateProcess(inputProcessId).Any())
+            NavigationManager.NavigateTo($"/process/{inputProcessId}");
+    }
+
+    private void NavigateToActionBuilder(string? actionName = null)
+    {
+        string? action = actionName ?? newActionName;
+        if (!string.IsNullOrEmpty(action))
+        {
+            NavigationManager.NavigateTo($"/action-builder?processId={ProcessId}&actionName={Uri.EscapeDataString(action)}");
+        }
+    }
+}

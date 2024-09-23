@@ -1,0 +1,153 @@
+@page "/action-builder"
+@using aoww.Services
+@inject NavigationManager NavigationManager
+@inject GraphqlClient GraphqlClient
+
+<PageTitle>Action Builder - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    <MudItem xs="12" md="6">
+        <MudPaper Elevation="2" Class="pa-4">
+             <MudText Typo="Typo.h5">Action Builder</MudText>
+
+            <MudText>Process ID: <b>@ProcessId</b></MudText>
+            <MudText>Action Name: <b>@ActionName</b></MudText>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            @if(isLoading)
+            {
+                <MudText>Loading commonly used tags for Action "@ActionName"</MudText>
+            }
+
+            <MudList T="Tag">
+                @foreach (var actionParam in actionParams)
+                {
+                    <MudListItem>
+                        <MudStack Row="true">
+                            <MudTextField @bind-Value="actionParam.Key" Label="Tag Name" Required="true" />
+                            <MudSelect @bind-Value="actionParam.ParamType" Label="Type">
+                                @foreach (ActionParamType key in Enum.GetValues(typeof(ActionParamType)))
+                                {
+                                    if (!allowedTypes.Contains(key))
+                                        continue;
+
+                                    <MudSelectItem Value="@key">@key</MudSelectItem>
+                                }
+                            </MudSelect>
+                            <MudButton Color="Color.Error" OnClick="() => RemoveTag(actionParam)">Remove</MudButton>
+                        </MudStack>
+                    </MudListItem>
+                }
+            </MudList>
+            <MudButton Color="Color.Primary" OnClick="AddTag">Add Tag</MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudButton Color="Color.Primary" OnClick="UseThisAction">Use This Action</MudButton>
+        </MudPaper>
+    </MudItem>
+   
+</MudContainer>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ProcessId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ActionName { get; set; }
+
+    private bool isLoading;
+    private List<ActionParam> actionParams = new List<ActionParam>();
+
+    private List<ActionParamType> allowedTypes = new List<ActionParamType>
+    {
+        ActionParamType.None,
+        ActionParamType.Input,
+        ActionParamType.Integer,
+        ActionParamType.Process,
+    };
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Home", href: "/"),
+            new BreadcrumbItem("Action Builder", href: null, disabled: true)
+        };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ProcessId != null && !AddressValidator.IsValidAddress(ProcessId))
+        {
+            NavigationManager.NavigateTo("/process");
+        }
+
+        if (ProcessId != null)
+        {
+            await LoadActions();
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+    public IEnumerable<string> ValidateProcess(string? input)
+    {
+        if (input == null || !AddressValidator.IsValidAddress(input))
+        {
+            yield return "Invalid address.";
+        }
+    }
+
+    private async Task LoadActions()
+    {
+        if (ProcessId != null)
+        {
+            isLoading = true;
+            var actions = await GraphqlClient.GetActionsForProcess(ProcessId);
+            var actionInfo = actions.Where(x => x.Name == ActionName).FirstOrDefault();
+            isLoading = false;
+
+            if (actionInfo != null && !actionParams.Any())
+            {
+                foreach (var tag in actionInfo.Tags)
+                {
+                    var paramType = ActionParamType.Input;
+                    if (tag.Name == "Quantity")
+                        paramType = ActionParamType.Integer;
+                    if (tag.Name == "Recipient")
+                        paramType = ActionParamType.Process;
+
+                    actionParams.Add(new ActionParam() { Key = tag.Name, ParamType = paramType });
+                }
+            }
+
+        }
+    }
+
+    private void AddTag()
+    {
+        actionParams.Add(new ActionParam() { Key = "", ParamType = ActionParamType.Input });
+    }
+
+    private void UseThisAction()
+    {
+        var aoAction = new AoAction();
+        aoAction.Params = actionParams.Where(x => !string.IsNullOrWhiteSpace(x.Key)).ToList();
+        aoAction.Params.Add(new ActionParam() { Key = "Target", Value = ProcessId, ParamType = ActionParamType.Target });
+        aoAction.Params.Add(new ActionParam() { Key = "Action", Value = ActionName, ParamType = ActionParamType.Filled });
+        
+        NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
+    }
+
+    private void RemoveTag(ActionParam actionParam)
+    {
+        actionParams.Remove(actionParam);
+    }
+}

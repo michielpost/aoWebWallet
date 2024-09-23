@@ -2,6 +2,7 @@
 using aoww.Services.Models;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
+using System.Reflection;
 
 namespace aoww.Services
 {
@@ -420,6 +421,7 @@ namespace aoww.Services
                 Id = edge.Node.Id,
                 Owner = edge.Node.Owner?.Address,
                 Name = name,
+                AppName = edge.GetFirstTagValue("App-Name")
             };
 
             processInfo.Version = edge.GetFirstTagValue("Version");
@@ -575,6 +577,92 @@ namespace aoww.Services
             return result;
         }
 
+        public async Task<List<AoActionInfo>> GetActionsForProcess(string processId, string? cursor = null)
+        {
+            string query = $$"""
+                query {
+                  transactions(
+                    first: 50
+                    after: "{{cursor}}"
+                    sort: HEIGHT_DESC
+                    recipients: ["{{processId}}"]
+                    tags: [
+                      { name: "Data-Protocol", values: ["ao"] }
+                    ]
+                  ) {
+                    edges {
+                      cursor
+                      node {
+                        id
+                        recipient
+                        owner {
+                          address
+                        }
+                        block {
+                          timestamp
+                          height
+                        }
+                        tags {
+                          name
+                          value
+                        }
+                      }
+                    }
+                  }
+                }                
+                """;
+            var queryResult = await PostQueryAsync(query);
+
+            var result = new List<AoActionInfo>();
+
+            var tagIgnoreList = new List<string>()
+            {
+                "Action",
+                "Content-Type",
+                "SDK",
+                "Data-Protocol",
+                "X-Wallet",
+                "Variant",
+                "Type",
+                "Ref_",
+                "From-Process",
+                "From-Module",
+                "Pushed-For"
+            };
+
+            foreach (var edge in queryResult?.Data?.Transactions?.Edges ?? new())
+            {
+                string? action = edge.GetFirstTagValue("Action");
+
+                if (action != null)
+                {
+                    var existing = result.Where(x => x.Name == action).FirstOrDefault();
+                    if(existing == null)
+                    {
+                        existing = new AoActionInfo() { Name = action };
+                        result.Add(existing);
+                    }
+
+                    foreach(var tag in edge.Node?.Tags ?? new())
+                    {
+                        if (tagIgnoreList.Contains(tag.Name))
+                            continue;
+
+                        var existingTag = existing.Tags.Where(x => x.Name == tag.Name).FirstOrDefault();
+                        if (existingTag == null)
+                        {
+                            existingTag = new AoTagInfo() { Name = tag.Name };
+                            existing.Tags.Add(existingTag);
+                        }
+                    }
+
+                }
+            }
+
+            return result;
+        }
+
+
         public async Task<List<AoProcessInfo>> GetAoProcessesForAddress(string address)
         {
             string query = $$"""
@@ -585,7 +673,7 @@ namespace aoww.Services
                     tags: [
                       { name: "Data-Protocol", values: ["ao"] }
                       { name: "Type", values: ["Process"] }
-                      { name: "App-Name", values: ["aos"] }
+                      { name: "App-Name", values: ["aos", "aoww"] }
                     ]
                   ) {
                     edges {
@@ -625,7 +713,7 @@ namespace aoww.Services
                     tags: [
                       { name: "Data-Protocol", values: ["ao"] }
                       { name: "Type", values: ["Process"] }
-                      { name: "App-Name", values: ["aos"] }
+                      { name: "App-Name", values: ["aos", "aoww"] }
                     ]
                   ) {
                     edges {
@@ -660,6 +748,7 @@ namespace aoww.Services
 
         protected async Task<GraphqlResponse?> PostQueryAsync(string query)
         {
+            query = query.Replace("after: \"\"", null);
             var request = new GraphqlRequest { Query = query };
 
             HttpResponseMessage res = await httpClient.PostAsJsonAsync(config.ApiUrl, request);

@@ -10,7 +10,7 @@
 @inject INavigationUtil NavigationUtil
 @inject CreateTokenService CreateTokenService
 
-<PageTitle>Create Token @Program.PageTitlePostFix</PageTitle>
+<PageTitle>Create a Token - @Program.PageTitlePostFix</PageTitle>
 
 <MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
     <MudBreadcrumbs Class="breadcrumbs-aoww mb-4" Items="_items"></MudBreadcrumbs>
@@ -28,7 +28,16 @@
             <MudNumericField @bind-Value="tokenModel.Denomination" Label="Denomination" Required="true" />
             <MudNumericField @bind-Value="tokenModel.TotalSupply" Format="@DenominationFormat" Label="Initial mint amount" Required="true" />
 
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="Submit" Class="mt-8">Submit</MudButton>
+            @if (isPreview)
+            {
+                <br />
+                <MudTextField @bind-Value="data" Lines="15" Style="color:black;background-color:white;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;" Label="Process Code" />
+            }
+
+            <MudStack Row="true">
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="Preview" Class="mt-8">Preview</MudButton>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="Submit" Class="mt-8">Submit</MudButton>
+            </MudStack>
         </MudForm>
     }
     else
@@ -39,13 +48,21 @@
         {
             if (!string.IsNullOrEmpty(CreateTokenService.CreateTokenProgress.Data))
             {
-            
+                var walletUrl = $"/wallet/{CreateTokenService.CreateTokenProgress.Data}";
+
                 <br />
-                <MudText Class="mt-4">New tokenId: @CreateTokenService.CreateTokenProgress.Data</MudText>
+                <MudText Class="mt-4">New tokenId: <a href="@walletUrl">@CreateTokenService.CreateTokenProgress.Data</a></MudText>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GoToProcess" Class="mt-8">View Token</MudButton>
+
                 <br />
             }
+            else
+            {
+                <MudText Class="mt-4">@CreateTokenService.CreateTokenProgress.DataLoader.ProgressMsg</MudText>
+            }
 
-            <MudButton Color="Color.Primary" Variant="Variant.Filled"  OnClick="ReturnToWallet" Class="mt-8">Return to Wallet</MudButton>
+
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled"  OnClick="ReturnToWallet" Class="mt-8">Return to Wallet</MudButton>
         }
     }
 </MudContainer>
@@ -53,6 +70,8 @@
 @code {
     private bool readOnly = false;
     private bool isSubmitting = false;
+    private bool isPreview = false;
+    private string? data = null;
     private CreateTokenModel tokenModel = new CreateTokenModel();
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
     {
@@ -63,12 +82,39 @@
     public string DenominationFormat => "F" + (tokenModel.Denomination).ToString();
     public bool IsDisabled => string.IsNullOrWhiteSpace(tokenModel.Name) || string.IsNullOrWhiteSpace(tokenModel.Ticker);
 
+    private void Preview()
+    {
+        var wallet = GetSelectedWallet();
+
+        if (wallet == null)
+            return;
+
+        isPreview = true;
+        data = CreateTokenService.GetTokenProcessCode(wallet.Address, tokenModel);
+    }
+
     private async Task Submit()
     {
         isSubmitting = true;
 
-        if (BindingContext.WalletList.Data == null)
+        var wallet = GetSelectedWallet();
+
+        if (wallet == null)
             return;
+
+        //Run preview if not run yet
+        if (data == null)
+            data = CreateTokenService.GetTokenProcessCode(wallet.Address, tokenModel);
+
+        CreateTokenService.CreateToken(wallet, tokenModel, data);
+        //Snackbar.Add("Token created successfully!", Severity.Success);
+
+    }
+
+    private Wallet? GetSelectedWallet()
+    {
+        if (BindingContext.WalletList.Data == null)
+            return null;
 
         var wallet = BindingContext.WalletList.Data.Where(x => x.Address == BindingContext.ActiveWalletAddress).FirstOrDefault();
         if (wallet == null)
@@ -79,12 +125,7 @@
             }
         }
 
-        if (wallet == null)
-            return;
-
-        await CreateTokenService.CreateToken(wallet, tokenModel);
-        //Snackbar.Add("Token created successfully!", Severity.Success);
-
+        return wallet;
     }
 
     private void ReturnToWallet()
@@ -92,5 +133,10 @@
         NavigationManager.NavigateTo($"/wallet/{BindingContext.ActiveWalletAddress}");
     }
 
+    private void GoToProcess()
+    {
+        NavigationManager.NavigateTo($"/wallet/{CreateTokenService.CreateTokenProgress.Data}");
+    }
 
+    
 }

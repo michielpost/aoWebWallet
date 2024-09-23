@@ -15,38 +15,26 @@ namespace aoWebWallet.Services
             CreateTokenProgress = new();
         }
 
-        public Task<string?> CreateToken(Wallet wallet, CreateTokenModel tokenModel)
+        public string GetTokenProcessCode(string address, CreateTokenModel tokenModel)
+        {
+            string data = EmbeddedResourceReader.ReadResource("aoWebWallet.ProcessTemplates.token.lua");
+
+            data = data.Replace("ao.id", $"\"{address}\"");
+            data = data.Replace("$Denomination$", tokenModel.Denomination.ToString());
+            data = data.Replace("$Ticker$", tokenModel.Ticker);
+            data = data.Replace("$Logo$", tokenModel.LogoUrl);
+
+            return data;
+        }
+
+        public Task<string?> CreateToken(Wallet wallet, CreateTokenModel tokenModel, string data)
             => CreateTokenProgress.DataLoader.LoadAsync(async () =>
             {
 
-                Console.WriteLine("test");
                 var address = wallet.Address;
                 string? jwk = wallet.Jwk;
 
-                string data = EmbeddedResourceReader.ReadResource("aoWebWallet.ProcessTemplates.token.lua");
-                Console.WriteLine(data.Length);
-                
-                data = data.Replace("ao.id", $"\"{address}\"");
-                data = data.Replace("$Denomination$", tokenModel.Denomination.ToString());
-                data = data.Replace("$Ticker$", tokenModel.Ticker);
-                data = data.Replace("$Logo$", tokenModel.LogoUrl);
-                Console.WriteLine(data.Length);
-
-                string moduleId = "zx6_08gJzKNXxLCplINj6TPv9-ElRgeRqr9F6riRBK8";
-                //string previewModuleId = "PSPMkkFrJzYI2bQbkmeEQ5ONmeR-FJZu0fNQoSCU1-I";
-
-                CreateTokenProgress.DataLoader.ProgressMsg = "Deploying new process...";
-                CreateTokenProgress.ForcePropertyChanged();
-
-                string newProcessId = await arweaveService.CreateProcess(jwk, moduleId, new List<Tag> {
-                new Tag { Name = "App-Name", Value  = "aos" },
-                new Tag() { Name = "Name", Value = tokenModel.Name ?? string.Empty},
-
-            }
-                );
-
-                Console.WriteLine("process finish");
-
+                string newProcessId = await CreateEmptyProcess(tokenModel.Name, jwk);
 
                 if (string.IsNullOrWhiteSpace(newProcessId))
                 {
@@ -108,5 +96,23 @@ namespace aoWebWallet.Services
                 CreateTokenProgress.DataLoader.ProgressMsg = "Token created successfully!";
                 return newProcessId;
             }, x => CreateTokenProgress.Data = x);
+
+        private async Task<string> CreateEmptyProcess(string? processName, string? jwk)
+        {
+            string moduleId = "bkjb55i07GUCUSWROtKK4HU1mBS_X0TyH3M5jMV6aPg";
+            string schedulerId = "_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA";
+
+            CreateTokenProgress.DataLoader.ProgressMsg = "Deploying new process...";
+            CreateTokenProgress.ForcePropertyChanged();
+
+            string newProcessId = await arweaveService.CreateProcess(jwk, moduleId, new List<Tag> {
+                    new Tag { Name = "App-Name", Value  = "aoww" },
+                    new Tag() { Name = "Name", Value = processName ?? string.Empty},
+
+                }, scheduler: schedulerId);
+
+            Console.WriteLine($"Finished creating process: {newProcessId}");
+            return newProcessId;
+        }
     }
 }
