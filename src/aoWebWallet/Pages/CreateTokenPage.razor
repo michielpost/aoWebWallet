@@ -28,7 +28,16 @@
             <MudNumericField @bind-Value="tokenModel.Denomination" Label="Denomination" Required="true" />
             <MudNumericField @bind-Value="tokenModel.TotalSupply" Format="@DenominationFormat" Label="Initial mint amount" Required="true" />
 
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="Submit" Class="mt-8">Submit</MudButton>
+            @if (isPreview)
+            {
+                <br />
+                <MudTextField @bind-Value="data" Lines="15" Style="color:black;background-color:white;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;" Label="Process Code" />
+            }
+
+            <MudStack Row="true">
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="Preview" Class="mt-8">Preview</MudButton>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@IsDisabled" OnClick="Submit" Class="mt-8">Submit</MudButton>
+            </MudStack>
         </MudForm>
     }
     else
@@ -56,6 +65,8 @@
 @code {
     private bool readOnly = false;
     private bool isSubmitting = false;
+    private bool isPreview = false;
+    private string? data = null;
     private CreateTokenModel tokenModel = new CreateTokenModel();
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
     {
@@ -66,6 +77,17 @@
     public string DenominationFormat => "F" + (tokenModel.Denomination).ToString();
     public bool IsDisabled => string.IsNullOrWhiteSpace(tokenModel.Name) || string.IsNullOrWhiteSpace(tokenModel.Ticker);
 
+    private void Preview()
+    {
+        var wallet = GetSelectedWallet();
+
+        if (wallet == null)
+            return;
+
+        isPreview = true;
+        data = CreateTokenService.GetTokenProcessCode(wallet.Address, tokenModel);
+    }
+
     private async Task Submit()
     {
         isSubmitting = true;
@@ -75,7 +97,11 @@
         if (wallet == null)
             return;
 
-        await CreateTokenService.CreateToken(wallet, tokenModel);
+        //Run preview if not run yet
+        if (data == null)
+            data = CreateTokenService.GetTokenProcessCode(wallet.Address, tokenModel);
+
+        await CreateTokenService.CreateToken(wallet, tokenModel, data);
         //Snackbar.Add("Token created successfully!", Severity.Success);
 
     }

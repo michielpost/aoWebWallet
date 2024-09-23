@@ -4,53 +4,56 @@
 @inject AODataClient aoDataClient
 @inject NavigationManager NavigationManager
 
-<MudPaper Class="pa-4">
-    <MudText Typo="Typo.h6">Handlers</MudText>
-    @if (handlers == null)
-    {
-        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-    }
-    else if (handlers.Count == 0)
-    {
-        <MudText>No handlers found.</MudText>
-    }
-    else
-    {
-        <MudList T="string">
-            @foreach (var handler in handlers)
-            {
-                <MudListItem>@handler</MudListItem>
-            }
-        </MudList>
-    }
-</MudPaper>
+<MudItem xs="12" sm="6">
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h6">Handlers</MudText>
+        @if (handlers == null)
+        {
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        }
+        else if (handlers.Count == 0)
+        {
+            <MudText>No handlers found.</MudText>
+        }
+        else
+        {
+            <MudList T="string">
+                @foreach (var handler in handlers)
+                {
+                    <MudListItem>@handler</MudListItem>
+                }
+            </MudList>
+        }
+    </MudPaper>
+</MudItem>
 
-@if(processType != null)
+@if (processType != null)
 {
-<MudPaper Class="pa-4">
-    <MudText Typo="Typo.h6">Process Type Detected: @processType</MudText>
+    <MudItem xs="12" sm="6">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h6">Process Type Detected: @processType</MudText>
 
-        @if (readActions.Any())
-        {
-            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                @foreach (var action in readActions)
-                {
-                    <MudButton OnClick="() => GoToSend(action.AoAction)">@action.Name</MudButton>
-                }
-            </MudButtonGroup>
-        }
+            @if (readActions.Any())
+            {
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                    @foreach (var action in readActions)
+                    {
+                        <MudButton OnClick="() => GoToSend(action.AoAction)">@action.Name</MudButton>
+                    }
+                </MudButtonGroup>
+            }
 
-        @if (messageActions.Any())
-        {
-            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                @foreach (var action in messageActions)
-                {
-                    <MudButton OnClick="() => GoToSend(action.AoAction)">@action.Name</MudButton>
-                }
-            </MudButtonGroup>
-        }
-</MudPaper>
-
+            @if (messageActions.Any())
+            {
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                    @foreach (var action in messageActions)
+                    {
+                        <MudButton OnClick="() => GoToSend(action.AoAction)">@action.Name</MudButton>
+                    }
+                </MudButtonGroup>
+            }
+        </MudPaper>
+    </MudItem>
 }
 
 @code {
@@ -79,7 +82,7 @@
 
         processType = DetectProcessType(handlers);
 
-        if(process != null)
+        if (process != null)
         {
             readActions = process.GetActionMetadata().ToList();
             //readActions = process.GetVisibleDryRunActions().ToList();
