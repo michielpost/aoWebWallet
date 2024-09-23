@@ -23,12 +23,12 @@
 		<PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.0.1" />
 		<PackageReference Include="MudBlazor" Version="7.8.0" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-		<PackageReference Include="BlazorWasmPreRendering.Build" Version="4.0.0" />
+		<PackageReference Include="BlazorWasmPreRendering.Build" Version="4.0.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" PrivateAssets="all" />
 		<PackageReference Include="ReactorBlazorQRCodeScanner" Version="1.0.7" />
-		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="2.1.327" />
+		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="2.1.329" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -70,8 +70,20 @@
     {
         isSubmitting = true;
 
-        if (BindingContext.WalletList.Data == null)
+        var wallet = GetSelectedWallet();
+
+        if (wallet == null)
             return;
+
+        await CreateTokenService.CreateToken(wallet, tokenModel);
+        //Snackbar.Add("Token created successfully!", Severity.Success);
+
+    }
+
+    private Wallet? GetSelectedWallet()
+    {
+        if (BindingContext.WalletList.Data == null)
+            return null;
 
         var wallet = BindingContext.WalletList.Data.Where(x => x.Address == BindingContext.ActiveWalletAddress).FirstOrDefault();
         if (wallet == null)
@@ -82,12 +94,7 @@
             }
         }
 
-        if (wallet == null)
-            return;
-
-        await CreateTokenService.CreateToken(wallet, tokenModel);
-        //Snackbar.Add("Token created successfully!", Severity.Success);
-
+        return wallet;
     }
 
     private void ReturnToWallet()
