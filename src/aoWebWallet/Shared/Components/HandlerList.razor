@@ -4,29 +4,6 @@
 @inject AODataClient aoDataClient
 @inject NavigationManager NavigationManager
 
-<MudItem xs="12" sm="6">
-    <MudPaper Class="pa-4">
-        <MudText Typo="Typo.h6">Handlers</MudText>
-        @if (handlers == null)
-        {
-            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-        }
-        else if (handlers.Count == 0)
-        {
-            <MudText>No handlers found.</MudText>
-        }
-        else
-        {
-            <MudList T="string">
-                @foreach (var handler in handlers)
-                {
-                    <MudListItem>@handler</MudListItem>
-                }
-            </MudList>
-        }
-    </MudPaper>
-</MudItem>
-
 @if (processType != null)
 {
     <MudItem xs="12" sm="6">
@@ -55,6 +32,31 @@
         </MudPaper>
     </MudItem>
 }
+
+<MudItem xs="12" sm="6">
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h6">Handlers</MudText>
+        @if (handlers == null)
+        {
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        }
+        else if (handlers.Count == 0)
+        {
+            <MudText>No handlers found.</MudText>
+        }
+        else
+        {
+            <MudList T="string">
+                @foreach (var handler in handlers)
+                {
+                    <MudListItem>@handler</MudListItem>
+                }
+            </MudList>
+        }
+    </MudPaper>
+</MudItem>
+
+
 
 @code {
     [Parameter]

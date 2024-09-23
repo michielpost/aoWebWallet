@@ -99,8 +99,8 @@ namespace aoWebWallet.Services
 
         private async Task<string> CreateEmptyProcess(string? processName, string? jwk)
         {
-            string moduleId = "zx6_08gJzKNXxLCplINj6TPv9-ElRgeRqr9F6riRBK8";
-            //string previewModuleId = "PSPMkkFrJzYI2bQbkmeEQ5ONmeR-FJZu0fNQoSCU1-I";
+            string moduleId = "bkjb55i07GUCUSWROtKK4HU1mBS_X0TyH3M5jMV6aPg";
+            string schedulerId = "_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA";
 
             CreateTokenProgress.DataLoader.ProgressMsg = "Deploying new process...";
             CreateTokenProgress.ForcePropertyChanged();
@@ -109,9 +109,9 @@ namespace aoWebWallet.Services
                     new Tag { Name = "App-Name", Value  = "aoww" },
                     new Tag() { Name = "Name", Value = processName ?? string.Empty},
 
-                });
+                }, scheduler: schedulerId);
 
-            Console.WriteLine("Finished creating process");
+            Console.WriteLine($"Finished creating process: {newProcessId}");
             return newProcessId;
         }
     }
