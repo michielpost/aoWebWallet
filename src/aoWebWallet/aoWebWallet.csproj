@@ -8,6 +8,7 @@
 		<VersionPrefix>0.4.0</VersionPrefix>
 		<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
 		<BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+		<BlazorWasmPrerenderingDeleteLoadingContents>true</BlazorWasmPrerenderingDeleteLoadingContents>
 		<InvariantGlobalization>true</InvariantGlobalization>
 	</PropertyGroup>
 
