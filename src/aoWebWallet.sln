@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aoWebWallet.Tests", "aoWebW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoww.ProcesModels", "aoww.ProcesModels\aoww.ProcesModels.csproj", "{739E7471-30E4-4522-86B8-5D9BB5F0896A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoww.ProcesModels.Tests", "aoww.ProcesModels.Tests\aoww.ProcesModels.Tests.csproj", "{F230462E-20DA-4EB9-A6E7-D6515F677C13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{739E7471-30E4-4522-86B8-5D9BB5F0896A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{739E7471-30E4-4522-86B8-5D9BB5F0896A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{739E7471-30E4-4522-86B8-5D9BB5F0896A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F230462E-20DA-4EB9-A6E7-D6515F677C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F230462E-20DA-4EB9-A6E7-D6515F677C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F230462E-20DA-4EB9-A6E7-D6515F677C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F230462E-20DA-4EB9-A6E7-D6515F677C13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{322F4807-05CF-431D-B400-7420E1B29936} = {89AC47DF-65AD-4870-AA1D-74ABF1F3D8FE}
 		{12E9E40E-96D1-4501-A9A4-EBE4D4F43D8D} = {89AC47DF-65AD-4870-AA1D-74ABF1F3D8FE}
 		{739E7471-30E4-4522-86B8-5D9BB5F0896A} = {06E5BC39-764A-48B9-B4F9-F48387A2C965}
+		{F230462E-20DA-4EB9-A6E7-D6515F677C13} = {89AC47DF-65AD-4870-AA1D-74ABF1F3D8FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {432E3F8E-53FF-4D9C-869D-48449BD3B8B4}

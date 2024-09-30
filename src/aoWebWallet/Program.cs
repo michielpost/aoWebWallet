@@ -18,6 +18,7 @@ using ArweaveAO.Models;
 using MudExtensions.Services;
 using Soenneker.Blazor.Utils.Navigation.Registrars;
 using Append.Blazor.WebShare;
+using aoww.ProcesModels.SchemaProtocol;
 
 namespace aoWebWallet
 {
@@ -108,6 +109,7 @@ namespace aoWebWallet
             services.AddScoped<TransactionService>();
             services.AddScoped<GatewayUrlHelper>();
             services.AddScoped<CreateTokenService>();
+            services.AddScoped<SchemaProtocolClient>();
 
             services.AddSingleton<MemoryDataCache>();
 

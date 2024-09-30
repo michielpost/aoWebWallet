@@ -1,0 +1,52 @@
+@using aoww.ProcesModels.Metadata
+@using aoww.ProcesModels.SchemaProtocol
+@inject SchemaProtocolClient schemaProtocolClient
+@inject NavigationManager NavigationManager
+
+@if (actions != null && actions.Any())
+{
+    <MudItem xs="12" sm="6">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h6">Schema Protocol Actions</MudText>
+            <br />
+            @if (actions.Any())
+            {
+                @foreach (var action in actions)
+                {
+                    <MudCard>
+                        <MudCardContent>
+                            <MudText>@action.Title</MudText>
+                            <MudText Typo="Typo.body2">@action.Description</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton ButtonType="ButtonType.Button" Color="Color.Secondary" OnClick="() => GoToSend(action.AoAction)">@action.Name</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                }
+            }
+
+        </MudPaper>
+    </MudItem>
+}
+
+
+@code {
+    [Parameter]
+    public required string ProcessId { get; set; }
+
+    private List<ActionMetadata> actions = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        actions = new();
+
+        actions = await schemaProtocolClient.GetSchemaProtocolActions(ProcessId);
+
+        StateHasChanged();
+    }
+
+    private void GoToSend(AoAction aoAction)
+    {
+        NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
+    }
+}
