@@ -11,10 +11,16 @@ using System.Threading.Tasks;
 
 namespace aoww.ProcesModels.SchemaProtocol
 {
+    /// <summary>
+    /// https://github.com/elliotsayes/Reality/blob/main/docs/Schema.md
+    /// </summary>
+    /// <param name="aoDataClient"></param>
     public class SchemaProtocolClient(AODataClient aoDataClient)
     {
-        public async Task<List<ActionMetadata>> GetSchemaProtocolActions(string processId)
+        public async Task<List<ActionMetadata>> GetSchemaProtocolActions(string processId, bool schemaExternal = false)
         {
+            string actionValue = schemaExternal ? "SchemaExternal" : "Schema";
+
             try
             {
                 var result = await aoDataClient.DryRun(processId, new ArweaveAO.Requests.DryRunRequest
@@ -22,7 +28,7 @@ namespace aoww.ProcesModels.SchemaProtocol
                     Target = processId,
                     Tags = new List<ArweaveAO.Models.Tag>
                     {
-                        new ArweaveAO.Models.Tag() { Name = "Action", Value = "Schema" }
+                        new ArweaveAO.Models.Tag() { Name = "Action", Value = actionValue }
                     }
                 });
 

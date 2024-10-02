@@ -43,7 +43,15 @@
     private void NavigateToActionBuilder(string? actionName = null)
     {
         string? action = actionName;
-        if (!string.IsNullOrEmpty(action))
+        if(action == "Eval")
+        {
+            var aoAction = new AoAction() { HasData = true };
+            aoAction.Params.Add(new ActionParam() { Key = "Target", Value = ProcessId, ParamType = ActionParamType.Target });
+            aoAction.Params.Add(new ActionParam() { Key = "Action", Value = action, ParamType = ActionParamType.Filled });
+
+            NavigationManager.NavigateTo($"/action?{aoAction.ToQueryString()}");
+        }
+        else if (!string.IsNullOrEmpty(action))
         {
             NavigationManager.NavigateTo($"/action-builder?processId={ProcessId}&actionName={Uri.EscapeDataString(action)}");
         }

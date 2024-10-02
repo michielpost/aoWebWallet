@@ -49,7 +49,16 @@
             <MudList T="string">
                 @foreach (var handler in handlers)
                 {
-                    <MudListItem>@handler</MudListItem>
+                    if(handler == "_eval")
+                    {
+                        var aoAction = new AoAction() { HasData = true };
+                        aoAction.Params.Add(new ActionParam() { Key = "Target", Value = ProcessId, ParamType = ActionParamType.Target });
+                        aoAction.Params.Add(new ActionParam() { Key = "Action", Value = "Eval", ParamType = ActionParamType.Filled });
+                        <MudButton OnClick="() => GoToSend(aoAction)">@handler</MudButton>
+                    }
+                    else{
+                        <MudListItem>@handler</MudListItem>
+                    }
                 }
             </MudList>
         }

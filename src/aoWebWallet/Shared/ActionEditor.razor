@@ -45,6 +45,11 @@
         }
     }
 
+    @if(AoAction.HasData)
+    {
+        <MudTextField @bind-Value="AoAction.DataValue" Label="Data" Lines="5" Variant="Variant.Outlined" Bind />
+    }
+
 </MudStack>
 
 

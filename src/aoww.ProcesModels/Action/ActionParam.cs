@@ -5,6 +5,8 @@ namespace aoww.ProcesModels.Action
     public class AoAction
     {
         public List<ActionParam> Params { get; set; } = new();
+        public bool HasData { get; set; } = false;
+        public string? DataValue { get; set; }
 
         public ActionParam? Target => Params.Where(x => x.ParamType == ActionParamType.Target).FirstOrDefault();
         public IEnumerable<ActionParam> AllWithoutTarget => Params.Where(x => x.ParamType != ActionParamType.Target);
@@ -54,6 +56,9 @@ namespace aoww.ProcesModels.Action
                 }
             }
 
+            if(HasData)
+                sb.Append($"X-HasData=1&");
+
             return sb.ToString().TrimEnd('&');
         }
 
@@ -82,6 +87,14 @@ namespace aoww.ProcesModels.Action
                     var actionValueSplit = actionValue.Split(';', StringSplitOptions.RemoveEmptyEntries);
                     actionValue = actionValueSplit.First();
                     List<string> args = actionValueSplit.Skip(1).ToList();
+
+                    if (key.Equals($"X-{nameof(HasData)}", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (actionValue == "1" || actionValue == "true")
+                            action.HasData = true;
+
+                        continue;
+                    }
 
                     if (key.Equals("Target", StringComparison.InvariantCultureIgnoreCase))
                         actionParamType = ActionParamType.Target;

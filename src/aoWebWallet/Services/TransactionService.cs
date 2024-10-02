@@ -46,7 +46,8 @@ namespace aoWebWallet.Services
                  {
                      Target = target,
                      Owner = wallet.Address,
-                     Tags = action.ToDryRunTags()
+                     Tags = action.ToDryRunTags(),
+                     Data = action.DataValue
                  };
 
                  var result = await aODataClient.DryRun(target, druRunRequest);
@@ -171,7 +172,7 @@ namespace aoWebWallet.Services
                var transferTags = action.ToTags();
                transferTags.Add(new ArweaveBlazor.Models.Tag() { Name = "X-Wallet", Value = "aoww" });
 
-               var idResult = await arweaveService.SendAsync(jwk, action.Target.Value, null, null, transferTags);
+               var idResult = await arweaveService.SendAsync(jwk, action.Target.Value, null, action.DataValue, transferTags);
 
                return new Transaction { Id = idResult };
            }, x => LastTransaction.Data = x);

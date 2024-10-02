@@ -22,6 +22,19 @@ namespace aoww.ProcesModels.Tests
         }
 
         [TestMethod]
+        public async Task GetExternalActionsTests()
+        {
+            var processId = "kPjfXLFyjJogxGRRRe2ErdYNiexolpHpK6wGkz-UPVA";
+
+            var client = new SchemaProtocolClient(new AODataClient(Options.Create<ArweaveConfig>(new()), new HttpClient()));
+
+            var result = await client.GetSchemaProtocolActions(processId, schemaExternal: true);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Any());
+        }
+
+        [TestMethod]
         public async Task NoActionsTests()
         {
             var processId = "YCH7ugqKwIo_bQebG_eT_7QY0sxVXbnv7BTgmRi7FZk";
