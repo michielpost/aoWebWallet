@@ -89,7 +89,7 @@ else
     {
         if (!(mudTextField?.ValidationErrors.Any() ?? false))
         {
-            mudTextField?.SetText(ActionParam.Value);
+            mudTextField?.SetText(ActionParam.Value ?? string.Empty);
         }
 
         if (!(mudProcessField?.ValidationErrors.Any() ?? false))
@@ -105,7 +105,7 @@ else
 
         if (!(mudIntField?.ValidationErrors.Any() ?? false))
         {
-            mudIntField?.SetText(ActionParam.Value);
+            mudIntField?.SetText(ActionParam.Value ?? string.Empty);
         }
 
         base.OnAfterRender(firstRender);
