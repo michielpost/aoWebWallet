@@ -55,7 +55,7 @@
 
             <MudMenu Icon="@Icons.Material.Filled.MoreVert">
                 <MudMenuItem>
-                    @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.Jwk))
+                    @if (!string.IsNullOrEmpty(BindingContext.SelectedWallet?.Wallet.GetJwkSecret()))
                     {
                         <MudButton StartIcon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(BindingContext.SelectedWallet.Wallet); }">Save</MudButton>
                     }

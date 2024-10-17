@@ -114,13 +114,13 @@ namespace aoWebWallet.Services
             }
 
             if (!string.IsNullOrEmpty(wallet.OwnerAddress) && ownerWallet?.Address == wallet.OwnerAddress
-                && !string.IsNullOrEmpty(ownerWallet?.Jwk))
+                && !string.IsNullOrEmpty(ownerWallet?.GetJwkSecret()))
             {
-                return await SendActionWithEval(ownerWallet.Jwk, wallet.Address, action);
+                return await SendActionWithEval(ownerWallet.GetJwkSecret(), wallet.Address, action);
             }
 
-            if (!string.IsNullOrEmpty(wallet.Jwk))
-                return await SendActionWithJwk(wallet.Jwk, action);
+            if (!string.IsNullOrEmpty(wallet.GetJwkSecret()))
+                return await SendActionWithJwk(wallet.GetJwkSecret(), action);
 
             //Console.WriteLine("No Wallet to send");
             return null;

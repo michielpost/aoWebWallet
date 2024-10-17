@@ -41,8 +41,8 @@ namespace aoWebWallet.ViewModels
                 WalletTypes.Manual => !string.IsNullOrEmpty(Wallet.OwnerAddress) && OwnerCanSend,
                 WalletTypes.Explorer => !string.IsNullOrEmpty(Wallet.OwnerAddress) && OwnerCanSend,
                 WalletTypes.AoProcess => !string.IsNullOrEmpty(Wallet.OwnerAddress) && OwnerCanSend,
-                WalletTypes.Generated => !string.IsNullOrEmpty(Wallet.Jwk),
-                WalletTypes.Imported => !string.IsNullOrEmpty(Wallet.Jwk),
+                WalletTypes.Generated => !string.IsNullOrEmpty(Wallet.GetJwkSecret()),
+                WalletTypes.Imported => !string.IsNullOrEmpty(Wallet.GetJwkSecret()),
                 _ => false
             };
 

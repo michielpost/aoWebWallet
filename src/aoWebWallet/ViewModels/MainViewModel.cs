@@ -147,11 +147,12 @@ namespace aoWebWallet.ViewModels
 
         public async Task DownloadWallet(Wallet wallet)
         {
-            if (string.IsNullOrEmpty(wallet.Jwk))
+            string? jwk = wallet.GetJwkSecret();
+            if (string.IsNullOrEmpty(jwk))
                 return;
 
-            var address = await arweaveService.GetAddress(wallet.Jwk);
-            var result = await arweaveService.SaveFile($"{address}.json", wallet.Jwk);
+            var address = await arweaveService.GetAddress(jwk);
+            var result = await arweaveService.SaveFile($"{address}.json", jwk);
             wallet.LastBackedUpDate = DateTimeOffset.UtcNow;
 
             if (this.WalletList.Data != null)
@@ -242,12 +243,12 @@ namespace aoWebWallet.ViewModels
             if (!string.IsNullOrEmpty(wallet.OwnerAddress))
             {
                 var ownerWallet = WalletList.Data!.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
-                return SendTokenWithEval(ownerWallet?.Jwk, wallet.Address, tokenId, address, amount);
+                return SendTokenWithEval(ownerWallet?.GetJwkSecret(), wallet.Address, tokenId, address, amount);
 
             }
 
-            if (!string.IsNullOrEmpty(wallet.Jwk))
-                return SendTokenWithJwk(wallet.Jwk, tokenId, address, amount);
+            if (!string.IsNullOrEmpty(wallet.GetJwkSecret()))
+                return SendTokenWithJwk(wallet.GetJwkSecret(), tokenId, address, amount);
 
             return Task.FromResult<Transaction?>(default);
 

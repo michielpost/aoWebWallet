@@ -32,7 +32,7 @@ namespace aoWebWallet.Services
             {
 
                 var address = wallet.Address;
-                string? jwk = wallet.Jwk;
+                string? jwk = wallet.GetJwkSecret();
 
                 string newProcessId = await CreateEmptyProcess(tokenModel.Name, jwk);
 

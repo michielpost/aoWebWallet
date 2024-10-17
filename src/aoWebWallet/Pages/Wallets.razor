@@ -62,7 +62,7 @@
                             </MudStack>
                             <MudSpacer />
                             <MudMenu Icon="@Icons.Material.Filled.MoreVert">
-                                @if(!string.IsNullOrEmpty(wallet.Jwk))
+                                @if (!string.IsNullOrEmpty(wallet.GetJwkSecret()))
                                 {
                                     <MudMenuItem>
                                         <MudButton Class="delete-address" StartIcon="@Icons.Material.Filled.Save" aria-label="backup" OnClick="() => { DownloadWallet(wallet); }">Backup</MudButton>
