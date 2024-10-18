@@ -20,6 +20,8 @@
                           Adornment="Adornment.End"
                           AdornmentIcon="@PasswordInputIcon"
                           OnAdornmentClick="TogglePasswordVisibility"
+                          Error="@(!string.IsNullOrEmpty(PasswordError))"
+                          ErrorText="@PasswordError"
                            />
 
             <MudTextField @bind-Value="ConfirmPassword"
@@ -29,6 +31,8 @@
                           Adornment="Adornment.End"
                           AdornmentIcon="@PasswordInputIcon"
                           OnAdornmentClick="TogglePasswordVisibility"
+                          Error="@(!string.IsNullOrEmpty(ConfirmPasswordError))"
+                          ErrorText="@ConfirmPasswordError"
                            />
 
             <MudButton Variant="Variant.Filled"
