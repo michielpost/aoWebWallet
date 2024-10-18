@@ -9,6 +9,37 @@ namespace aoww.Services
 {
     public static class EncryptionService
     {
+        public static string EncryptWallet(string secretKey, string jwk)
+        {
+            var key = EncryptionService.GenerateKeys(secretKey);
+
+            var encrypted = EncryptionService.Encrypt(System.Text.Encoding.UTF8.GetBytes(jwk), key.privateKey);
+            //var encryptedString = System.Text.Encoding.UTF8.GetString(encrypted);
+            var encryptedString = BitConverter.ToString(encrypted).Replace("-", "");
+
+            return encryptedString;
+        }
+
+        public static string DecryptWallet(string secretKey, string encryptedJwk)
+        {
+            var key = EncryptionService.GenerateKeys(secretKey);
+
+            var cipherData = HexStringToByteArray(encryptedJwk);
+
+            var decrypt = EncryptionService.Decrypt(cipherData, key.privateKey);
+            var dString = System.Text.Encoding.UTF8.GetString(decrypt);
+
+            return dString;
+        }
+
+        public static byte[] HexStringToByteArray(string hex)
+        {
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
+        }
 
         /// <summary>
         /// Generates a predicatable key pair based on the seed

@@ -1,10 +1,9 @@
 using aoww.Services;
-using SiaSkynet;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace SiaSkynet.Tests
+namespace aoww.Services.Tests
 {
     [TestClass]
     public class EncryptionTests
@@ -27,6 +26,18 @@ namespace SiaSkynet.Tests
             var dString = System.Text.Encoding.UTF8.GetString(decrypt);
 
             Assert.AreEqual(testValue, dString);
+        }
+
+        [TestMethod]
+        public void WalletTest()
+        {
+            var key = "test";
+            var jwk = "1234";
+
+            var encrypted = EncryptionService.EncryptWallet(key, jwk);
+            var decrypt = EncryptionService.DecryptWallet(key, encrypted);
+
+            Assert.AreEqual(jwk, decrypt);
         }
 
 

@@ -44,6 +44,10 @@ namespace aoWebWallet.ViewModels
 
         [ObservableProperty]
         private string? activeWalletAddress;
+
+        [ObservableProperty]
+        private string? secretKey;
+
         public Wallet? ActiveWallet { get; set; }
         public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();

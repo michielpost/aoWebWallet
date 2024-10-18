@@ -1,0 +1,54 @@
+@page "/generate-wallet"
+@inherits MvvmComponentBase<MainViewModel>
+@inject ISnackbar Snackbar
+
+<PageTitle>Generate Wallet - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    @if (BindingContext.SecretKey == null)
+    {
+        <MudPaper Class="pa-4 mt-4" Elevation="3">
+            <MudText Typo="Typo.h4" Class="mb-4">Generate Wallet</MudText>
+            <MudText Typo="Typo.body1" Class="mb-4">Enter a password to encrypt your wallet. The password must be at least 6 characters long.</MudText>
+
+            <MudTextField @bind-Value="Password"
+                          Label="Password"
+                          Variant="Variant.Outlined"
+                          InputType="@PasswordInput"
+                          Adornment="Adornment.End"
+                          AdornmentIcon="@PasswordInputIcon"
+                          OnAdornmentClick="TogglePasswordVisibility"
+                           />
+
+            <MudTextField @bind-Value="ConfirmPassword"
+                          Label="Confirm Password"
+                          Variant="Variant.Outlined"
+                          InputType="@PasswordInput"
+                          Adornment="Adornment.End"
+                          AdornmentIcon="@PasswordInputIcon"
+                          OnAdornmentClick="TogglePasswordVisibility"
+                           />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="GenerateWallet"
+                       Class="mt-4">
+                Generate Wallet
+            </MudButton>
+        </MudPaper>
+    }
+    else
+    {
+        <AddGenerateWalletComponent />
+    }
+</MudContainer>
+
+@code {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Generate Wallet", href: null, disabled: true)
+    };
+}
