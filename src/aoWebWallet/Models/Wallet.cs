@@ -27,8 +27,10 @@ namespace aoWebWallet.Models
         public DateTimeOffset AddedDate { get; set; }
         public DateTimeOffset LastUsedDate { get; set; }
 
+        [JsonIgnore]
         public bool NeedsUnlock => JwkEncrypted != null && JwkSecret == null;
 
+        [JsonIgnore]
         public bool NeedsBackup => Source == WalletTypes.Generated && !string.IsNullOrEmpty(Jwk) && !LastBackedUpDate.HasValue;
 
         public string? GetJwkSecret()

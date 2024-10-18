@@ -2,6 +2,7 @@
 using aoWebWallet.Models;
 using aoWebWallet.Pages;
 using aoWebWallet.Services;
+using aoWebWallet.Shared;
 using aoww.Services;
 using aoww.Services.Models;
 using ArweaveAO;
@@ -29,6 +30,7 @@ namespace aoWebWallet.ViewModels
         private readonly ArweaveService arweaveService;
         private readonly GraphqlClient graphqlClient;
         private readonly MemoryDataCache memoryDataCache;
+        private readonly IDialogService dialogService;
         private readonly ArweaveConfig arweaveConfig;
         private readonly GatewayConfig gatewayConfig;
         private readonly GraphqlConfig graphqlConfig;
@@ -62,6 +64,7 @@ namespace aoWebWallet.ViewModels
             ArweaveService arweaveService,
             GraphqlClient graphqlClient,
             MemoryDataCache memoryDataCache,
+            IDialogService dialogService,
             IOptions<GraphqlConfig> graphqlConfig,
             IOptions<GatewayConfig> gatewayConfig,
             IOptions<ArweaveConfig> arweaveConfig) : base()
@@ -71,6 +74,7 @@ namespace aoWebWallet.ViewModels
             this.arweaveService = arweaveService;
             this.graphqlClient = graphqlClient;
             this.memoryDataCache = memoryDataCache;
+            this.dialogService = dialogService;
             this.arweaveConfig = arweaveConfig.Value;
             this.gatewayConfig = gatewayConfig.Value;
             this.graphqlConfig = graphqlConfig.Value;
@@ -79,6 +83,27 @@ namespace aoWebWallet.ViewModels
         public async Task AddToLog(ActivityLogType type, string id)
         {
             await storageService.AddToLog(type, id);
+        }
+
+        public bool CheckNeedsUnlock()
+        {
+            Console.WriteLine($"Wallets: {WalletList.Data?.Count}");
+            Console.WriteLine($"Wallets need unlock: {WalletList.Data?.Where(x => x.NeedsUnlock)?.Count()}");
+
+            return WalletList.Data?.Any(x => x.NeedsUnlock) ?? false;
+        }
+
+        public Task TriggerUnlock()
+        {
+            if (WalletList.Data?.Any(x => x.NeedsUnlock) ?? false)
+            {
+
+                var options = new DialogOptions { CloseOnEscapeKey = true };
+
+                return dialogService.ShowAsync<UnlockWalletDialog>("Unlock Wallet", options);
+            }
+
+            return Task.CompletedTask;
         }
 
         

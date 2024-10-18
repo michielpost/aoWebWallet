@@ -9,39 +9,44 @@
 
     @if (BindingContext.SecretKey == null)
     {
-        <MudPaper Class="pa-4 mt-4" Elevation="3">
-            <MudText Typo="Typo.h4" Class="mb-4">Generate Wallet</MudText>
-            <MudText Typo="Typo.body1" Class="mb-4">Enter a password to encrypt your wallet. The password must be at least 6 characters long.</MudText>
+        if (BindingContext.CheckNeedsUnlock())
+        {
+            <UnlockWalletComponent />
+        }
+        else
+        {
+            <MudPaper Class="pa-4 mt-4" Elevation="3">
+                <MudText Typo="Typo.h4" Class="mb-4">Generate Wallet</MudText>
+                <MudText Typo="Typo.body1" Class="mb-4">Enter a password to encrypt your wallet. The password must be at least 6 characters long.</MudText>
 
-            <MudTextField @bind-Value="Password"
-                          Label="Password"
-                          Variant="Variant.Outlined"
-                          InputType="@PasswordInput"
-                          Adornment="Adornment.End"
-                          AdornmentIcon="@PasswordInputIcon"
-                          OnAdornmentClick="TogglePasswordVisibility"
-                          Error="@(!string.IsNullOrEmpty(PasswordError))"
-                          ErrorText="@PasswordError"
-                           />
+                <MudTextField @bind-Value="Password"
+                              Label="Password"
+                              Variant="Variant.Outlined"
+                              InputType="@PasswordInput"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="TogglePasswordVisibility"
+                              Error="@(!string.IsNullOrEmpty(PasswordError))"
+                              ErrorText="@PasswordError" />
 
-            <MudTextField @bind-Value="ConfirmPassword"
-                          Label="Confirm Password"
-                          Variant="Variant.Outlined"
-                          InputType="@PasswordInput"
-                          Adornment="Adornment.End"
-                          AdornmentIcon="@PasswordInputIcon"
-                          OnAdornmentClick="TogglePasswordVisibility"
-                          Error="@(!string.IsNullOrEmpty(ConfirmPasswordError))"
-                          ErrorText="@ConfirmPasswordError"
-                           />
+                <MudTextField @bind-Value="ConfirmPassword"
+                              Label="Confirm Password"
+                              Variant="Variant.Outlined"
+                              InputType="@PasswordInput"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="TogglePasswordVisibility"
+                              Error="@(!string.IsNullOrEmpty(ConfirmPasswordError))"
+                              ErrorText="@ConfirmPasswordError" />
 
-            <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       OnClick="GenerateWallet"
-                       Class="mt-4">
-                Generate Wallet
-            </MudButton>
-        </MudPaper>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="GenerateWallet"
+                           Class="mt-4">
+                    Generate Wallet
+                </MudButton>
+            </MudPaper>
+        }
     }
     else
     {
