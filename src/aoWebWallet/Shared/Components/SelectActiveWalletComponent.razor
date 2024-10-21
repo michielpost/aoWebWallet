@@ -11,26 +11,33 @@
         }
         else
         {
-            <MudSelect @bind-Value="@BindingContext.ActiveWalletAddress" Label="Select a wallet" Class="mb-4 wallet-item-background" Variant="Variant.Outlined" ReadOnly="@ReadOnly">
-                @foreach (var wallet in sendWallets ?? new())
-                {
-                    <MudSelectItem Value="@wallet.Address" Class="wallet-item-background">
-                        <MudStack Row="true">
-                            <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
-                                <div style="display:flex; white-space: nowrap;">
-                                    <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
-                                        @wallet.Address
-                                    </MudText>
-                                </div>
-                                <div style="display:flex; flex-direction:row;padding-top:5px;">
-                                    <MudText Typo="Typo.body2">@wallet.Name</MudText>
-                                </div>
+            if (BindingContext.CheckNeedsUnlock())
+            {
+                <UnlockWalletComponent />
+            }
+            else
+            {
+                <MudSelect @bind-Value="@BindingContext.ActiveWalletAddress" Label="Select a wallet" Class="mb-4 wallet-item-background" Variant="Variant.Outlined" ReadOnly="@ReadOnly">
+                    @foreach (var wallet in sendWallets ?? new())
+                    {
+                        <MudSelectItem Value="@wallet.Address" Class="wallet-item-background">
+                            <MudStack Row="true">
+                                <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">
+                                    <div style="display:flex; white-space: nowrap;">
+                                        <MudText Class="KodeMono" style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;" Typo="Typo.h6">
+                                            @wallet.Address
+                                        </MudText>
+                                    </div>
+                                    <div style="display:flex; flex-direction:row;padding-top:5px;">
+                                        <MudText Typo="Typo.body2">@wallet.Name</MudText>
+                                    </div>
+                                </MudStack>
                             </MudStack>
-                        </MudStack>
 
-                    </MudSelectItem>
-                }
-            </MudSelect>
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
         }
     }
 
@@ -44,6 +51,7 @@
     protected override void OnInitialized()
     {
         WatchDataLoaderVM(BindingContext.WalletList);
+        WatchProp(nameof(BindingContext.SecretKey));
 
         base.OnInitialized();
     }
@@ -51,7 +59,5 @@
     private void OpenDialog()
     {
         NavigationManager.NavigateTo("/start");
-        // var options = new DialogOptions { CloseOnEscapeKey = true };
-        // DialogService.Show<AddWalletDialog>("Add Wallet", options);
     }
 }

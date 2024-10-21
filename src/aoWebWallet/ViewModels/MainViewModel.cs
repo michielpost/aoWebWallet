@@ -146,15 +146,19 @@ namespace aoWebWallet.ViewModels
             {
                 var list = await storageService.GetWallets();
 
-                //foreach (var wallet in list)
-                //{
-                //    if(wallet.Source == WalletTypes.AoProcess && !string.IsNullOrEmpty(wallet.OwnerAddress))
-                //    {
-                //        var owner = list.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
-                //        var canOwnerSend = owner?.CanSend ?? false;
-                //        wallet.OwnerCanSend = canOwnerSend;
-                //    }
-                //}
+                if (this.SecretKey != null)
+                {
+                    foreach (var wallet in list)
+                    {
+                        if (wallet.NeedsUnlock)
+                        {
+                            if (wallet.JwkEncrypted == null)
+                                continue;
+
+                            wallet.JwkSecret = EncryptionService.DecryptWallet(this.SecretKey, wallet.JwkEncrypted);
+                        }
+                    }
+                }
 
                 WalletList.Data = list;
 

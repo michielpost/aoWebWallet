@@ -25,6 +25,11 @@
 
     <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
     <MudStack>
+        @if (BindingContext.CheckNeedsUnlock())
+        {
+            <UnlockWalletComponent />
+        }
+
         @if (BindingContext.WalletList.Data != null)
         {
             if (BindingContext.WalletList.Data.Where(x => !x.IsReadOnly).Any())

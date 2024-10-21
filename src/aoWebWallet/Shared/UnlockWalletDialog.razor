@@ -1,12 +1,13 @@
 ﻿@using aoww.Services
 @inject ISnackbar Snackbar
+@inject WalletDetailViewModel WalletDetailViewModel
 @inherits MvvmComponentBase<MainViewModel>
 
 <MudDialog>
     <DialogContent>
         Unlock Wallets
         <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
-            <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text"></MudTextField>
+            <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="InputType.Password"></MudTextField>
         </MudFocusTrap>
         <MudText Color="Color.Secondary">@Progress</MudText>
     </DialogContent>
@@ -27,6 +28,7 @@
             return;
 
         BindingContext.SecretKey = Password;
+        WalletDetailViewModel.SecretKey = Password;
 
         try
         {

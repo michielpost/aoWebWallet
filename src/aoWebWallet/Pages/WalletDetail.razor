@@ -21,6 +21,11 @@
     </MudContainer>
 
     <MudPaper Class="pa-4 mb-4">
+        @if (BindingContext.SelectedWallet?.Wallet.NeedsUnlock ?? false)
+        {
+            <UnlockWalletComponent />
+        }
+
         <MudStack Row="true">
             <WalletAvatar Address="@BindingContext.SelectedWallet?.Wallet.Address" />
             <MudStack style="overflow: hidden;" Justify="Justify.Center" Spacing="0">

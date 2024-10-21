@@ -167,9 +167,7 @@
         started = true;
 
         if(wallet.NeedsUnlock || (ownerWallet?.NeedsUnlock ?? false))
-        {
-            ///TODO: Trigger Unlock
-        }
+            return;
 
         await transactionService.SendAction(wallet, ownerWallet, AoAction);
     }
