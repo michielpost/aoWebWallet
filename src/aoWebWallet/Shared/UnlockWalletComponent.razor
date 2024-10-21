@@ -1,0 +1,32 @@
+﻿@using aoWebWallet.Models
+@inherits MvvmComponentBase<MainViewModel>
+@inject ISnackbar Snackbar
+
+<MudPaper Class="pa-8">
+    <MudStack Spacing="2">
+        <MudText Color="Color.Secondary">Wallets are locked. Please unlock the wallets to enable all features.</MudText>
+
+        <div Class="d-w-100 d-flex mt-2">
+            <MudButton OnClick="Submit"  Color="Color.Primary" Variant="Variant.Filled">
+                Unlock Wallet
+            </MudButton>
+        </div>
+    </MudStack>
+</MudPaper>
+
+
+
+@code {
+
+    public string? Progress { get; set; }
+
+
+    public async Task<bool> Submit()
+    {
+        await BindingContext.TriggerUnlock();
+
+        this.StateHasChanged();
+
+        return true;
+    }
+}

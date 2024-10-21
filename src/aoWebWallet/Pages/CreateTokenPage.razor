@@ -102,6 +102,9 @@
         if (wallet == null)
             return;
 
+        if (wallet.NeedsUnlock)
+            return;
+
         //Run preview if not run yet
         if (data == null)
             data = CreateTokenService.GetTokenProcessCode(wallet.Address, tokenModel);

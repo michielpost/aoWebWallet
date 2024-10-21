@@ -32,7 +32,9 @@ namespace aoWebWallet.Services
             {
 
                 var address = wallet.Address;
-                string? jwk = wallet.Jwk;
+                string? jwk = wallet.GetJwkSecret();
+                if (wallet.NeedsUnlock)
+                    throw new Exception("Wallet is locked");
 
                 string newProcessId = await CreateEmptyProcess(tokenModel.Name, jwk);
 
