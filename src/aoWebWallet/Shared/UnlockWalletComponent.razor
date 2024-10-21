@@ -25,6 +25,8 @@
     {
         await BindingContext.TriggerUnlock();
 
+        this.StateHasChanged();
+
         return true;
     }
 }

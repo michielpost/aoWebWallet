@@ -176,6 +176,9 @@ namespace aoWebWallet.ViewModels
 
         public async Task DownloadWallet(Wallet wallet)
         {
+            if (wallet.NeedsUnlock)
+                throw new Exception("Wallet is locked");
+
             string? jwk = wallet.GetJwkSecret();
             if (string.IsNullOrEmpty(jwk))
                 return;
@@ -264,24 +267,30 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-        public Task<Transaction?> SendToken(Wallet wallet, string tokenId, string address, long amount)
-        {
-            if (wallet.Source == WalletTypes.ArConnect)
-                return SendTokenWithArConnect(tokenId, address, amount);
+        //public Task<Transaction?> SendToken(Wallet wallet, string tokenId, string address, long amount)
+        //{
+        //    if (wallet.Source == WalletTypes.ArConnect)
+        //        return SendTokenWithArConnect(tokenId, address, amount);
 
-            if (!string.IsNullOrEmpty(wallet.OwnerAddress))
-            {
-                var ownerWallet = WalletList.Data!.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
-                return SendTokenWithEval(ownerWallet?.GetJwkSecret(), wallet.Address, tokenId, address, amount);
+        //    if (!string.IsNullOrEmpty(wallet.OwnerAddress))
+        //    {
+        //        var ownerWallet = WalletList.Data!.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+        //        if (ownerWallet?.NeedsUnlock ?? false)
+        //            throw new Exception("Wallet is locked");
+                
+        //        return SendTokenWithEval(ownerWallet?.GetJwkSecret(), wallet.Address, tokenId, address, amount);
 
-            }
+        //    }
 
-            if (!string.IsNullOrEmpty(wallet.GetJwkSecret()))
-                return SendTokenWithJwk(wallet.GetJwkSecret(), tokenId, address, amount);
+        //    if (wallet.NeedsUnlock)
+        //        throw new Exception("Wallet is locked");
 
-            return Task.FromResult<Transaction?>(default);
+        //    if (!string.IsNullOrEmpty(wallet.GetJwkSecret()))
+        //        return SendTokenWithJwk(wallet.GetJwkSecret(), tokenId, address, amount);
 
-        }
+        //    return Task.FromResult<Transaction?>(default);
+
+        //}
 
         public Task<Transaction?> SendTokenWithEval(string? jwk, string processId, string tokenId, string address, long amount)
           => LastTransactionId.DataLoader.LoadAsync(async () =>

@@ -40,13 +40,16 @@
                     wallet.JwkSecret = EncryptionService.DecryptWallet(Password, wallet.JwkEncrypted);
                 }
            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+
         }
         catch
         {
             Progress = "Could not unlock wallets.";
         }
+
     }
 
-    //void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 }

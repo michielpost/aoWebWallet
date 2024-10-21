@@ -165,6 +165,12 @@
         Wallet? ownerWallet = BindingContext.WalletList.Data?.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
 
         started = true;
+
+        if(wallet.NeedsUnlock || (ownerWallet?.NeedsUnlock ?? false))
+        {
+            ///TODO: Trigger Unlock
+        }
+
         await transactionService.SendAction(wallet, ownerWallet, AoAction);
     }
 

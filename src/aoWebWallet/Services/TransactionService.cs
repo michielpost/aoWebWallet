@@ -114,13 +114,21 @@ namespace aoWebWallet.Services
             }
 
             if (!string.IsNullOrEmpty(wallet.OwnerAddress) && ownerWallet?.Address == wallet.OwnerAddress
-                && !string.IsNullOrEmpty(ownerWallet?.GetJwkSecret()))
+                && (!string.IsNullOrEmpty(ownerWallet?.GetJwkSecret()) || (ownerWallet?.NeedsUnlock ?? false)))
             {
+                if(ownerWallet.NeedsUnlock)
+                    throw new Exception("Wallet is locked");
+
                 return await SendActionWithEval(ownerWallet.GetJwkSecret(), wallet.Address, action);
             }
 
-            if (!string.IsNullOrEmpty(wallet.GetJwkSecret()))
+            if (!string.IsNullOrEmpty(wallet.GetJwkSecret()) || wallet.NeedsUnlock)
+            {
+                if (wallet.NeedsUnlock)
+                    throw new Exception("Wallet is locked");
+
                 return await SendActionWithJwk(wallet.GetJwkSecret(), action);
+            }
 
             //Console.WriteLine("No Wallet to send");
             return null;
