@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -20,16 +20,16 @@
 		<PackageReference Include="Append.Blazor.WebShare" Version="7.0.0" />
 		<PackageReference Include="ArweaveAO" Version="0.2.0" />
 		<PackageReference Include="ArweaveBlazor" Version="0.0.11" />
-		<PackageReference Include="ClipLazor" Version="2.1.1" />
-		<PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.0.2" />
+		<PackageReference Include="ClipLazor" Version="2.1.2" />
+		<PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="7.1.0" />
 		<PackageReference Include="MudBlazor" Version="7.15.0" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-		<PackageReference Include="BlazorWasmPreRendering.Build" Version="4.0.1" />
+		<PackageReference Include="BlazorWasmPreRendering.Build" Version="5.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
 		<PackageReference Include="ReactorBlazorQRCodeScanner" Version="1.0.7" />
-		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="2.1.366" />
+		<PackageReference Include="Soenneker.Blazor.Utils.Navigation" Version="3.0.392" />
 	</ItemGroup>
 
 	<ItemGroup>
