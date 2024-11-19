@@ -180,6 +180,16 @@ namespace aoWebWallet.Services
                   Name = "Astro USD (Test)",
                   Ticker = "USDA-TST"
               });
+
+            AddSystemToken(result, "NG-0lVX882MG5nhARrSzyprEK6ejonHpdUmaaMPsHE8",
+              new TokenData
+              {
+                  TokenId = "NG-0lVX882MG5nhARrSzyprEK6ejonHpdUmaaMPsHE8",
+                  Denomination = 12,
+                  Logo = "26yDr08SuwvNQ4VnhAfV4IjJcOOlQ4tAQLc1ggrCPu0",
+                  Name = "Q Arweave",
+                  Ticker = "qAR"
+              });
         }
 
         private static void AddSystemToken(List<Token> list, string tokenId, TokenData tokenData, string? proxyTokenId = null)
