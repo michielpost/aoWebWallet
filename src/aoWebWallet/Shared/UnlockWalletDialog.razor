@@ -1,0 +1,57 @@
+﻿@using aoww.Services
+@inject ISnackbar Snackbar
+@inject WalletDetailViewModel WalletDetailViewModel
+@inherits MvvmComponentBase<MainViewModel>
+
+<MudDialog>
+    <DialogContent>
+        Unlock Wallets
+        <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+            <MudTextField @bind-Value="Password" Label="Password" Variant="Variant.Text" InputType="InputType.Password"></MudTextField>
+        </MudFocusTrap>
+        <MudText Color="Color.Secondary">@Progress</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Unlock</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    public string? Password { get; set; }
+    public string? Progress { get; set; }
+
+    public void Submit()
+    {
+        if (string.IsNullOrEmpty(Password))
+            return;
+
+        BindingContext.SecretKey = Password;
+        WalletDetailViewModel.SecretKey = Password;
+
+        try
+        {
+            foreach(var wallet in BindingContext.WalletList.Data ?? new())
+            {
+                if(wallet.NeedsUnlock)
+                {
+                    if (wallet.JwkEncrypted == null)
+                        continue;
+
+                    wallet.JwkSecret = EncryptionService.DecryptWallet(Password, wallet.JwkEncrypted);
+                }
+           }
+
+            MudDialog.Close(DialogResult.Ok(true));
+
+        }
+        catch
+        {
+            Progress = "Could not unlock wallets.";
+        }
+
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

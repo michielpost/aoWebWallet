@@ -34,6 +34,8 @@ namespace aoWebWallet.ViewModels
 
         private void SetCanSend()
         {
+            var jwk = Wallet.GetJwkSecret();
+
             var result = Wallet.Source switch
             {
                 WalletTypes.None => false,
@@ -41,8 +43,8 @@ namespace aoWebWallet.ViewModels
                 WalletTypes.Manual => !string.IsNullOrEmpty(Wallet.OwnerAddress) && OwnerCanSend,
                 WalletTypes.Explorer => !string.IsNullOrEmpty(Wallet.OwnerAddress) && OwnerCanSend,
                 WalletTypes.AoProcess => !string.IsNullOrEmpty(Wallet.OwnerAddress) && OwnerCanSend,
-                WalletTypes.Generated => !string.IsNullOrEmpty(Wallet.Jwk),
-                WalletTypes.Imported => !string.IsNullOrEmpty(Wallet.Jwk),
+                WalletTypes.Generated => !string.IsNullOrEmpty(jwk),
+                WalletTypes.Imported => !string.IsNullOrEmpty(jwk),
                 _ => false
             };
 

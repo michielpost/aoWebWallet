@@ -1,4 +1,5 @@
 ﻿@using aoWebWallet.Models
+@using aoww.Services
 @inherits MvvmComponentBase<MainViewModel>
 @inject ArweaveService ArweaveService
 @inject ISnackbar Snackbar
@@ -7,16 +8,16 @@
 <MudPaper Elevation="0" Class="pa-8 trigger-transparency">
     <MudStack Spacing="2">
 
-            <MudFocusTrap Disabled="@Disabled" DefaultFocus="@DefaultFocus">
-                <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
-            </MudFocusTrap>
+        <MudFocusTrap Disabled="@Disabled" DefaultFocus="@DefaultFocus">
+            <MudTextField @bind-Value="Name" Label="Wallet Name" Variant="Variant.Text"></MudTextField>
+        </MudFocusTrap>
 
-            <MudText DefaultFocus="DefaultFocus" Color="Color.Secondary">@Progress</MudText>
-            <div Class="d-w-100 d-flex justify-center mt-2">
-                <MudButton Disabled="ButtonDisabled" Class="text-transform-none"  Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">
-                    Create aoWW Wallet
-                </MudButton>
-            </div>
+        <MudText DefaultFocus="DefaultFocus" Color="Color.Secondary">@Progress</MudText>
+        <div Class="d-w-100 d-flex mt-2">
+            <MudButton Disabled="ButtonDisabled" Class="text-transform-none"  Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">
+                Create aoWW Wallet
+            </MudButton>
+        </div>
     </MudStack>
 </MudPaper>
 
@@ -52,16 +53,23 @@
         var jwk = await ArweaveService.GenerateWallet();
         var address = await ArweaveService.GetAddress(jwk);
 
+
         var wallet = new Wallet
             {
                 Address = address,
                 Name = Name,
-                Jwk = jwk,
+                JwkSecret = jwk,
                 Source = WalletTypes.Generated,
                 IsReadOnly = false,
                 LastBackedUpDate = null,
                 AddedDate = DateTimeOffset.UtcNow
             };
+
+        if(!string.IsNullOrEmpty(BindingContext.SecretKey))
+        {
+            var jwkEncrypted = EncryptionService.EncryptWallet(BindingContext.SecretKey, jwk);
+            wallet.JwkEncrypted = jwkEncrypted;
+        }
 
         await BindingContext.SaveWallet(wallet);
 
