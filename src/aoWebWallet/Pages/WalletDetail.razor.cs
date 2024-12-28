@@ -13,6 +13,7 @@ namespace aoWebWallet.Pages
             //WatchObject(dataService.TokenList);
             //WatchObject(BindingContext.BalanceDataList);
             WatchObject(dataService.TokenDataLoader);
+            WatchProp(nameof(BindingContext.SecretKey));
 
             WatchCollection(dataService.TokenList);
             WatchCollection(BindingContext.BalanceDataList);

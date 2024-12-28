@@ -49,7 +49,10 @@ namespace aoWebWallet.ViewModels
 
         [ObservableProperty]
         public bool? hasArConnectExtension;
-               
+
+        [ObservableProperty]
+        private string? secretKey;
+
         public WalletDetailsViewModel? SelectedWallet { get; set; }
 
 

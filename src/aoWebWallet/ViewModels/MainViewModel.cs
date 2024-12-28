@@ -2,6 +2,7 @@
 using aoWebWallet.Models;
 using aoWebWallet.Pages;
 using aoWebWallet.Services;
+using aoWebWallet.Shared;
 using aoww.Services;
 using aoww.Services.Models;
 using ArweaveAO;
@@ -29,6 +30,7 @@ namespace aoWebWallet.ViewModels
         private readonly ArweaveService arweaveService;
         private readonly GraphqlClient graphqlClient;
         private readonly MemoryDataCache memoryDataCache;
+        private readonly IDialogService dialogService;
         private readonly ArweaveConfig arweaveConfig;
         private readonly GatewayConfig gatewayConfig;
         private readonly GraphqlConfig graphqlConfig;
@@ -44,6 +46,10 @@ namespace aoWebWallet.ViewModels
 
         [ObservableProperty]
         private string? activeWalletAddress;
+
+        [ObservableProperty]
+        private string? secretKey;
+
         public Wallet? ActiveWallet { get; set; }
         public DataLoaderViewModel<Transaction> LastTransactionId { get; set; } = new();
         public DataLoaderViewModel<List<Wallet>> WalletList { get; set; } = new();
@@ -58,6 +64,7 @@ namespace aoWebWallet.ViewModels
             ArweaveService arweaveService,
             GraphqlClient graphqlClient,
             MemoryDataCache memoryDataCache,
+            IDialogService dialogService,
             IOptions<GraphqlConfig> graphqlConfig,
             IOptions<GatewayConfig> gatewayConfig,
             IOptions<ArweaveConfig> arweaveConfig) : base()
@@ -67,6 +74,7 @@ namespace aoWebWallet.ViewModels
             this.arweaveService = arweaveService;
             this.graphqlClient = graphqlClient;
             this.memoryDataCache = memoryDataCache;
+            this.dialogService = dialogService;
             this.arweaveConfig = arweaveConfig.Value;
             this.gatewayConfig = gatewayConfig.Value;
             this.graphqlConfig = graphqlConfig.Value;
@@ -75,6 +83,27 @@ namespace aoWebWallet.ViewModels
         public async Task AddToLog(ActivityLogType type, string id)
         {
             await storageService.AddToLog(type, id);
+        }
+
+        public bool CheckNeedsUnlock()
+        {
+            Console.WriteLine($"Wallets: {WalletList.Data?.Count}");
+            Console.WriteLine($"Wallets need unlock: {WalletList.Data?.Where(x => x.NeedsUnlock)?.Count()}");
+
+            return WalletList.Data?.Any(x => x.NeedsUnlock) ?? false;
+        }
+
+        public Task TriggerUnlock()
+        {
+            if (WalletList.Data?.Any(x => x.NeedsUnlock) ?? false)
+            {
+
+                var options = new DialogOptions { CloseOnEscapeKey = true };
+
+                return dialogService.ShowAsync<UnlockWalletDialog>("Unlock Wallet", options);
+            }
+
+            return Task.CompletedTask;
         }
 
         
@@ -117,15 +146,19 @@ namespace aoWebWallet.ViewModels
             {
                 var list = await storageService.GetWallets();
 
-                //foreach (var wallet in list)
-                //{
-                //    if(wallet.Source == WalletTypes.AoProcess && !string.IsNullOrEmpty(wallet.OwnerAddress))
-                //    {
-                //        var owner = list.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
-                //        var canOwnerSend = owner?.CanSend ?? false;
-                //        wallet.OwnerCanSend = canOwnerSend;
-                //    }
-                //}
+                if (this.SecretKey != null)
+                {
+                    foreach (var wallet in list)
+                    {
+                        if (wallet.NeedsUnlock)
+                        {
+                            if (wallet.JwkEncrypted == null)
+                                continue;
+
+                            wallet.JwkSecret = EncryptionService.DecryptWallet(this.SecretKey, wallet.JwkEncrypted);
+                        }
+                    }
+                }
 
                 WalletList.Data = list;
 
@@ -147,11 +180,15 @@ namespace aoWebWallet.ViewModels
 
         public async Task DownloadWallet(Wallet wallet)
         {
-            if (string.IsNullOrEmpty(wallet.Jwk))
+            if (wallet.NeedsUnlock)
+                throw new Exception("Wallet is locked");
+
+            string? jwk = wallet.GetJwkSecret();
+            if (string.IsNullOrEmpty(jwk))
                 return;
 
-            var address = await arweaveService.GetAddress(wallet.Jwk);
-            var result = await arweaveService.SaveFile($"{address}.json", wallet.Jwk);
+            var address = await arweaveService.GetAddress(jwk);
+            var result = await arweaveService.SaveFile($"{address}.json", jwk);
             wallet.LastBackedUpDate = DateTimeOffset.UtcNow;
 
             if (this.WalletList.Data != null)
@@ -234,24 +271,30 @@ namespace aoWebWallet.ViewModels
             }
         }
 
-        public Task<Transaction?> SendToken(Wallet wallet, string tokenId, string address, long amount)
-        {
-            if (wallet.Source == WalletTypes.ArConnect)
-                return SendTokenWithArConnect(tokenId, address, amount);
+        //public Task<Transaction?> SendToken(Wallet wallet, string tokenId, string address, long amount)
+        //{
+        //    if (wallet.Source == WalletTypes.ArConnect)
+        //        return SendTokenWithArConnect(tokenId, address, amount);
 
-            if (!string.IsNullOrEmpty(wallet.OwnerAddress))
-            {
-                var ownerWallet = WalletList.Data!.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
-                return SendTokenWithEval(ownerWallet?.Jwk, wallet.Address, tokenId, address, amount);
+        //    if (!string.IsNullOrEmpty(wallet.OwnerAddress))
+        //    {
+        //        var ownerWallet = WalletList.Data!.Where(x => x.Address == wallet.OwnerAddress).FirstOrDefault();
+        //        if (ownerWallet?.NeedsUnlock ?? false)
+        //            throw new Exception("Wallet is locked");
+                
+        //        return SendTokenWithEval(ownerWallet?.GetJwkSecret(), wallet.Address, tokenId, address, amount);
 
-            }
+        //    }
 
-            if (!string.IsNullOrEmpty(wallet.Jwk))
-                return SendTokenWithJwk(wallet.Jwk, tokenId, address, amount);
+        //    if (wallet.NeedsUnlock)
+        //        throw new Exception("Wallet is locked");
 
-            return Task.FromResult<Transaction?>(default);
+        //    if (!string.IsNullOrEmpty(wallet.GetJwkSecret()))
+        //        return SendTokenWithJwk(wallet.GetJwkSecret(), tokenId, address, amount);
 
-        }
+        //    return Task.FromResult<Transaction?>(default);
+
+        //}
 
         public Task<Transaction?> SendTokenWithEval(string? jwk, string processId, string tokenId, string address, long amount)
           => LastTransactionId.DataLoader.LoadAsync(async () =>

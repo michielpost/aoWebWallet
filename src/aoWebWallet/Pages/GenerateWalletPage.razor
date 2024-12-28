@@ -1,0 +1,41 @@
+@page "/generate-wallet"
+@inherits MvvmComponentBase<MainViewModel>
+@inject ISnackbar Snackbar
+
+<PageTitle>Generate Wallet - @Program.PageTitlePostFix</PageTitle>
+
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+    <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
+
+    @if (BindingContext.SecretKey == null)
+    {
+        if (BindingContext.CheckNeedsUnlock())
+        {
+            <UnlockWalletComponent />
+        }
+        else
+        {
+            <SetSecretKeyComponent />
+        }
+    }
+    else
+    {
+        <AddGenerateWalletComponent />
+    }
+</MudContainer>
+
+@code {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Generate Wallet", href: null, disabled: true)
+    };
+
+    protected override void OnInitialized()
+    {
+        WatchDataLoaderVM(BindingContext.WalletList);
+        WatchProp(nameof(BindingContext.SecretKey));
+
+        base.OnInitialized();
+    }
+}

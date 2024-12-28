@@ -1,4 +1,5 @@
 ﻿@using aoWebWallet.Models
+@using aoww.Services
 @inherits MvvmComponentBase<MainViewModel>
 @inject ArweaveService ArweaveService
 @inject ISnackbar Snackbar
@@ -120,11 +121,17 @@
                                 {
                                     Address = address,
                                     Name = name,
-                                    Jwk = jwk,
+                                    JwkSecret = jwk,
                                     Source = WalletTypes.Imported,
                                     IsReadOnly = false,
                                     AddedDate = DateTimeOffset.UtcNow
                                 };
+
+                            if (!string.IsNullOrEmpty(BindingContext.SecretKey))
+                            {
+                                var jwkEncrypted = EncryptionService.EncryptWallet(BindingContext.SecretKey, jwk);
+                                wallet.JwkEncrypted = jwkEncrypted;
+                            }
 
                             _fileNames.Add(wallet);
                         }
