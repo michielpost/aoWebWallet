@@ -10,7 +10,6 @@ using ArweaveAO.Models;
 using ArweaveAO.Models.Token;
 using ArweaveBlazor;
 using ClipLazor.Components;
-using ClipLazor.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Options;

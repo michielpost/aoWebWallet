@@ -131,7 +131,7 @@ namespace aoWebWallet
 
             services.AddClipboard();
 
-            services.AddNavigationUtil();
+            services.AddNavigationUtilAsScoped();
 
             services.AddWebShare();
 
