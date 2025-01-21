@@ -70,7 +70,7 @@
     [Parameter]
     public bool IsExpanded { get; set; }
 
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
 
 
     public string? Name { get; set; }

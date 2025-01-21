@@ -68,7 +68,7 @@
     [Parameter]
     public bool HideAddButton { get; set; }
 
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; } = default!;
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; } = default!;
 
 
     public string? Progress { get; set; }

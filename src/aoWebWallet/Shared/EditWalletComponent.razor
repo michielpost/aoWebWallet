@@ -22,7 +22,7 @@
     [Parameter]
     public Wallet Wallet { get; set; } = new() { Address = string.Empty };
 
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
 
     public string? Progress { get; set; }
     public string Address { get; set; } = string.Empty;
