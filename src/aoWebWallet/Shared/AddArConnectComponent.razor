@@ -10,14 +10,14 @@
 
             @if (!BindingContext.HasArConnectExtension.HasValue)
             {
-                <MudText>Checking for ArConnect extension...</MudText>
+                <MudText>Checking for Wander extension...</MudText>
             }
             else if (!BindingContext.HasArConnectExtension.Value)
             {
-                <MudButton Href="https://www.arconnect.io/" style="cursor:pointer;">
+                <MudButton Href="https://www.wander.app" style="cursor:pointer;">
                     <div Class="d-custom-4">
-                        <MudImage Class="d-custom-5 rounded-lg" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" />
-                        <MudText Typo="Typo.subtitle2" Class="ml-3">Download ArConnect</MudText>
+                        <MudImage Class="d-custom-5 rounded-lg" Src="images/wander.webp" Alt="arconnect logo" Elevation="25" />
+                        <MudText Typo="Typo.subtitle2" Class="ml-3">Download Wander</MudText>
                     </div>
                 </MudButton>
             }
@@ -27,8 +27,8 @@
                 {
                     <MudButton Class="d-custom-6" OnClick="Connect" Elevation="3">
                         <div Class="d-custom-4">
-                            <MudImage Class="d-custom-5 rounded-lg" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" />
-                            <MudText Typo="Typo.subtitle2" Class="ml-3">Connect with ArConnect</MudText>
+                            <MudImage Class="d-custom-5 rounded-lg" Src="images/wander.webp" Alt="wander logo" Elevation="25" Style="height:auto" />
+                            <MudText Typo="Typo.subtitle2" Class="ml-3">Connect with Wander</MudText>
                         </div>
                     </MudButton>
 
@@ -40,8 +40,8 @@
                     {
                         <MudButton Class="d-custom-6" OnClick="Connect" Elevation="3">
                             <div Class="d-custom-4">
-                                <MudImage Class="d-custom-5 rounded-lg" Src="images/arconnect.webp" Alt="arconnect logo" Elevation="25" />
-                                <MudText Typo="Typo.subtitle2" Class="ml-3">Connect with ArConnect</MudText>
+                                <MudImage Class="d-custom-5 rounded-lg" Src="images/wander.webp" Alt="wander logo" Elevation="25" Style="height:auto" />
+                                <MudText Typo="Typo.subtitle2" Class="ml-3">Connect with Wander</MudText>
                             </div>
                         </MudButton>
                     }
@@ -97,7 +97,7 @@
 
         if (string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
         {
-            Snackbar.Add($"Please allow this website access to ArConnect", Severity.Info);
+            Snackbar.Add($"Please allow this website access to Wander app", Severity.Info);
         }
         await ArweaveService.ConnectArConnectAsync(new string[] { "ACCESS_ADDRESS", "SIGN_TRANSACTION" }, "aoWebWallet");
 
@@ -106,7 +106,7 @@
 
         if (string.IsNullOrEmpty(BindingContext.ActiveArConnectAddress))
         {
-            Snackbar.Add($"Access to ArConnect denied", Severity.Error);
+            Snackbar.Add($"Access to Wander App denied", Severity.Error);
         }
         else
         {
@@ -114,7 +114,7 @@
             var wallet = new Wallet
                 {
                     Address = address,
-                    Name = "ArConnect",
+                    Name = "Wander",
                     Source = WalletTypes.ArConnect,
                     IsReadOnly = false,
                     AddedDate = DateTimeOffset.UtcNow

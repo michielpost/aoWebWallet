@@ -7,7 +7,7 @@ Try it now: https://aoww.net
 ao Web Wallet is a wallet for the [ao network](https://ao.arweave.dev) running on Arweave. On ao it's easy to create earn some tokens when compliting a quest or create your own token. This wallet gives you an easy way to receive and transfer those tokens.
 
 Features:
-- Add ArConnect Wallets
+- Add Wander Wallets
 - Create new wallets and import wallet.json files
 - View your ao processes
 - Send tokens for your owned ao processes
