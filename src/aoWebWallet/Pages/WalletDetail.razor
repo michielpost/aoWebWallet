@@ -243,7 +243,7 @@
     private void OpenAddTokenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddTokenToWalletDialog>("Add Token", options);
+        DialogService.ShowAsync<AddTokenToWalletDialog>("Add Token", options);
     }
 
     private async void EditWallet(Wallet wallet)
@@ -251,7 +251,7 @@
         var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
 
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+        DialogService.ShowAsync<EditWalletComponent>("Edit Wallet", parameters, options);
 
         StateHasChanged();
     }

@@ -52,7 +52,7 @@
     private void OpenAddTokenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddTokenDialog>("Add Token", options);
+        DialogService.ShowAsync<AddTokenDialog>("Add Token", options);
     }
 
     private async void ToggleVisibility(Token token)

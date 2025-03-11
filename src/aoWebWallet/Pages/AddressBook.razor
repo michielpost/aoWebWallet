@@ -65,7 +65,7 @@
             }
             else
             {
-                <MudGrid Row="true" Justify="Justify.Center" Class="p-2">
+                <MudGrid Justify="Justify.Center" Class="p-2">
                     <MudItem sm="12" xs="12">
                         <MudText>Your Address Book is currently empty.</MudText>
                         <MudButton OnClick="OpenDialog">Add your first contact</MudButton>
@@ -108,7 +108,7 @@
         var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, tempWallet } };
 
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        DialogService.Show<EditWalletComponent>("Add Contact", parameters, options);
+        DialogService.ShowAsync<EditWalletComponent>("Add Contact", parameters, options);
     }
 
     private async void EditWallet(Wallet wallet)
@@ -116,7 +116,7 @@
         var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
 
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        DialogService.Show<EditWalletComponent>("Edit Contact", parameters, options);
+        DialogService.ShowAsync<EditWalletComponent>("Edit Contact", parameters, options);
 
         StateHasChanged();
     }

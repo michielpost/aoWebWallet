@@ -114,12 +114,12 @@
             new BreadcrumbItem("", href: "#")
         };
 
-    private async void EditWallet(Wallet wallet)
+    private void EditWallet(Wallet wallet)
     {
         var parameters = new DialogParameters<EditWalletComponent> { { x => x.Wallet, wallet } };
 
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        DialogService.Show<EditWalletComponent>("Edit Wallet", parameters, options);
+        DialogService.ShowAsync<EditWalletComponent>("Edit Wallet", parameters, options);
 
         StateHasChanged();
     }

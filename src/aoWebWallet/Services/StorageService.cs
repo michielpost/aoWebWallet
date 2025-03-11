@@ -23,7 +23,7 @@ namespace aoWebWallet.Services
             var result = await localStorage.GetItemAsync<List<MemeFrameProcess>>(MEMFRAME_LIST_KEY);
             result = result ?? new();
 
-            AddSystemMemeFrames(result,"OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww", Constants.CredTokenId); //TRUNK
+            //AddSystemMemeFrames(result,"OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww", Constants.CredTokenId); //TRUNK
             AddSystemMemeFrames(result,"2gM9n9QO6JG1_bZhCWr3fuEKJtzRgx1xvYUB92nVFAs", Constants.CredTokenId); //AORTA
             AddSystemMemeFrames(result,"-a4T7XLMDGTcu8_preKXdUT6__4sJkMhYLEJZkXUYd0", Constants.CredTokenId); //MEME
             AddSystemMemeFrames(result,"rik3eCayInKVNzSMdoxeSEfpxNd5U7tx1H8NAveg4o8", Constants.CredTokenId); //FINCH-MEME
@@ -67,18 +67,18 @@ namespace aoWebWallet.Services
                     Logo = "UkS-mdoiG8hcAClhKK8ch4ZhEzla0mCPDOix9hpdSFE",
                     Name = "AO",
                     Ticker = "AO"
-                },
-                proxyTokenId:Constants.AoProxyTokenId); //AO
+                });//,
+                //proxyTokenId:Constants.AoProxyTokenId); //AO
 
-            AddSystemToken(result, Constants.CredTokenId,
-               new TokenData
-               {
-                   TokenId = Constants.CredTokenId,
-                   Denomination = 3,
-                   Logo = "eIOOJiqtJucxvB4k8a-sEKcKpKTh9qQgOV3Au7jlGYc",
-                   Name = "AOCRED",
-                   Ticker = "testnet-AOCRED"
-               }); //CRED
+            //AddSystemToken(result, Constants.CredTokenId,
+            //   new TokenData
+            //   {
+            //       TokenId = Constants.CredTokenId,
+            //       Denomination = 3,
+            //       Logo = "eIOOJiqtJucxvB4k8a-sEKcKpKTh9qQgOV3Au7jlGYc",
+            //       Name = "AOCRED",
+            //       Ticker = "testnet-AOCRED"
+            //   }); //CRED
 
             AddSystemToken(result, Constants.LlamaTokenId,
               new TokenData
@@ -101,35 +101,35 @@ namespace aoWebWallet.Services
                     Ticker = "BRKTST"
                 }); //BARK
 
-            AddSystemToken(result, "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww",
-                new TokenData
-                {
-                    TokenId = "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww",
-                    Denomination = 3,
-                    Logo = "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0",
-                    Name = "TRUNK",
-                    Ticker = "TRUNK"
-                });  //TRUNK
+            //AddSystemToken(result, "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww",
+            //    new TokenData
+            //    {
+            //        TokenId = "OT9qTE2467gcozb2g8R6D6N3nQS94ENcaAIJfUzHCww",
+            //        Denomination = 3,
+            //        Logo = "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0",
+            //        Name = "TRUNK",
+            //        Ticker = "TRUNK"
+            //    });  //TRUNK
 
-            AddSystemToken(result, "aYrCboXVSl1AXL9gPFe3tfRxRf0ZmkOXH65mKT0HHZw",
-              new TokenData
-              {
-                  TokenId = "aYrCboXVSl1AXL9gPFe3tfRxRf0ZmkOXH65mKT0HHZw",
-                  Denomination = 6,
-                  Logo = "wfI-5PlYXL66_BqquCXm7kq-ic1keu0b2CqRjw82yrU",
-                  Name = "AR.IO EXP",
-                  Ticker = "EXP"
-              });
+            //AddSystemToken(result, "aYrCboXVSl1AXL9gPFe3tfRxRf0ZmkOXH65mKT0HHZw",
+            //  new TokenData
+            //  {
+            //      TokenId = "aYrCboXVSl1AXL9gPFe3tfRxRf0ZmkOXH65mKT0HHZw",
+            //      Denomination = 6,
+            //      Logo = "wfI-5PlYXL66_BqquCXm7kq-ic1keu0b2CqRjw82yrU",
+            //      Name = "AR.IO EXP",
+            //      Ticker = "EXP"
+            //  });
 
-            AddSystemToken(result, "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
-                new TokenData
-                {
-                    TokenId = "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
-                    Denomination = 12,
-                    Logo = "quMiswyIjELM0FZtjVSiUtg9_-pvQ8K25yfxrp1TgnQ",
-                    Name = "0rbit Points",
-                    Ticker = "0RBT"
-                });  //0rbit
+            //AddSystemToken(result, "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
+            //    new TokenData
+            //    {
+            //        TokenId = "BUhZLMwQ6yZHguLtJYA5lLUa9LQzLXMXRfaq9FVcPJc",
+            //        Denomination = 12,
+            //        Logo = "quMiswyIjELM0FZtjVSiUtg9_-pvQ8K25yfxrp1TgnQ",
+            //        Name = "0rbit Points",
+            //        Ticker = "0RBT"
+            //    });  //0rbit
 
             AddSystemToken(result, "PBg5TSJPQp9xgXGfjN27GA28Mg5bQmNEdXH2TXY4t-A",
                new TokenData
@@ -176,9 +176,9 @@ namespace aoWebWallet.Services
               {
                   TokenId = "GcFxqTQnKHcr304qnOcq00ZqbaYGDn4Wbb0DHAM-wvU",
                   Denomination = 12,
-                  Logo = "K8nurc9H0_ZQm17jbs3ryEs6MrlX-oIK_krpprWlQ-Q",
+                  Logo = "seXozJrsP0OgI0gvAnr8zmfxiHHb5iSlI9wMI8SdamE",
                   Name = "Astro USD (Test)",
-                  Ticker = "USDA-TST"
+                  Ticker = "USDA"
               });
 
             AddSystemToken(result, "NG-0lVX882MG5nhARrSzyprEK6ejonHpdUmaaMPsHE8",

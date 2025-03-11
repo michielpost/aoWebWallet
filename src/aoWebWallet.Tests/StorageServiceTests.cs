@@ -18,6 +18,8 @@ namespace aoWebWallet.Tests
 
             TokenClient tokenClient = new TokenClient(Options.Create(new ArweaveConfig()), new HttpClient());
 
+            result.Reverse();
+
            foreach(var token in result)
             {
                 //Get live data
