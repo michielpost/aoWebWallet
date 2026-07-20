@@ -6,6 +6,7 @@ using aoww.Services;
 using aoww.Services.Models;
 using ArweaveAO;
 using CommunityToolkit.Mvvm.ComponentModel;
+using QRCoder;
 using System.Net;
 using System.Text;
 using webvNext.DataLoader;
@@ -35,6 +36,23 @@ namespace aoWebWallet.ViewModels
                 else
                     return $"ao:{Address}?tokenId={TokenId}";
             }
+        }
+
+        /// <summary>
+        /// The QrCode content rendered as a base64-encoded PNG data URI, suitable for an
+        /// &lt;img&gt;/MudImage Src. Generated in-process with QRCoder (no JS interop), since
+        /// the MudBarcode component was removed from MudBlazor.Extensions.
+        /// </summary>
+        public string QrCodeImage => GenerateQrCodeDataUri(QrCode);
+
+        private static string GenerateQrCodeDataUri(string text)
+        {
+            using var generator = new QRCodeGenerator();
+            using var data = generator.CreateQrCode(text, QRCodeGenerator.ECCLevel.M);
+            var pngQrCode = new PngByteQRCode(data);
+            byte[] pngBytes = pngQrCode.GetGraphic(20);
+
+            return "data:image/png;base64," + Convert.ToBase64String(pngBytes);
         }
 
         public string ShareLink
