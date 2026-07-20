@@ -15,8 +15,7 @@
                                Accept=".json"
                                OnFilesChanged="OnInputFileChanged"
                                Hidden="@false"
-                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20 trigger-transparency cursor-pointer"
-                               InputStyle="opacity:0"
+                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20 trigger-transparency cursor-pointer file-upload-input-hidden"
                                @ondragenter="@SetDragClass"
                                @ondragleave="@ClearDragClass"
                                @ondragend="@ClearDragClass">

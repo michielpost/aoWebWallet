@@ -1,7 +1,4 @@
 ﻿@page "/receive/{address}"
-@using ZXing;
-@using aoWebWallet.Models
-@using MudExtensions
 @using Append.Blazor.WebShare
 @inherits MvvmComponentBase<ReceiveViewModel>
 @inject GatewayUrlHelper UrlHelper;
@@ -16,7 +13,7 @@
 
 <PageTitle>Receive Tokens - @Program.PageTitlePostFix</PageTitle>
 
-<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudBreadcrumbs Class="breadcrumbs-aoww mb-4" Items="_items"></MudBreadcrumbs>
 
     <MudGrid>

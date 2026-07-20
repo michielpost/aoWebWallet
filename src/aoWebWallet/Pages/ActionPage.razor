@@ -13,7 +13,7 @@
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudBreadcrumbs Class="breadcrumbs-aoww mb-4" Items="_items"></MudBreadcrumbs>
 
     <SelectActiveWalletComponent ReadOnly="readOnly" />
@@ -27,12 +27,14 @@
 
     @if (!readOnly && !string.IsNullOrEmpty(BindingContext.ActiveWalletAddress))
     {
-        if (NavigationUtil.CanNavigateBack)
-        {
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack" Class="mt-8">Back</MudButton>
-        }
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview" Class="mt-8">Preview</MudButton>
-        <MudText Color="Color.Error">@validation</MudText>
+        <MudStack Row="true" Spacing="2" Class="mt-8">
+            @if (NavigationUtil.CanNavigateBack)
+            {
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack">Back</MudButton>
+            }
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Preview">Preview</MudButton>
+        </MudStack>
+        <MudText Color="Color.Error" Class="mt-2">@validation</MudText>
     }
     else if (!started && !string.IsNullOrEmpty(BindingContext.ActiveWalletAddress) && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
     {
@@ -55,12 +57,14 @@
             </MudCard>
         }
 
-        if (NavigationUtil.CanNavigateBack)
-        {
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack" Class="mt-8">Back</MudButton>
-        }
-        <MudButton Class="px-12 mt-8 mr-2" Color="Color.Default" Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
-        <MudButton Class="px-12 mt-8" Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+        <MudStack Row="true" Spacing="2" Class="mt-8">
+            @if (NavigationUtil.CanNavigateBack)
+            {
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="NavigationUtil.NavigateBack">Back</MudButton>
+            }
+            <MudButton Class="px-12" Color="Color.Default" Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
+            <MudButton Class="px-12" Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+        </MudStack>
     }
     else if (transactionService.LastTransaction.DataLoader.LoadingState == LoadingState.None && string.IsNullOrEmpty(transactionService.LastTransaction.Data?.Id))
     {

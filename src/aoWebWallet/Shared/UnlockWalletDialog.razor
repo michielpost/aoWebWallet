@@ -30,27 +30,39 @@
         BindingContext.SecretKey = Password;
         WalletDetailViewModel.SecretKey = Password;
 
-        try
-        {
-            foreach(var wallet in BindingContext.WalletList.Data ?? new())
-            {
-                if(wallet.NeedsUnlock)
-                {
-                    if (wallet.JwkEncrypted == null)
-                        continue;
+        var wallets = BindingContext.WalletList.Data ?? new();
+        var attempted = 0;
+        var failures = 0;
 
+        foreach (var wallet in wallets)
+        {
+            if (wallet.NeedsUnlock)
+            {
+                if (wallet.JwkEncrypted == null)
+                    continue;
+
+                attempted++;
+
+                try
+                {
                     wallet.JwkSecret = EncryptionService.DecryptWallet(Password, wallet.JwkEncrypted);
                 }
-           }
-
-            MudDialog.Close(DialogResult.Ok(true));
-
+                catch
+                {
+                    // Keep trying the remaining wallets even if this one fails, so a
+                    // single wrong/corrupted entry doesn't block unlocking the rest.
+                    failures++;
+                }
+            }
         }
-        catch
+
+        if (attempted > 0 && failures == attempted)
         {
-            Progress = "Could not unlock wallets.";
+            Progress = "Could not unlock wallets. Wrong password?";
+            return;
         }
 
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
     void Cancel() => MudDialog.Cancel();

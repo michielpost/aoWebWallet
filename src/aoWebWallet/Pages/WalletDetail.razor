@@ -11,14 +11,14 @@
 
 <PageTitle>@Address - @Program.PageTitlePostFix</PageTitle>
 
-<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
-    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-2 pr-2">
+    <div class="d-flex justify-end mb-4">
         <MudTooltip Text="Add token" Arrow="true" Placement="Placement.Left">
-            <MudIconButton style="padding-top: 0;" Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
         </MudTooltip>
-    </MudContainer>
+    </div>
 
     <MudPaper Class="pa-4 mb-4">
         @if (BindingContext.SelectedWallet?.Wallet.NeedsUnlock ?? false)
@@ -85,7 +85,7 @@
     @if (BindingContext.SelectedWallet?.IsConnected ?? false)
     {
         <MudPaper>
-            <MudContainer Width="100%" Class="d-flex mb-4 pr-4 d-max-w-100">
+            <MudContainer Class="d-flex mb-4 d-max-w-100">
                 @if (MainViewModel.UserSettings != null)
                 {
                     <MudStack Row=true Justify="Justify.Center">

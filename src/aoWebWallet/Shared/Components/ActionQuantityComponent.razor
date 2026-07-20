@@ -69,14 +69,14 @@
 
     MudTextField<decimal>? mudTextField;
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!(mudTextField?.ValidationErrors.Any() ?? false) && Token?.TokenData?.Denomination != null)
+        if (!(mudTextField?.ValidationErrors.Any() ?? false) && Token?.TokenData?.Denomination != null && mudTextField != null)
         {
-            mudTextField?.SetText(@BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token.TokenData.Denomination.Value));
+            await mudTextField.SetTextAsync(BalanceHelper.FormatBalance(long.Parse(ActionParam.Value ?? "0"), Token.TokenData.Denomination.Value));
         }
 
-        base.OnAfterRender(firstRender);
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -128,7 +128,7 @@
     public async void UpdateDecimalValue(decimal e)
     {
         if (mudTextField != null)
-            await mudTextField.Validate();
+            await mudTextField.ValidateAsync();
 
         if (Token?.TokenData?.Denomination == null)
         {
@@ -149,11 +149,11 @@
         StateHasChanged();
     }
 
-    private void SetBalance()
+    private async Task SetBalance()
     {
         if(mudTextField != null)
         {
-            mudTextField.SetText(BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1));
+            await mudTextField.SetTextAsync(BalanceHelper.FormatBalance(BalanceData?.Balance, Token?.TokenData?.Denomination ?? 1));
         }
     }
 

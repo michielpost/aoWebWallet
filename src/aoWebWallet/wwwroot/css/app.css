@@ -339,6 +339,20 @@ body {
     background-color: rgba(222,222,222,0) !important;
 }
 
+/* Hidden file-upload input overlay. Replaces the obsolete MudFileUpload InputStyle="opacity:0". */
+.file-upload-input-hidden {
+    opacity: 0;
+}
+
+.app-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 16px 0 10px 0;
+}
+
 
 .background-xs {
     background-image: url("../images/origin-icon-base.png");

@@ -8,14 +8,14 @@
 <PageTitle>Tokens - @Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
     <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
 
-    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;"  Class="d-flex justify-end mb-4 pr-4">
+    <div class="d-flex justify-end mb-4">
         <MudIconButton Icon="@Icons.Material.Filled.AddCircle" aria-label="add token" Size="Size.Large" OnClick="OpenAddTokenDialog"></MudIconButton>
-    </MudContainer>
+    </div>
 
     <MudStack>
         @if (dataService.TokenList != null)
@@ -64,7 +64,7 @@
 
     private async void DeleteToken(Token token)
     {
-        bool? result = await DialogService.ShowMessageBox(
+        bool? result = await DialogService.ShowMessageBoxAsync(
             "Warning",
             $"Are you sure you want to delete {token.TokenData?.Name}?",
             yesText: "Delete!", cancelText: "Cancel");

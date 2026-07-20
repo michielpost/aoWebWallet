@@ -10,18 +10,18 @@
 <PageTitle>@Program.PageTitlePostFix</PageTitle>
 
 
-<MudContainer Class="px-8 mt-2" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-2 px-8" MaxWidth="MaxWidth.ExtraExtraLarge">
 
     <MudBreadcrumbs Class="breadcrumbs-aoww" Items="_items"></MudBreadcrumbs>
 
-    <MudContainer style="width:100%; min-width: 100%; max-width: 100%;" Class="d-flex justify-end mb-4 pr-3">
+    <div class="d-flex justify-end mb-4">
         @if (BindingContext.WalletList.Data != null && BindingContext.WalletList.Data.Any())
             {
                 <MudTooltip Text="Add wallet" Arrow="true" Placement="Placement.Left">
-                    <MudIconButton Href="/start" style="padding-top: 0;" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
+                    <MudIconButton Href="/start" Icon="@Icons.Material.Filled.AddCircle" aria-label="add wallet" Size="Size.Large"></MudIconButton>
                 </MudTooltip>
             }
-    </MudContainer>
+    </div>
 
     <DataLoaderProgress DataLoader="dataService.TokenDataLoader" Title="tokens" />
     <MudStack>
@@ -126,7 +126,7 @@
 
     private async void DeleteWallet(Wallet wallet)
     {
-        bool? result = await DialogService.ShowMessageBox(
+        bool? result = await DialogService.ShowMessageBoxAsync(
             "Warning",
             $"Are you sure you want to delete this wallet? {wallet.Address}?",
             yesText: "Delete!", cancelText: "Cancel");

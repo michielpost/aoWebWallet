@@ -9,27 +9,73 @@ namespace aoww.Services
 {
     public static class EncryptionService
     {
+        // Marks the new encryption format: a random salt + random nonce per encryption,
+        // with a PBKDF2-derived key. Kept distinguishable from the legacy hex-only output
+        // (which never contains ':') so old wallets already stored in the browser keep
+        // decrypting while every new encryption is done safely.
+        private const string V2Prefix = "v2:";
+        private const int SaltSizeBytes = 16;
+        private const int NonceSizeBytes = 24;
+        private const int KeySizeBytes = 32;
+        private const int Pbkdf2Iterations = 210_000;
+
+        /// <summary>
+        /// Encrypts a wallet JWK with a password.
+        /// Uses a random salt and nonce per call, so encrypting multiple wallets with the
+        /// same password never reuses the same key/nonce pair.
+        /// </summary>
         public static string EncryptWallet(string secretKey, string jwk)
         {
-            var key = EncryptionService.GenerateKeys(secretKey);
+            var salt = RandomNumberGenerator.GetBytes(SaltSizeBytes);
+            var nonce = RandomNumberGenerator.GetBytes(NonceSizeBytes);
 
-            var encrypted = EncryptionService.Encrypt(System.Text.Encoding.UTF8.GetBytes(jwk), key.privateKey);
-            //var encryptedString = System.Text.Encoding.UTF8.GetString(encrypted);
-            var encryptedString = BitConverter.ToString(encrypted).Replace("-", "");
+            var key = DeriveKeyV2(secretKey, salt);
+            var ciphertext = Chaos.NaCl.XSalsa20Poly1305.Encrypt(System.Text.Encoding.UTF8.GetBytes(jwk), key, nonce);
 
-            return encryptedString;
+            var payload = new byte[salt.Length + nonce.Length + ciphertext.Length];
+            Buffer.BlockCopy(salt, 0, payload, 0, salt.Length);
+            Buffer.BlockCopy(nonce, 0, payload, salt.Length, nonce.Length);
+            Buffer.BlockCopy(ciphertext, 0, payload, salt.Length + nonce.Length, ciphertext.Length);
+
+            return V2Prefix + BitConverter.ToString(payload).Replace("-", "");
         }
 
         public static string DecryptWallet(string secretKey, string encryptedJwk)
         {
-            var key = EncryptionService.GenerateKeys(secretKey);
+            if (encryptedJwk.StartsWith(V2Prefix, StringComparison.Ordinal))
+            {
+                var payload = HexStringToByteArray(encryptedJwk.Substring(V2Prefix.Length));
 
+                var salt = payload[0..SaltSizeBytes];
+                var nonce = payload[SaltSizeBytes..(SaltSizeBytes + NonceSizeBytes)];
+                var ciphertext = payload[(SaltSizeBytes + NonceSizeBytes)..];
+
+                var key = DeriveKeyV2(secretKey, salt);
+                var decrypted = Chaos.NaCl.XSalsa20Poly1305.TryDecrypt(ciphertext, key, nonce);
+                if (decrypted == null)
+                    throw new CryptographicException("Failed to decrypt wallet. Wrong password or corrupted data.");
+
+                return System.Text.Encoding.UTF8.GetString(decrypted);
+            }
+
+            // Legacy format: the nonce was derived from the password-derived key itself,
+            // so the same password always produced the same nonce/key pair. That is unsafe
+            // (it lets an attacker who obtains two wallets encrypted with the same password
+            // recover both JWKs via a two-time-pad attack) but is kept here, read-only, so
+            // wallets encrypted before this fix can still be unlocked.
+            var legacyKey = EncryptionService.GenerateKeys(secretKey);
             var cipherData = HexStringToByteArray(encryptedJwk);
 
-            var decrypt = EncryptionService.Decrypt(cipherData, key.privateKey);
-            var dString = System.Text.Encoding.UTF8.GetString(decrypt);
+            var decrypt = EncryptionService.Decrypt(cipherData, legacyKey.privateKey);
+            if (decrypt == null)
+                throw new CryptographicException("Failed to decrypt wallet. Wrong password or corrupted data.");
 
-            return dString;
+            return System.Text.Encoding.UTF8.GetString(decrypt);
+        }
+
+        private static byte[] DeriveKeyV2(string secretKey, byte[] salt)
+        {
+            return Rfc2898DeriveBytes.Pbkdf2(System.Text.Encoding.UTF8.GetBytes(secretKey), salt, Pbkdf2Iterations, HashAlgorithmName.SHA256, KeySizeBytes);
         }
 
         public static byte[] HexStringToByteArray(string hex)

@@ -154,7 +154,16 @@ namespace aoWebWallet.ViewModels
                             if (wallet.JwkEncrypted == null)
                                 continue;
 
-                            wallet.JwkSecret = EncryptionService.DecryptWallet(this.SecretKey, wallet.JwkEncrypted);
+                            try
+                            {
+                                wallet.JwkSecret = EncryptionService.DecryptWallet(this.SecretKey, wallet.JwkEncrypted);
+                            }
+                            catch (System.Security.Cryptography.CryptographicException)
+                            {
+                                // Wrong/stale password: leave this wallet locked instead of
+                                // throwing and aborting the load of every other wallet.
+                                Console.WriteLine($"Failed to unlock wallet {wallet.Address}: wrong password.");
+                            }
                         }
                     }
                 }
