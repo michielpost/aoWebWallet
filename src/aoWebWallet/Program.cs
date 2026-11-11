@@ -9,8 +9,6 @@ using aoWebWallet.Services;
 using aoWebWallet.ViewModels;
 using ArweaveAO;
 using ArweaveBlazor;
-using System.Globalization;
-using ClipLazor.Extention;
 using aoww.Services;
 using aoww.Services.Models;
 using aoWebWallet.Models;
@@ -19,6 +17,7 @@ using MudExtensions.Services;
 using Soenneker.Blazor.Utils.Navigation.Registrars;
 using Append.Blazor.WebShare;
 using aoww.ProcesModels.SchemaProtocol;
+using ClipLazor.Extensions;
 
 namespace aoWebWallet
 {
